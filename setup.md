@@ -19,11 +19,9 @@ OCR-FOTO-P3STE/
   export_pdf_foto.py
   pdf_batch_timemark.py
 
-  input_foto/
+  input_foto/                    # opsional untuk contoh lokal
     contoh_1.jpg
     contoh_2.jpg
-
-  output_foto/
 
   input_pdf/
     file_001.pdf
@@ -107,20 +105,21 @@ pip install -r requirements.txt
 
 ## Tahap Kerja
 
-1. Siapkan foto asli di `input_foto/`. Jika folder ini belum ada, script masih bisa memakai folder project sebagai fallback.
+1. Siapkan folder foto asli. Folder boleh berada di mana saja dan boleh punya subfolder.
 2. Jalankan edit foto tahap 1:
 
 ```bash
-python edit_timemark.py --date "Senin, Jun 01, 2026"
+python edit_timemark.py
 ```
 
-3. Cek hasil di `output_foto/` dan preview beberapa sampel.
-4. Kalibrasi jika posisi watermark berbeda jauh dari contoh.
-5. Setelah hasil foto stabil, lanjut tahap PDF sesuai kebutuhan:
+3. Saat diminta, isi lokasi folder input dan tanggal baru.
+4. Cek hasil di `<folder input>/Export_Foto/` dan preview beberapa sampel.
+5. Kalibrasi jika posisi watermark berbeda jauh dari contoh.
+6. Setelah hasil foto stabil, lanjut tahap PDF sesuai kebutuhan:
    - `pdf_batch_timemark.py` untuk edit tanggal pada foto di dalam PDF.
    - `export_pdf_foto.py` untuk mengambil foto dokumentasi dan mengelompokkannya per aset.
-6. Uji PDF contoh, render preview halaman hasil, lalu baru jalankan batch.
-7. Simpan log perubahan di `logs/batch_log.csv` atau `logs/pdf_photo_export_log.csv`.
+7. Uji PDF contoh, render preview halaman hasil, lalu baru jalankan batch.
+8. Simpan log perubahan di `logs/batch_log.csv` atau `logs/pdf_photo_export_log.csv`.
 
 ## Detail Tahap Foto
 
@@ -131,6 +130,16 @@ Jumat, Jul 03, 2026
 ```
 
 Script `edit_timemark.py` mencari garis merah kiri bawah Timemark sebagai anchor. Jika anchor tidak ditemukan, script memakai koordinat fallback relatif terhadap ukuran foto.
+
+Jika `--input` tidak diisi, script akan bertanya lokasi folder input. Jika `--date` tidak diisi, script akan bertanya tanggal baru.
+
+Contoh tanpa prompt:
+
+```bash
+python edit_timemark.py --input "D:\Foto Timemark" --date "Sabtu, Agt 02 1999"
+```
+
+Script membaca foto `.jpg`, `.jpeg`, dan `.png` sampai ke subfolder. Folder bernama `Export_Foto` akan dilewati supaya hasil export lama tidak diproses ulang.
 
 ## Detail Tahap PDF
 
@@ -215,8 +224,10 @@ Jangan menimpa file asli.
 Output foto:
 
 ```text
-output_foto/
-  2026-07-03 11.22.51_Cilebut_revisi.jpg
+root_folder_input/
+  Export_Foto/
+    subfolder_asli/
+      image.jpg
 ```
 
 Output PDF:

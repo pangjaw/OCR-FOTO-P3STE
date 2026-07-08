@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pdfplumber
-from PIL import Image
+from pypdf import PdfReader
 
 
 DEFAULT_INPUT_DIR = "./input_pdf"
@@ -60,7 +60,7 @@ def parse_args() -> argparse.Namespace:
         "--resolution",
         type=int,
         default=DEFAULT_RESOLUTION,
-        help=f"Resolusi render halaman. Default: {DEFAULT_RESOLUTION}",
+        help="Diabaikan saat export original image; tetap diterima untuk kompatibilitas perintah lama.",
     )
     return parser.parse_args()
 
@@ -173,26 +173,24 @@ def pick_image_placements(page: pdfplumber.page.Page, row_start: float, row_end:
     return placements
 
 
-def crop_placement(rendered: Image.Image, bbox: tuple[float, float, float, float], resolution: int) -> Image.Image:
-    scale = resolution / 72.0
-    pad = max(1, int(scale))
-    x0, top, x1, bottom = bbox
-    left = max(0, int(round(x0 * scale)) - pad)
-    upper = max(0, int(round(top * scale)) - pad)
-    right = min(rendered.width, int(round(x1 * scale)) + pad)
-    lower = min(rendered.height, int(round(bottom * scale)) + pad)
-    return rendered.crop((left, upper, right, lower))
+def original_images_by_name(reader: PdfReader, page_index: int) -> dict[str, tuple[str, bytes]]:
+    images = {}
+    for image in reader.pages[page_index].images:
+        suffix = Path(image.name).suffix.lower() or ".jpg"
+        images[Path(image.name).stem] = (suffix, image.data)
+    return images
 
 
 def asset_output_dir(root: Path, asset_type: str, detail: str) -> Path:
     return root / sanitize_segment(asset_type) / sanitize_segment(detail)
 
 
-def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int, resolution: int) -> int:
+def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int, _resolution: int) -> int:
     exported = 0
     log_path = log_dir / "pdf_photo_export_log.csv"
     log_exists = log_path.exists()
 
+    reader = PdfReader(str(pdf_path))
     with pdfplumber.open(str(pdf_path)) as pdf, log_path.open("a", newline="", encoding="utf-8") as log_file:
         writer = csv.DictWriter(
             log_file,
@@ -207,8 +205,8 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
             if not rows:
                 continue
 
-            rendered = page.to_image(resolution=resolution).original.convert("RGB")
             page_height = float(page.height)
+            originals = original_images_by_name(reader, page_index)
 
             for idx, row in enumerate(rows):
                 next_top = rows[idx + 1].top if idx + 1 < len(rows) else page_height
@@ -235,18 +233,29 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
                 out_dir = asset_output_dir(output_root, row.asset_type, row.detail)
                 ensure_dir(out_dir)
 
-                for placement, label, filename in zip(placements[:3], labels, ["0.jpg", "50.jpg", "100.jpg"]):
-                    bbox = (
-                        float(placement["x0"]),
-                        float(placement["top"]),
-                        float(placement["x1"]),
-                        float(placement["bottom"]),
-                    )
-                    crop = crop_placement(rendered, bbox, resolution)
+                for placement, label, stem in zip(placements[:3], labels, ["0", "50", "100"]):
+                    original = originals.get(str(placement.get("name", "")))
+                    if not original:
+                        writer.writerow(
+                            {
+                                "pdf": pdf_path.name,
+                                "page": page.page_number,
+                                "asset_code": row.code,
+                                "asset_name": row.title,
+                                "label": label,
+                                "image_name": str(placement.get("name", "")),
+                                "output_file": "",
+                                "status": "failed: original image not found",
+                            }
+                        )
+                        continue
+
+                    suffix, data = original
+                    filename = f"{stem}{suffix}"
                     out_file = out_dir / filename
                     status = "ok"
                     try:
-                        crop.save(out_file, format="JPEG", quality=95, subsampling=0)
+                        out_file.write_bytes(data)
                         exported += 1
                     except OSError as exc:
                         status = f"failed: {exc}"

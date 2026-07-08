@@ -33,6 +33,19 @@ output_pdf_foto/
       100.jpg
 ```
 
+## Output Edit Foto
+
+Saat edit tanggal foto, output default dibuat di dalam folder input:
+
+```text
+root_folder_input/
+  Export_Foto/
+    subfolder_asli/
+      image.jpg
+```
+
+Struktur subfolder foto asli dipertahankan, dan folder `Export_Foto` tidak ikut diproses ulang.
+
 ## Panduan Dokumentasi
 
 Gunakan format ini supaya pengerjaan tetap konsisten di device lain.

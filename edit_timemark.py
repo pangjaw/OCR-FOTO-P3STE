@@ -6,9 +6,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
-DEFAULT_INPUT_DIR = "./input_foto"
-DEFAULT_OUTPUT_DIR = "./output_foto"
-DEFAULT_DATE_TEXT = "Jumat, Jul 03, 2026"
+DEFAULT_EXPORT_DIR_NAME = "Export_Foto"
 
 
 def parse_args():
@@ -17,18 +15,18 @@ def parse_args():
     )
     parser.add_argument(
         "--input",
-        default=DEFAULT_INPUT_DIR,
-        help=f"Folder input gambar. Default: {DEFAULT_INPUT_DIR}",
+        default=None,
+        help="Folder input gambar. Jika kosong, script akan bertanya.",
     )
     parser.add_argument(
         "--output",
-        default=DEFAULT_OUTPUT_DIR,
-        help=f"Folder output gambar. Default: {DEFAULT_OUTPUT_DIR}",
+        default=None,
+        help=f"Folder output gambar. Default: <folder input>/{DEFAULT_EXPORT_DIR_NAME}",
     )
     parser.add_argument(
         "--date",
-        default=DEFAULT_DATE_TEXT,
-        help=f"Teks tanggal baru. Default: {DEFAULT_DATE_TEXT}",
+        default=None,
+        help="Teks tanggal baru. Jika kosong, script akan bertanya.",
     )
     parser.add_argument(
         "--preview",
@@ -42,9 +40,43 @@ def ensure_dir(path: str) -> None:
     Path(path).mkdir(parents=True, exist_ok=True)
 
 
-def list_images(folder: Path) -> list[Path]:
+def clean_prompt_value(value: str) -> str:
+    return value.strip().strip('"').strip("'")
+
+
+def ask_existing_folder() -> Path:
+    while True:
+        value = clean_prompt_value(input("Masukkan lokasi folder input foto: "))
+        folder = Path(value).expanduser()
+        if folder.is_dir():
+            return folder.resolve()
+        print(f"Folder tidak ditemukan: {folder}")
+
+
+def ask_date_text() -> str:
+    while True:
+        value = input("Masukkan tanggal baru: ").strip()
+        if value:
+            return value
+        print("Tanggal baru tidak boleh kosong.")
+
+
+def list_images(folder: Path, output_dir: Path | None = None) -> list[Path]:
     exts = {".jpg", ".jpeg", ".png"}
-    return sorted([p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in exts])
+    skip_output = output_dir.resolve() if output_dir else None
+    images = []
+
+    for path in folder.rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in exts:
+            continue
+        rel_parts = path.relative_to(folder).parts
+        if DEFAULT_EXPORT_DIR_NAME.lower() in [part.lower() for part in rel_parts]:
+            continue
+        if skip_output and path.resolve().is_relative_to(skip_output):
+            continue
+        images.append(path)
+
+    return sorted(images)
 
 
 def get_text_box(w: int, h: int) -> tuple[int, int, int, int]:
@@ -52,9 +84,9 @@ def get_text_box(w: int, h: int) -> tuple[int, int, int, int]:
     Fallback area tanggal Timemark saat anchor watermark tidak terdeteksi.
     """
     x1 = int(w * 0.047)
-    y1 = int(h * 0.61)
+    y1 = int(h * 0.735)
     x2 = int(w * 0.49)
-    y2 = int(h * 0.705)
+    y2 = int(h * 0.82)
     return x1, y1, x2, y2
 
 
@@ -179,29 +211,31 @@ def draw_text(img: Image.Image, text: str, box: tuple[int, int, int, int]) -> No
     w = x2 - x1
     h = y2 - y1
 
-    pad_x = max(12, int(img.width * 0.008))
-    pad_y = max(6, int(img.height * 0.004))
+    pad_x = max(2, int(img.width * 0.008))
+    pad_y = max(1, int(img.height * 0.004))
 
-    font_size = max(42, min(160, int(img.width * 0.038)))
-    while font_size > 24:
+    font_size = max(9, min(160, int(img.width * 0.038)))
+    while font_size > 8:
         font = locate_font(font_size)
-        bbox = draw.textbbox((0, 0), text, font=font, stroke_width=2)
+        fit_stroke = 1 if font_size >= 28 else 0
+        bbox = draw.textbbox((0, 0), text, font=font, stroke_width=fit_stroke)
         text_w = bbox[2] - bbox[0]
         text_h = bbox[3] - bbox[1]
         if text_w <= w - (pad_x * 2) and text_h <= h - (pad_y * 2):
             break
-        font_size -= 2
+        font_size -= 1
     else:
         font = locate_font(font_size)
-        bbox = draw.textbbox((0, 0), text, font=font, stroke_width=1)
+        fit_stroke = 1 if font_size >= 28 else 0
+        bbox = draw.textbbox((0, 0), text, font=font, stroke_width=fit_stroke)
         text_w = bbox[2] - bbox[0]
         text_h = bbox[3] - bbox[1]
 
     text_x = x1 + pad_x
     text_y = y1 + ((h - text_h) // 2) - bbox[1]
 
-    shape_pad_x = max(14, int(img.width * 0.008))
-    shape_pad_y = max(8, int(img.height * 0.004))
+    shape_pad_x = max(3, int(font_size * 0.28))
+    shape_pad_y = max(2, int(font_size * 0.22))
     shape_box = (
         max(0, text_x + bbox[0] - shape_pad_x),
         max(0, text_y + bbox[1] - shape_pad_y),
@@ -212,19 +246,22 @@ def draw_text(img: Image.Image, text: str, box: tuple[int, int, int, int]) -> No
     overlay_draw = ImageDraw.Draw(overlay)
     overlay_draw.rounded_rectangle(
         shape_box,
-        radius=max(8, int(img.width * 0.006)),
+        radius=max(2, int(font_size * 0.25)),
         fill=(0, 0, 0, 140),
     )
     img.paste(Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB"))
     draw = ImageDraw.Draw(img)
 
+    shadow_offset = max(1, int(font_size * 0.02))
+    stroke_width = 1 if font_size >= 28 else 0
+
     # Shadow dan stroke kecil menjaga gaya watermark Timemark tetap terbaca.
     draw.text(
-        (text_x + 3, text_y + 3),
+        (text_x + shadow_offset, text_y + shadow_offset),
         text,
         font=font,
         fill=(35, 35, 35),
-        stroke_width=1,
+        stroke_width=stroke_width,
         stroke_fill=(35, 35, 35),
     )
     draw.text(
@@ -247,7 +284,7 @@ def process_image(image_path: Path, output_path: Path, date_text: str) -> bool:
     x1, y1, x2, y2 = locate_date_box(arr)
 
     # Sedikit perluasan area supaya sisa huruf lama ikut terangkat.
-    pad = max(10, int(w * 0.004))
+    pad = max(3, int(w * 0.002))
     y1p = max(0, y1 - pad)
     x1p = max(0, x1 - pad)
     y2p = min(h, y2 + pad)
@@ -258,7 +295,7 @@ def process_image(image_path: Path, output_path: Path, date_text: str) -> bool:
     crop_mask[y1 - y1p : y2 - y1p, x1 - x1p : x2 - x1p] = True
 
     cleaned = arr.copy()
-    cleaned[y1p:y2p, x1p:x2p] = diffuse_fill_region(crop, crop_mask, steps=160)
+    cleaned[y1p:y2p, x1p:x2p] = diffuse_fill_region(crop, crop_mask, steps=55)
     out_img = Image.fromarray(cleaned)
     draw_text(out_img, date_text, (x1, y1, x2, y2))
 
@@ -271,39 +308,55 @@ def process_image(image_path: Path, output_path: Path, date_text: str) -> bool:
 
 def main() -> int:
     args = parse_args()
-    input_dir = Path(args.input)
-    output_dir = Path(args.output)
-    preview_dir = Path("preview")
 
-    if not input_dir.exists():
-        fallback_dir = Path(".")
-        print(f"Folder input tidak ditemukan: {input_dir}")
-        print(f"Pakai folder kerja saat ini sebagai fallback: {fallback_dir.resolve()}")
-        input_dir = fallback_dir
+    if args.input:
+        input_dir = Path(clean_prompt_value(args.input)).expanduser().resolve()
+        if not input_dir.is_dir():
+            print(f"Folder input tidak ditemukan: {input_dir}")
+            return 1
+    else:
+        input_dir = ask_existing_folder()
+
+    date_text = args.date.strip() if args.date else ask_date_text()
+    output_dir = (
+        Path(clean_prompt_value(args.output)).expanduser().resolve()
+        if args.output
+        else input_dir / DEFAULT_EXPORT_DIR_NAME
+    )
+    preview_dir = output_dir / "preview"
 
     ensure_dir(str(output_dir))
     if args.preview:
         ensure_dir(str(preview_dir))
 
-    images = list_images(input_dir)
+    images = list_images(input_dir, output_dir)
     if not images:
         print(f"Tidak ada file gambar di: {input_dir}")
         return 0
 
     success = 0
     for image_path in images:
-        out_path = output_dir / image_path.name
-        ok = process_image(image_path, out_path, args.date)
+        rel_path = image_path.relative_to(input_dir)
+        out_path = output_dir / rel_path
+        ensure_dir(str(out_path.parent))
+
+        if out_path.resolve() == image_path.resolve():
+            print(f"[FAIL] Output sama dengan file asli, dilewati: {image_path}")
+            continue
+
+        ok = process_image(image_path, out_path, date_text)
         if ok:
             success += 1
-            print(f"[OK] {image_path.name}")
+            print(f"[OK] {rel_path}")
             if args.preview:
-                preview_path = preview_dir / f"preview_{image_path.name}"
+                preview_path = preview_dir / rel_path
+                ensure_dir(str(preview_path.parent))
                 preview_path.write_bytes(out_path.read_bytes())
         else:
-            print(f"[FAIL] {image_path.name}")
+            print(f"[FAIL] {rel_path}")
 
     print(f"Selesai. {success}/{len(images)} gambar berhasil diproses.")
+    print(f"Output: {output_dir}")
     return 0 if success > 0 else 1
 
 
