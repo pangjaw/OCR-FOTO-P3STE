@@ -147,17 +147,66 @@ def find_red_guide(arr: np.ndarray) -> tuple[int, int, int, int] | None:
     return x1, y1, x2, y2
 
 
-def locate_date_box(arr: np.ndarray) -> tuple[int, int, int, int]:
+def determine_template(image_path: Path, arr: np.ndarray) -> int:
+    path_str = image_path.as_posix().lower()
+    if "wesel" in path_str:
+        return 1
+    if "axc" in path_str or "sinyal" in path_str:
+        return 2
+
     h, w = arr.shape[:2]
     guide = find_red_guide(arr)
-    if not guide:
-        return get_text_box(w, h)
+    if guide:
+        _, _, _, guide_y2 = guide
+        if guide_y2 > int(h * 0.94):
+            return 1
+        else:
+            return 2
 
-    _, guide_y1, guide_x2, _ = guide
-    x1 = guide_x2 + int(w * 0.018)
-    y1 = guide_y1 - int(h * 0.03)
-    x2 = x1 + int(w * 0.42)
-    y2 = guide_y1 + int(h * 0.055)
+    # Fallback by white pixel density
+    w_start = int(w * 0.05)
+    w_end = int(w * 0.45)
+    t1_whites = 0
+    t2_whites = 0
+    for y in range(int(h * 0.60), int(h * 0.65)):
+        t1_whites += sum(1 for x in range(w_start, w_end) if arr[y, x, 0] > 180 and arr[y, x, 1] > 180 and arr[y, x, 2] > 180)
+    for y in range(int(h * 0.66), int(h * 0.69)):
+        t2_whites += sum(1 for x in range(w_start, w_end) if arr[y, x, 0] > 180 and arr[y, x, 1] > 180 and arr[y, x, 2] > 180)
+
+    if t1_whites > t2_whites:
+        return 1
+    else:
+        return 2
+
+
+def locate_date_box(arr: np.ndarray, image_path: Path) -> tuple[int, int, int, int]:
+    h, w = arr.shape[:2]
+    template = determine_template(image_path, arr)
+
+    guide = find_red_guide(arr)
+    if guide:
+        _, guide_y1, guide_x2, guide_y2 = guide
+        x1 = guide_x2 + int(w * 0.018)
+        x2 = x1 + int(w * 0.42)
+
+        if template == 1:
+            # Wesel: anchor dari guide_y2 yang selalu terdeteksi benar.
+            # guide_y2 ≈ 0.977*h; tanggal berada 0.107*h s.d. 0.190*h di atas guide_y2.
+            y2 = guide_y2 - int(h * 0.107)
+            y1 = guide_y2 - int(h * 0.190)
+        else:
+            # AXC/Sinyal: gunakan guide_y1 seperti semula.
+            y1 = guide_y1 - int(h * 0.03)
+            y2 = guide_y1 + int(h * 0.055)
+    else:
+        x1 = int(w * 0.047)
+        x2 = int(w * 0.49)
+        if template == 1:
+            y1 = int(h * 0.787)
+            y2 = int(h * 0.870)
+        else:
+            y1 = int(h * 0.633)
+            y2 = int(h * 0.717)
 
     return (
         max(0, x1),
@@ -281,7 +330,7 @@ def process_image(image_path: Path, output_path: Path, date_text: str) -> bool:
 
     arr = np.array(img)
     h, w = arr.shape[:2]
-    x1, y1, x2, y2 = locate_date_box(arr)
+    x1, y1, x2, y2 = locate_date_box(arr, image_path)
 
     # Sedikit perluasan area supaya sisa huruf lama ikut terangkat.
     pad = max(3, int(w * 0.002))
@@ -295,7 +344,7 @@ def process_image(image_path: Path, output_path: Path, date_text: str) -> bool:
     crop_mask[y1 - y1p : y2 - y1p, x1 - x1p : x2 - x1p] = True
 
     cleaned = arr.copy()
-    cleaned[y1p:y2p, x1p:x2p] = diffuse_fill_region(crop, crop_mask, steps=55)
+    cleaned[y1p:y2p, x1p:x2p] = diffuse_fill_region(crop, crop_mask, steps=160)
     out_img = Image.fromarray(cleaned)
     draw_text(out_img, date_text, (x1, y1, x2, y2))
 

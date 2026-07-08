@@ -1,1 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Project Specific Directories (Local Media & Temporary files)
+input_foto/
+input_pdf/
+output_foto/
+output_pdf_foto/
+Hasil_Edit/
+Hasil_Generative/
+preview/
+tmp/
+logs/*.csv
+logs/*.log
+
+# Obsidian local configurations (workspace layout, caches)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+# Atau abaikan seluruh folder .obsidian jika tidak ingin menyinkronkan plugin/tampilan kustom:
+# .obsidian/
+
+# File backup/system
+.DS_Store
+Thumbs.db
 ocr-ai.py

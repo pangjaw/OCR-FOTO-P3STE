@@ -1,12 +1,14 @@
 # Setup Project OCR Foto Timemark
 
-Dokumen ini berisi tahap kerja dan tools yang dibutuhkan. Tujuan project ada di `README.md`, sedangkan catatan kegiatan harian ada di `memory.md`.
+Dokumen ini berisi tahap kerja dan tools yang dibutuhkan. Deskripsi tujuan project ada di `README.md`, sedangkan log harian dan status berada di dalam sistem Obsidian (`Dashboard.md` & `Notes/Daily/`).
 
 ## Aturan Dokumentasi
 
-- `README.md`: tujuan dibuatnya project.
-- `setup.md`: tahap kerja, struktur folder, perintah, dan tools yang dibutuhkan.
-- `memory.md`: update dari setiap kegiatan terhadap project.
+- `README.md`: tujuan dibuatnya project dan batasan bisnis.
+- `setup.md`: tahap kerja, struktur folder, perintah, dan dependensi teknis.
+- `Dashboard.md`: halaman indeks utama di Obsidian yang menghubungkan catatan status kerja.
+- `Notes/Daily/`: log perkembangan harian yang diperbarui setiap ada perubahan (menggantikan `memory.md`).
+- `Notes/Decisions/`: catatan keputusan teknis / arsitektur (ADR).
 
 ## Struktur Folder Yang Disarankan
 
@@ -14,7 +16,11 @@ Dokumen ini berisi tahap kerja dan tools yang dibutuhkan. Tujuan project ada di 
 OCR-FOTO-P3STE/
   README.md
   setup.md
-  memory.md
+  Dashboard.md
+  Notes/
+    Daily/
+    Decisions/
+    Templates/
   edit_timemark.py
   export_pdf_foto.py
   pdf_batch_timemark.py
