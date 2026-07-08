@@ -20,20 +20,38 @@ Project ini dibuat untuk membantu koreksi tanggal watermark Timemark pada foto d
 - Output revisi harus memakai folder atau nama file berbeda.
 - Untuk kebutuhan administrasi resmi, perubahan tanggal harus mengikuti instruksi yang valid dan dapat dilacak.
 
-## Rencana Output PDF Foto
+## Output PDF Foto
 
 Foto dari PDF akan dikelompokkan berdasarkan judul aset, misalnya:
 
 ```text
 output_pdf_foto/
-  WSL11080_PENGGERAK_WESEL_W23A_BOO/
-    Foto_0_persen.jpg
-    Foto_50_persen.jpg
-    Foto_100_persen.jpg
+  WESEL/
+    W23A BOO/
+      0.jpg
+      50.jpg
+      100.jpg
 ```
 
-## Aturan Dokumentasi
+## Panduan Dokumentasi
 
-- `README.md`: tujuan dibuatnya project.
-- `setup.md`: tahap kerja dan tools yang dibutuhkan.
-- `memory.md`: update dari setiap kegiatan terhadap project.
+Gunakan format ini supaya pengerjaan tetap konsisten di device lain.
+
+### `README.md`
+
+- Berisi tujuan project, batasan utama, output yang diharapkan, dan aturan dokumentasi.
+- Jangan dipakai untuk catatan progres harian.
+- Perbarui jika tujuan, batasan, atau format output project berubah.
+
+### `setup.md`
+
+- Berisi tahap kerja, struktur folder, perintah, tools, dependensi, dan alur menjalankan script.
+- Perbarui jika ada script baru, command berubah, dependensi berubah, atau struktur folder berubah.
+- Tulis instruksi yang bisa langsung diikuti di device baru.
+
+### `memory.md`
+
+- Berisi status terbaru, keputusan teknis, update penting, hasil uji, file referensi, dan next step.
+- Jangan isi dengan output terminal panjang atau semua percobaan kecil.
+- Catatan lama yang tidak lagi penting cukup diringkas; archive terpisah tidak diperlukan.
+- Bagian atas harus selalu mencerminkan kondisi project terbaru.

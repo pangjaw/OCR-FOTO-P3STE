@@ -52,43 +52,67 @@ def get_text_box(w: int, h: int) -> tuple[int, int, int, int]:
     Fallback area tanggal Timemark saat anchor watermark tidak terdeteksi.
     """
     x1 = int(w * 0.047)
-    y1 = int(h * 0.745)
+    y1 = int(h * 0.61)
     x2 = int(w * 0.49)
-    y2 = int(h * 0.83)
+    y2 = int(h * 0.705)
     return x1, y1, x2, y2
+
+
+def contiguous_runs(values: np.ndarray) -> list[tuple[int, int]]:
+    indexes = np.where(values)[0]
+    if len(indexes) == 0:
+        return []
+
+    groups = []
+    start = prev = int(indexes[0])
+    for value in indexes[1:]:
+        value = int(value)
+        if value > prev + 1:
+            groups.append((start, prev))
+            start = value
+        prev = value
+    groups.append((start, prev))
+    return groups
 
 
 def find_red_guide(arr: np.ndarray) -> tuple[int, int, int, int] | None:
     h, w = arr.shape[:2]
+    r = arr[:, :, 0].astype(int)
+    g = arr[:, :, 1].astype(int)
+    b = arr[:, :, 2].astype(int)
     red = (
-        (arr[:, :, 0] > 180)
-        & (arr[:, :, 1] < 100)
-        & (arr[:, :, 2] < 80)
+        (r > 145)
+        & (r > g + 22)
+        & (r > b + 45)
+        & (g < 195)
+        & (b < 155)
     )
 
-    red[: int(h * 0.68), :] = False
-    red[:, int(w * 0.12) :] = False
+    red[: int(h * 0.54), :] = False
+    red[:, int(w * 0.16) :] = False
 
     counts = red.sum(axis=0)
-    cols = np.where(counts > max(80, int(h * 0.12)))[0]
+    cols = np.where(counts > max(20, int(h * 0.04)))[0]
     if len(cols) == 0:
         return None
 
-    groups = []
-    start = prev = int(cols[0])
-    for col in cols[1:]:
-        col = int(col)
-        if col > prev + 1:
-            groups.append((start, prev))
-            start = col
-        prev = col
-    groups.append((start, prev))
+    candidates = []
+    for x1, x2 in contiguous_runs(counts > max(20, int(h * 0.04))):
+        if x2 - x1 + 1 > int(w * 0.045):
+            continue
+        row_has_red = red[:, x1 : x2 + 1].sum(axis=1) > 0
+        for y1, y2 in contiguous_runs(row_has_red):
+            guide_h = y2 - y1 + 1
+            if guide_h < max(25, int(h * 0.055)):
+                continue
+            score = int(red[y1 : y2 + 1, x1 : x2 + 1].sum())
+            candidates.append((guide_h, score, x1, y1, x2, y2))
 
-    x1, x2 = max(groups, key=lambda group: counts[group[0] : group[1] + 1].sum())
-    ys, _ = np.where(red[:, x1 : x2 + 1])
-    if len(ys) == 0:
+    if not candidates:
         return None
-    return x1, int(ys.min()), x2, int(ys.max())
+
+    _, _, x1, y1, x2, y2 = max(candidates)
+    return x1, y1, x2, y2
 
 
 def locate_date_box(arr: np.ndarray) -> tuple[int, int, int, int]:

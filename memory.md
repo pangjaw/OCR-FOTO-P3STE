@@ -1,77 +1,90 @@
 # Memory Log
 
-Catatan update dari setiap kegiatan terhadap project. `README.md` dipakai untuk tujuan project, `setup.md` dipakai untuk tahap kerja dan tools.
+Catatan ringkas progres penting project. Simpan status terbaru, keputusan teknis, hasil uji, dan next step yang masih relevan. Catatan lama yang tidak lagi penting cukup diringkas di file ini; tidak perlu archive terpisah.
 
 ## Aturan Dokumentasi
 
 - `README.md`: tujuan dibuatnya project.
 - `setup.md`: tahap kerja, struktur folder, perintah, dan tools yang dibutuhkan.
-- `memory.md`: update dari setiap kegiatan terhadap project.
+- `memory.md`: status terbaru, keputusan, progres penting, hasil uji, dan next step.
 
 ## Status Saat Ini
 
 - Tujuan project: koreksi tanggal watermark Timemark pada foto dokumentasi, lalu memprosesnya secara batch termasuk PDF.
-- Tahap 1 sudah dibuat dan dikalibrasi dalam `edit_timemark.py`.
-- Tahap 1 saat ini memakai `Pillow + numpy`, bukan OpenCV.
-- Script tahap 1 sudah diuji ulang pada dua foto contoh Cilebut.
-- Rencana export foto PDF ditambahkan ke dokumentasi, tetapi script export belum dibuat.
-- `requirements.txt` sudah ditambahkan untuk setup device baru.
+- Tahap edit foto utama ada di `edit_timemark.py` dan memakai `Pillow + numpy`, bukan OpenCV.
+- Deteksi posisi tanggal Timemark sudah diperbaiki agar menerima variasi merah/oranye dan fallback tidak turun ke area alamat.
+- Script export foto PDF sudah dibuat di `export_pdf_foto.py`.
+- Export PDF sudah diuji pada contoh AXC, Wesel, dan Sinyal.
+- `requirements.txt` sudah tersedia untuk setup device baru.
 
 ## Keputusan Yang Sudah Diambil
 
-- Aturan dokumentasi ditetapkan: README untuk tujuan, setup untuk tahap/tools, memory untuk update kegiatan.
-- `setup.md` dipakai sebagai acuan awal, bukan tempat catatan progres.
-- Catatan progres kerja dipindahkan ke `memory.md`.
-- File asli tetap tidak ditimpa.
-- Output disimpan ke folder baru.
-- Tahap 1 didahulukan sebelum membuat pipeline PDF.
-- Untuk export foto PDF, pencarian judul aset dimulai dari halaman 2 sampai halaman terakhir agar halaman daftar aset tidak ikut terbaca.
+- File asli tidak ditimpa; hasil disimpan ke folder output.
+- Untuk export foto PDF, scan judul aset dimulai dari halaman 2 sampai halaman terakhir.
+- Halaman 1 tidak dipakai untuk scan judul aset dokumentasi karena bisa berisi daftar aset dan memicu false positive.
+- Export foto PDF memetakan gambar berdasarkan posisi di halaman, bukan hanya daftar image object unik dari PDF.
+- Struktur output export PDF: `output_pdf_foto/TIPE_ASET/DETAIL_LOKASI/0.jpg`, `50.jpg`, `100.jpg`.
+- Root output sementara tetap `output_pdf_foto/`; bisa diganti nanti tanpa mengubah inti script.
+- Jika file hasil export sudah ada, script boleh overwrite file lama.
+- Tipe aset dideteksi otomatis:
+  - `AXLE COUNTER` atau kode `AXL` menjadi `AXC`.
+  - `WESEL` atau kode `WSL` menjadi `WESEL`.
+  - `SINYAL` atau kode `SIN` menjadi `SINYAL`.
+- Detail lokasi diambil dari judul aset:
+  - AXC: teks setelah `COUNTER`, contoh `AXLE COUNTER ZPA SDM` -> `ZPA SDM`.
+  - WESEL: teks setelah `ELEKTRIK`, contoh `PENGGERAK WESEL ELEKTRIK 21A SRP` -> `21A SRP`.
+  - SINYAL: teks setelah `ELEKTRIK`, atau fallback setelah `SINYAL MUKA` / `SINYAL`.
 
 ## Update Kegiatan
 
 ### 2026-07-07
 
-- Menetapkan aturan dokumentasi project.
-- Merapikan `README.md` supaya fokus pada tujuan project.
-- Merapikan `setup.md` supaya fokus pada tahap kerja dan tools yang dibutuhkan.
-- Memperbarui `memory.md` sebagai catatan kegiatan project.
-- Memperbaiki deteksi garis merah Timemark agar tidak ikut menangkap warna oranye logo KAI.
-- Memperkuat pembersihan area tanggal lama supaya teks belakang lebih blur dan tidak dobel.
-- Memproses ulang 3 foto di `input_foto/` ke `output_foto/` dengan tanggal `Sabtu, Agt 02 2025`.
-- Menambahkan shape hitam semi-transparan di belakang teks tanggal baru.
-- Memproses ulang 3 foto di `input_foto/` setelah shape tanggal ditambahkan.
-- Menginspeksi PDF contoh untuk rencana export foto per aset tanpa membuat script export.
-- Menemukan halaman 4 berisi aset W23A, W43, W61A1, W61A2; halaman 5 berisi aset W41.
-- Memastikan setiap aset punya 3 foto dengan label `Foto 0%`, `Foto 50%`, dan `Foto 100%`.
-- Menambahkan rencana export foto PDF ke `README.md` dan `setup.md` tanpa menghapus informasi OCR foto.
-- Memastikan planning export PDF tetap belum dieksekusi sebagai script.
+- Menetapkan aturan dokumentasi: `README.md` untuk tujuan, `setup.md` untuk tahap/tools, `memory.md` untuk progres penting.
+- Merapikan `README.md`, `setup.md`, dan `memory.md`.
 - Menambahkan `requirements.txt` berisi dependensi inti: `numpy`, `pillow`, `pdfplumber`, dan `pypdf`.
-- Memperbarui `setup.md` agar device baru memakai `pip install -r requirements.txt`.
+- Memperbaiki deteksi garis merah Timemark agar tidak ikut menangkap warna oranye logo KAI.
+- Memperkuat pembersihan area tanggal lama dan menambahkan background hitam semi-transparan di belakang tanggal baru.
+- Menginspeksi PDF contoh Wesel, AXC, dan Sinyal untuk pola judul aset, label `Foto 0%`, `Foto 50%`, dan `Foto 100%`.
+- Menemukan bahwa `pdfplumber` membaca posisi gambar di halaman lebih sesuai untuk export foto dibanding daftar image object unik dari `pypdf`.
+- Menambahkan `export_pdf_foto.py` untuk crop foto dokumentasi dari PDF berdasarkan posisi gambar di halaman.
+- Menjalankan export pada tiga contoh PDF dan berhasil mengekspor total 30 foto.
+- Menjalankan ulang batch dari `input_pdf/` dan berhasil mengekspor total 81 foto tanpa status `failed` di log terbaru.
+- Memperbaiki sanitasi nama folder hasil export supaya karakter tersembunyi dari teks PDF tidak membuat Windows menolak path output.
+- Menambahkan penanganan error saat save per foto agar satu output bermasalah tidak menghentikan seluruh batch.
+- Menemukan hasil lama `output_foto/` hanya berisi 32 dari 36 foto.
+- Memperbaiki `edit_timemark.py` supaya deteksi anchor menerima variasi merah/oranye, memilih run vertikal guide yang valid, dan fallback tanggal lebih dekat ke baris tanggal asli.
+- Menguji ulang batch foto ke `output_foto_fixed/` dan berhasil memproses 36/36 foto.
+- Memastikan `edit_timemark.py` lolos `py_compile` setelah perubahan locator.
 
-## Kondisi Script Tahap 1
+## Kondisi Script
 
-- Input default: `./input_foto`
-- Output default: `./output_foto`
-- Opsi penting:
-  - `--date`
-  - `--input`
-  - `--output`
-  - `--preview`
-- Script punya fallback ke folder kerja saat `input_foto/` belum ada.
-- Ada dua komponen utama:
-  - deteksi anchor garis merah Timemark untuk menemukan baris tanggal
-  - fill ringan pada crop tanggal supaya proses lebih cepat
-  - penulisan ulang tanggal baru dengan ukuran font adaptif
+### `edit_timemark.py`
 
-## Hasil Uji Sementara
+- Input default: `./input_foto`.
+- Output default: `./output_foto`.
+- Opsi penting: `--date`, `--input`, `--output`, `--preview`.
+- Jika `input_foto/` belum ada, script punya fallback ke folder kerja.
+- Alur utama:
+  - deteksi anchor garis merah/oranye Timemark untuk menemukan baris tanggal;
+  - bersihkan crop tanggal lama;
+  - tulis ulang tanggal baru dengan ukuran font adaptif dan background semi-transparan.
 
-- Script berhasil memproses 2/2 foto contoh ke `output_foto/`.
-- Posisi tanggal baru sudah masuk pada baris tanggal lama, bukan area alamat.
-- Ukuran font sudah menyesuaikan kotak tanggal dan lebih mendekati watermark asli.
-- Script berhasil memproses ulang 3/3 foto Maseng dari `input_foto/`.
-- Tanggal baru sekarang memakai background shape hitam semi-transparan.
-- Rencana berikutnya: buat otomasi export foto dari PDF berdasarkan judul aset dan label persen.
-- Aturan rencana export PDF: scan dimulai dari halaman 2, lalu berjalan sampai halaman terakhir berapa pun jumlah halaman PDF.
+### `export_pdf_foto.py`
+
+- Input default: `./input_pdf`.
+- Output default: `./output_pdf_foto`.
+- Log default: `./logs/pdf_photo_export_log.csv`.
+- Scan default mulai halaman 2.
+- Label output: `0.jpg`, `50.jpg`, `100.jpg`.
+- Folder output dikelompokkan berdasarkan tipe aset dan detail lokasi.
+
+## Hasil Uji Penting
+
+- Edit foto awal berhasil pada 2/2 foto contoh Cilebut.
+- Edit foto Maseng berhasil pada 3/3 foto.
+- Uji terbaru `edit_timemark.py` berhasil memproses 36/36 foto ke `output_foto_fixed/`.
+- Export tiga PDF contoh AXC, Wesel, dan Sinyal berhasil menghasilkan 30 foto.
+- Batch export dari `input_pdf/` berhasil menghasilkan 81 foto tanpa status `failed` di log terbaru.
 
 ## Folder Yang Sudah Ada
 
@@ -89,13 +102,15 @@ Catatan update dari setiap kegiatan terhadap project. `README.md` dipakai untuk 
 
 - [README.md](README.md)
 - [setup.md](setup.md)
+- [requirements.txt](requirements.txt)
 - [edit_timemark.py](edit_timemark.py)
+- [export_pdf_foto.py](export_pdf_foto.py)
 - [ocr.py](ocr.py)
 - [01-06-2026_PERAWATAN WESEL ELEKTRIK 2 MINGGUAN_Bogor (1).pdf](01-06-2026_PERAWATAN%20WESEL%20ELEKTRIK%202%20MINGGUAN_Bogor%20(1).pdf)
 
 ## Next Step
 
 1. Uji lebih banyak foto dengan variasi latar watermark.
-2. Jika hasil batch foto sudah stabil, lanjut rancang `pdf_batch_timemark.py`.
-3. Setelah planning disetujui, buat script export foto PDF dengan default scan halaman 2 sampai halaman terakhir.
+2. Uji `export_pdf_foto.py` pada PDF lain kalau ada layout baru yang agak beda.
+3. Jika struktur output final sudah disepakati, pindahkan root dari `output_pdf_foto/` ke folder final.
 4. Tambahkan mapping tanggal dari CSV jika tanggal target berbeda per file.

@@ -16,6 +16,7 @@ OCR-FOTO-P3STE/
   setup.md
   memory.md
   edit_timemark.py
+  export_pdf_foto.py
   pdf_batch_timemark.py
 
   input_foto/
@@ -117,7 +118,7 @@ python edit_timemark.py --date "Senin, Jun 01, 2026"
 4. Kalibrasi jika posisi watermark berbeda jauh dari contoh.
 5. Setelah hasil foto stabil, lanjut tahap PDF sesuai kebutuhan:
    - `pdf_batch_timemark.py` untuk edit tanggal pada foto di dalam PDF.
-   - script export foto PDF untuk mengambil foto dokumentasi dan mengelompokkannya per aset.
+   - `export_pdf_foto.py` untuk mengambil foto dokumentasi dan mengelompokkannya per aset.
 6. Uji PDF contoh, render preview halaman hasil, lalu baru jalankan batch.
 7. Simpan log perubahan di `logs/batch_log.csv` atau `logs/pdf_photo_export_log.csv`.
 
@@ -161,6 +162,8 @@ PDF asli
 -> tulis log export
 ```
 
+Script yang dipakai: `export_pdf_foto.py`.
+
 Halaman 1 tidak discan untuk judul aset karena biasanya berisi daftar aset dan bisa menyebabkan false positive.
 
 Contoh kelompok:
@@ -174,13 +177,14 @@ Contoh output:
 
 ```text
 output_pdf_foto/
-  WSL11080_PENGGERAK_WESEL_W23A_BOO/
-    Foto_0_persen.jpg
-    Foto_50_persen.jpg
-    Foto_100_persen.jpg
+  WESEL/
+    W23A BOO/
+      0.jpg
+      50.jpg
+      100.jpg
 ```
 
-Nama file memakai `persen`, bukan `%`, supaya aman di Windows dan command line.
+Nama file memakai angka persen tanpa karakter `%`, supaya aman di Windows dan command line.
 
 ## Mapping Tanggal
 
@@ -226,10 +230,11 @@ Output foto dari PDF:
 
 ```text
 output_pdf_foto/
-  WSL11080_PENGGERAK_WESEL_W23A_BOO/
-    Foto_0_persen.jpg
-    Foto_50_persen.jpg
-    Foto_100_persen.jpg
+  WESEL/
+    W23A BOO/
+      0.jpg
+      50.jpg
+      100.jpg
 ```
 
 Log:
