@@ -15,6 +15,7 @@ Catatan update dari setiap kegiatan terhadap project. `README.md` dipakai untuk 
 - Tahap 1 saat ini memakai `Pillow + numpy`, bukan OpenCV.
 - Script tahap 1 sudah diuji ulang pada dua foto contoh Cilebut.
 - Rencana export foto PDF ditambahkan ke dokumentasi, tetapi script export belum dibuat.
+- `requirements.txt` sudah ditambahkan untuk setup device baru.
 
 ## Keputusan Yang Sudah Diambil
 
@@ -44,6 +45,8 @@ Catatan update dari setiap kegiatan terhadap project. `README.md` dipakai untuk 
 - Memastikan setiap aset punya 3 foto dengan label `Foto 0%`, `Foto 50%`, dan `Foto 100%`.
 - Menambahkan rencana export foto PDF ke `README.md` dan `setup.md` tanpa menghapus informasi OCR foto.
 - Memastikan planning export PDF tetap belum dieksekusi sebagai script.
+- Menambahkan `requirements.txt` berisi dependensi inti: `numpy`, `pillow`, `pdfplumber`, dan `pypdf`.
+- Memperbarui `setup.md` agar device baru memakai `pip install -r requirements.txt`.
 
 ## Kondisi Script Tahap 1
 

@@ -54,10 +54,16 @@ Dependensi minimal edit foto:
 pip install numpy pillow
 ```
 
-Dependensi untuk tahap PDF:
+Dependensi inti project:
 
 ```bash
-pip install pypdf pdfplumber reportlab pymupdf
+pip install -r requirements.txt
+```
+
+Dependensi untuk tahap PDF jika dipasang manual:
+
+```bash
+pip install pypdf pdfplumber
 ```
 
 Dependensi opsional untuk eksperimen lain:
@@ -92,10 +98,10 @@ python -m venv .venv
 python -m pip install --upgrade pip
 ```
 
-5. Instal dependensi minimal:
+5. Instal dependensi project:
 
 ```bash
-pip install numpy pillow
+pip install -r requirements.txt
 ```
 
 ## Tahap Kerja
