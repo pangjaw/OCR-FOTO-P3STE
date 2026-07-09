@@ -10,38 +10,24 @@ Dokumen ini berisi tahap kerja dan tools yang dibutuhkan. Deskripsi tujuan proje
 - `Notes/Daily/`: log perkembangan harian yang diperbarui setiap ada perubahan (menggantikan `memory.md`).
 - `Notes/Decisions/`: catatan keputusan teknis / arsitektur (ADR).
 
-## Struktur Folder Yang Disarankan
+## Struktur Folder
 
 ```text
 OCR-FOTO-P3STE/
-  README.md
-  setup.md
-  Dashboard.md
-  Notes/
-    Daily/
-    Decisions/
-    Templates/
-  edit_timemark.py
-  export_pdf_foto.py
-  pdf_batch_timemark.py
+  edit_timemark_ide1.py     # Script utama edit watermark (4-Stage Priority)
+  export_pdf_foto.py        # Script ekstraksi foto dari PDF
+  Dashboard.md              # Halaman indeks Obsidian
+  README.md                 # Tujuan project & batasan
+  setup.md                  # Panduan setup ini
+  requirements.txt          # Dependensi Python
 
-  input_foto/                    # opsional untuk contoh lokal
-    contoh_1.jpg
-    contoh_2.jpg
+  input_pdf/                # Folder PDF sumber
+  output_pdf_foto/          # Hasil ekstraksi PDF → foto per aset
 
-  input_pdf/
-    file_001.pdf
-    file_002.pdf
-
-  output_pdf/
-
-  output_pdf_foto/
-
-  logs/
-    batch_log.csv
-    pdf_photo_export_log.csv
-
-  preview/
+  Notes/                    # Obsidian vault
+    Daily/                  #   Log harian
+    Decisions/              #   ADR
+    Templates/              #   Template catatan
 ```
 
 ## Tools Yang Dibutuhkan

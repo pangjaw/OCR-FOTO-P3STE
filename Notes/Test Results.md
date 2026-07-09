@@ -6,6 +6,15 @@ Catatan hasil pengetesan script `edit_timemark.py` dan `export_pdf_foto.py` dari
 
 ## 📈 Rekap Uji Coba Terbaru
 
+### 📅 Uji Coba 2026-07-09
+
+#### Pemrosesan Foto Timemark (`edit_timemark_ide1.py`)
+- **Implementasi Ide 1 (Y-center average)**: Uji coba pemosisian vertikal watermark menggunakan rata-rata koordinat tengah dari kata-kata yang dideteksi oleh Tesseract. Mengatasi pergeseran kotak watermark akibat bounding box Tesseract yang melebar secara vertikal.
+- **Pelebaran Jangkauan Tahun**: Memperluas deteksi tahun ke rentang 2001–2999 dengan regex `20\d{2}` untuk menangkap tahun yang tergabung akibat noise OCR (misalnya `2026` dibaca `832006`). Terbukti sukses pada berkas `LANGSIR L20 BOO/50.jpg`.
+- **Pembersihan Kata Kunci Bahasa Inggris**: Menghapus singkatan Inggris (`MAY`, `AUG`, `OCT`, `DEC`) untuk menghindari kecocokan palsu pada kawat pagar/tiang latar belakang (misalnya `"May,"` dibaca pada `JL32A BOO/50.jpg`).
+- **Integrasi Adaptive Thresholding (BoxBlur)**: Menambahkan binarisasi adaptif lokal (`BoxBlur(8)` + offset `C = -8` + penajaman) sebagai pertahanan terakhir OCR. Berhasil mengisolasi teks putih pada tembok beton/semen abu-abu dan peron diagonal stasiun pada berkas `ZP 21A BOO/100.jpg`.
+- **Uji Kelulusan Batch (168/168)**: Pemrosesan ulang seluruh folder input menghasilkan kelulusan mutlak dengan visualisasi rapi tanpa ada bocoran teks lama di foto mana pun.
+
 ### 📅 Uji Coba 2026-07-08
 
 #### Pemrosesan Foto Timemark (`edit_timemark.py`)

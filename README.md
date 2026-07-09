@@ -68,3 +68,37 @@ Gunakan format ini supaya pengerjaan tetap konsisten di device lain.
 - Jangan isi dengan output terminal panjang atau semua percobaan kecil.
 - Catatan lama yang tidak lagi penting cukup diringkas; archive terpisah tidak diperlukan.
 - Bagian atas harus selalu mencerminkan kondisi project terbaru.
+
+---
+
+## 🛠️ Panduan Prioritas Deteksi Posisi (Stage Guide)
+
+Untuk menempatkan textbox tanggal baru secara presisi tanpa menabrak alamat di bawahnya, script `edit_timemark_ide1.py` menggunakan **4-Stage Priority Flow** sebagai berikut:
+
+```mermaid
+graph TD
+    start[Mulai Gambar] --> s1{Stage 1: Tanggal Lokal?}
+    s1 -- "Sukses (OCR)" --> draw["Gambar TextBox di Y Tanggal"]
+    s1 -- "Gagal" --> s2{Stage 2: Alamat Konsensus?}
+    s2 -- "Sukses (Voting)" --> draw2["Gambar TextBox di Atas Alamat (Gap)"]
+    s2 -- "Gagal" --> s3{Stage 3: Red Guide Lokal?}
+    s3 -- "Sukses (Piksel Oren)" --> draw3["Gambar TextBox Sejajar Red Guide"]
+    s3 -- "Gagal" --> s4["Stage 4: Dilewati (Skip) & Beri Warning"]
+```
+
+### 📋 Detail dan Skenario Penggunaan:
+
+1. **Stage 1: Tanggal Lokal (OCR Mandiri per Gambar) [Prioritas Utama]**
+   * **Cara Kerja:** Melakukan OCR mandiri khusus pojok kiri bawah pada file tersebut untuk mencari teks tanggal lama (tahun `2025`/`2026`, bulan, `AM`/`PM`/`WIB`).
+   * **Kelebihan:** Sangat presisi untuk file yang posisinya melompat secara fisik secara individual (misal `L60 0.jpg` di Y=203, sedangkan file lainnya di Y=188).
+
+2. **Stage 2: Alamat Konsensus (Voting Alamat Tingkat Folder) [Fallback Kedua]**
+   * **Cara Kerja:** Jika tanggal lokal gagal dibaca, program mencontek letak baris pertama teks alamat yang konsisten disepakati oleh mayoritas ($\ge 2$) file lain sefolder pada fase pre-scan. TextBox baru ditaruh menempel tepat di atas alamat tersebut dengan gap aman.
+   * **Kelebihan:** Menghindari tabrakan dengan teks alamat jika tanggal lama terlalu buram/gelap untuk dideteksi secara mandiri.
+
+3. **Stage 3: Red Guide Lokal (Deteksi Piksel Oren per Gambar) [Fallback Ketiga]**
+   * **Cara Kerja:** Mendeteksi garis oren vertikal asli dari GPS Map Camera di sebelah kiri. TextBox baru diletakkan sejajar dengan batas atas garis oren tersebut.
+   * **Kelebihan:** Sangat andal untuk file tanpa teks alamat atau saat OCR gagal total, namun piksel warna oren kamera masih terlihat jelas.
+
+4. **Stage 4: Dilewati / Skip (Deteksi Gagal) [Penyelamat Akhir]**
+   * **Cara Kerja:** Jika Stage 1, 2, dan 3 semuanya gagal mendeteksi posisi secara otomatis, file tersebut **dilewati (tidak diproses/tidak digambar)** untuk mencegah penempatan textbox di tempat yang salah. Program akan merangkum daftar file yang dilewati di akhir konsol run agar user dapat mengetahuinya dengan jelas.
