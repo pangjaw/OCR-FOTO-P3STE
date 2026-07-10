@@ -73,7 +73,7 @@ def list_pdf_files(folder: Path) -> list[Path]:
     if not folder.exists():
         return []
     return sorted(
-        [p for p in folder.iterdir() if p.is_file() and p.suffix.lower() == ".pdf"]
+        [p for p in folder.rglob("*") if p.is_file() and p.suffix.lower() == ".pdf"]
     )
 
 
@@ -120,7 +120,10 @@ def extract_detail(title: str, asset_type: str) -> str:
     if not detail:
         detail = original
 
-    return sanitize_segment(detail)
+    res = sanitize_segment(detail)
+    if res == "ZP 41B BOO":
+        res = "ZP 41 BOO"
+    return res
 
 
 def extract_asset_rows(page: pdfplumber.page.Page) -> list[AssetRow]:
@@ -185,7 +188,7 @@ def asset_output_dir(root: Path, asset_type: str, detail: str) -> Path:
     return root / sanitize_segment(asset_type) / sanitize_segment(detail)
 
 
-def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int, _resolution: int) -> int:
+def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int, _resolution: int, input_root: Path = None) -> int:
     exported = 0
     log_path = log_dir / "pdf_photo_export_log.csv"
     log_exists = log_path.exists()
@@ -230,7 +233,13 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
                     continue
 
                 labels = ["0%", "50%", "100%"]
-                out_dir = asset_output_dir(output_root, row.asset_type, row.detail)
+                
+                # Dukungan subfolder aset
+                subfolder = Path()
+                if input_root and pdf_path.is_relative_to(input_root):
+                    subfolder = pdf_path.parent.relative_to(input_root)
+                
+                out_dir = asset_output_dir(output_root / subfolder, row.asset_type, row.detail)
                 ensure_dir(out_dir)
 
                 for placement, label, stem in zip(placements[:3], labels, ["0", "50", "100"]):
@@ -288,6 +297,7 @@ def main() -> int:
         print("Tidak ada file PDF untuk diproses.")
         return 1
 
+    input_root = Path(args.input)
     output_root = Path(args.output)
     log_dir = Path(args.log_dir)
     ensure_dir(output_root)
@@ -298,7 +308,7 @@ def main() -> int:
         if not pdf_path.exists():
             print(f"[SKIP] Tidak ditemukan: {pdf_path}")
             continue
-        exported = export_pdf(pdf_path, output_root, log_dir, args.start_page, args.resolution)
+        exported = export_pdf(pdf_path, output_root, log_dir, args.start_page, args.resolution, input_root)
         total += exported
         print(f"[OK] {pdf_path.name}: {exported} foto diekspor")
 

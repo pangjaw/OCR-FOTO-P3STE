@@ -14,15 +14,23 @@ Dokumen ini berisi tahap kerja dan tools yang dibutuhkan. Deskripsi tujuan proje
 
 ```text
 OCR-FOTO-P3STE/
+  app.py                    # Server Web Lokal (Dashboard UI)
   edit_timemark_ide1.py     # Script utama edit watermark (4-Stage Priority)
   export_pdf_foto.py        # Script ekstraksi foto dari PDF
+  extract_pdf_dates.py      # Script ekstraksi tanggal dari PDF target (pdf_imo) -> date.txt
+  merge_pdf_foto.py         # Script penggabung foto baru ke PDF lama
   Dashboard.md              # Halaman indeks Obsidian
   README.md                 # Tujuan project & batasan
   setup.md                  # Panduan setup ini
   requirements.txt          # Dependensi Python
 
-  input_pdf/                # Folder PDF sumber
-  output_pdf_foto/          # Hasil ekstraksi PDF → foto per aset
+  templates/                # Halaman UI Dashboard Web
+    index.html
+
+  input_pdf/                # Folder PDF sumber untuk diekstrak fotonya
+  pdf_imo/                  # Folder berisi PDF target (untuk diambil tanggal barunya)
+  output_pdf_foto/          # Hasil ekstraksi PDF → foto per aset (folder kerja ide1)
+  hasil_gabung/             # Hasil akhir penggabungan PDF laporan baru
 
   Notes/                    # Obsidian vault
     Daily/                  #   Log harian
@@ -97,38 +105,67 @@ pip install -r requirements.txt
 
 ## Tahap Kerja
 
-1. Siapkan folder foto asli. Folder boleh berada di mana saja dan boleh punya subfolder.
-2. Jalankan edit foto tahap 1:
+### Opsi A: Alur Manual (Menentukan Tanggal Sendiri)
+1. Jalankan script edit timemark:
+   ```bash
+   python edit_timemark_ide1.py
+   ```
+2. Isi lokasi folder input foto (misalnya `output_pdf_foto`) dan masukkan tanggal target secara manual (misal: `Sabtu, Apr 29 2025`).
+3. Cek hasil revisi foto di dalam folder `<folder input>/Export_Foto/`.
 
+### Opsi B: Alur Otomatis (Mengambil Tanggal dari PDF Laporan)
+1. Kumpulkan seluruh file PDF laporan target yang ingin direvisi tanggal fotonya ke dalam folder `pdf_imo/`.
+2. Jalankan script ekstraksi tanggal:
+   ```bash
+   python extract_pdf_dates.py
+   ```
+   Script ini akan memindai **Halaman Pertama (Halaman 1)** di setiap PDF target, mengekstrak tanggalnya menggunakan regex, menerjemahkannya ke format tanggal bahasa Indonesia singkat (contoh: `Senin, Jan 06 2025`), dan menyimpannya sebagai file `date.txt` di subfolder aset `output_pdf_foto/` yang sesuai secara otomatis.
+3. Jalankan script edit timemark secara batch untuk seluruh folder:
+   ```bash
+   python edit_timemark_ide1.py
+   ```
+   Masukkan lokasi folder input: `C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\output_pdf_foto`
+   Masukkan tanggal baru: (Langsung tekan **Enter** / kosongkan, karena script akan otomatis memuat tanggal dari file `date.txt` yang ada di tiap subfolder aset).
+
+### Opsi C: Menjalankan Untuk Folder Spesifik
+Jika Anda hanya ingin memproses subfolder aset tertentu saja, gunakan parameter `--input` diikuti path folder aset tersebut:
 ```bash
-python edit_timemark.py
+python edit_timemark_ide1.py --input "output_pdf_foto/AXC/ZP 22A CLT"
 ```
+*(Kosongkan tanggal baru jika ingin otomatis membaca file `date.txt` di dalam folder tersebut).*
 
-3. Saat diminta, isi lokasi folder input dan tanggal baru.
-4. Cek hasil di `<folder input>/Export_Foto/` dan preview beberapa sampel.
-5. Kalibrasi jika posisi watermark berbeda jauh dari contoh.
-6. Setelah hasil foto stabil, lanjut tahap PDF sesuai kebutuhan:
-   - `pdf_batch_timemark.py` untuk edit tanggal pada foto di dalam PDF.
-   - `export_pdf_foto.py` untuk mengambil foto dokumentasi dan mengelompokkannya per aset.
-7. Uji PDF contoh, render preview halaman hasil, lalu baru jalankan batch.
-8. Simpan log perubahan di `logs/batch_log.csv` atau `logs/pdf_photo_export_log.csv`.
+### Opsi D: Menjalankan Lewat Web UI (Dashboard Terpadu)
+1. Aktifkan virtual environment Anda dan pastikan dependensi terbaru terinstall:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Jalankan aplikasi server web lokal:
+   ```bash
+   python app.py
+   ```
+3. Browser Anda akan terbuka secara otomatis ke alamat `http://localhost:5000`. Jika tidak, silakan buka browser secara manual dan ketik alamat tersebut.
+4. Melalui Web UI Dashboard, Anda dapat:
+   - Melihat dan merubah konfigurasi jalur folder input/output.
+   - Memantau jumlah dan file PDF target yang terdeteksi di subfolder secara otomatis.
+   - Menjalankan pemrosesan per tahap (Ekstraksi Foto, Edit Watermark, atau Gabung PDF) atau sekaligus ("Jalankan Semua Tahap").
+   - Memantau log jalannya program secara real-time di area terminal dashboard.
+
+---
 
 ## Detail Tahap Foto
 
-Area yang diedit cukup baris tanggal, misalnya:
-
+Area yang diedit adalah baris tanggal pada watermark Timemark di pojok kiri bawah, misalnya:
 ```text
 Jumat, Jul 03, 2026
 ```
 
-Script `edit_timemark.py` mencari garis merah kiri bawah Timemark sebagai anchor. Jika anchor tidak ditemukan, script memakai koordinat fallback relatif terhadap ukuran foto.
+Script `edit_timemark_ide1.py` mencari garis merah kiri bawah Timemark sebagai anchor (Red Guide). Jika anchor tidak ditemukan, script memakai koordinat fallback relatif terhadap ukuran foto.
 
-Jika `--input` tidak diisi, script akan bertanya lokasi folder input. Jika `--date` tidak diisi, script akan bertanya tanggal baru.
+Jika `--input` tidak diisi, script akan bertanya lokasi folder input. Jika `--date` tidak diisi dan tidak ada file `date.txt` di subfolder aset, script akan bertanya tanggal baru secara interaktif.
 
-Contoh tanpa prompt:
-
+Contoh CLI tanpa prompt:
 ```bash
-python edit_timemark.py --input "D:\Foto Timemark" --date "Sabtu, Agt 02 1999"
+python edit_timemark_ide1.py --input "C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\output_pdf_foto" --date "Sabtu, Apr 29 2025"
 ```
 
 Script membaca foto `.jpg`, `.jpeg`, dan `.png` sampai ke subfolder. Folder bernama `Export_Foto` akan dilewati supaya hasil export lama tidak diproses ulang.

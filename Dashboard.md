@@ -14,8 +14,11 @@
 
 ## 📌 Project Status
 ### Active Scripts
+- `[[app.py]]` - Server Web Lokal (Dashboard UI) untuk mempermudah jalannya seluruh alur kerja.
 - `[[edit_timemark_ide1.py]]` - Script utama pengedit watermark (Ide 1 / Y-center average + voting folder).
 - `[[export_pdf_foto.py]]` - Script ekstraksi foto asli dari PDF.
+- `[[merge_pdf_foto.py]]` - Script penggabung foto baru (format 2026) kembali ke PDF lama (format 2025) dengan menghapus kolase lama.
+- `[[extract_pdf_dates.py]]` - Script ekstraksi tanggal baru otomatis dari PDF target di folder `pdf_imo/`.
 
 ### Status Kerja
 ```mermaid
@@ -28,6 +31,11 @@ graph TD
 ```
 
 - **Done (Selesai):**
+	- [x] **Web UI Dashboard Terpadu (`app.py`):** Penggabungan seluruh skrip ke dalam satu UI web lokal modern dengan visual *dark glassmorphism*, pemantauan progres real-time via log terminal, dan konfigurasi direktori kerja.
+	- [x] **Dukungan Subfolder Aset Seluruh Pipeline:** Modifikasi alur kerja pada skrip ekspor, ekstraksi tanggal, dan penggabungan PDF agar mempertahankan struktur subfolder aset (seperti subfolder per resor di `input_pdf/` dan `pdf_imo/`) ke dalam hasil akhir di `hasil_gabung/`.
+	- [x] **Ekstraksi Tanggal Otomatis & Pemetaan `date.txt`:** Implementasi script `extract_pdf_dates.py` untuk mengambil tanggal baru dari halaman foto dokumentasi PDF target di folder `pdf_imo/`, menerjemahkannya ke Bahasa Indonesia disingkat, dan menyimpannya sebagai file metadata `date.txt` per folder aset.
+	- [x] **Integrasi Tanggal Dinamis di Script Utama:** Modifikasi `edit_timemark_ide1.py` agar secara otomatis membaca tanggal baru dari file `date.txt` di subfolder aset secara dinamis tanpa intervensi manual (prompt) dari user.
+	- [x] **Gabung Foto PDF (`merge_pdf_foto.py`):** Berhasil membuat skrip penggabung foto hasil edit (format 2026) kembali ke PDF lama 2025. Hasil batch 19 PDF: 19 berkas sukses ter-upgrade dengan layout 2026 yang baru secara dinamis dan rapi.
 	- [x] **FINAL — Semua 168 foto Berhasil:** Deteksi noise kuning Red Guide di ZP 13 dengan Opsi A (ratio-based `r > g*1.3`) sukses. Stage logging ditambahkan agar user tahu stage mana yang dipakai per file. Semua file lolos dengan Stage 1 (Tanggal), Stage 2 (Alamat), atau Stage 3 (Red Guide).
 	- [x] Integrasi 3 Stage ke Script Utama (Tukar Stage): Prioritas 1 (Tanggal Konsensus), Prioritas 2 (Alamat Konsensus), Prioritas 3 (Red Guide Lokal) untuk mengabaikan Red Guide Palsu.
 	- [x] Deteksi Kegagalan (Stage 4): Melewati (skip/tidak memproses) file yang gagal dideteksi secara otomatis dan menampilkan warning detail di akhir run konsol.

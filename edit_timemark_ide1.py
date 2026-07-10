@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 from pathlib import Path
 
 import cv2
@@ -54,6 +55,8 @@ def clean_prompt_value(value: str) -> str:
 
 
 def ask_existing_folder() -> Path:
+    if not sys.stdin.isatty():
+        raise RuntimeError("Menjalankan dalam mode non-interaktif tetapi lokasi folder input diperlukan.")
     while True:
         value = clean_prompt_value(input("Masukkan lokasi folder input foto: "))
         folder = Path(value).expanduser()
@@ -63,6 +66,8 @@ def ask_existing_folder() -> Path:
 
 
 def ask_date_text() -> str:
+    if not sys.stdin.isatty():
+        raise RuntimeError("Menjalankan dalam mode non-interaktif tetapi tanggal baru diperlukan (tidak ada date.txt).")
     while True:
         value = input("Masukkan tanggal baru: ").strip()
         if value:
@@ -190,7 +195,7 @@ def determine_template(image_path: Path, arr: np.ndarray) -> int:
 
 def detect_date_y_center(arr: np.ndarray, h: int, w: int) -> float | None:
     img = Image.fromarray(arr)
-    x1_crop = int(w * 0.03)
+    x1_crop = int(w * 0.01)
     x2_crop = int(w * 0.48)
     y1_crop = int(h * 0.50)
     y2_crop = int(h * 0.90)
@@ -249,11 +254,19 @@ def detect_date_y_center(arr: np.ndarray, h: int, w: int) -> float | None:
                         is_primary = True
                 if is_primary:
                     conf = int(data["conf"][i])
-                    if conf < 30:
+                    # Gunakan threshold dinamis berdasarkan kekuatan kata kunci
+                    if clean_word in months:
+                        min_conf = 0    # Nama bulan: sangat spesifik, izinkan confidence rendah
+                    elif clean_word in markers:
+                        min_conf = 15   # Penunjuk waktu (AM/PM): longgar
+                    else:
+                        min_conf = 20   # Tahun (20xx): agak longgar
+                        
+                    if conf < min_conf:
                         continue
                     top = int(data["top"][i] / 4) + y1_crop
                     height = int(data["height"][i] / 4)
-                    if int(h * 0.55) <= top <= int(h * 0.78):
+                    if int(h * 0.50) <= top <= int(h * 0.78):
                         curr_y_centers.append(top + height / 2.0)
 
             if not curr_y_centers:
@@ -264,11 +277,13 @@ def detect_date_y_center(arr: np.ndarray, h: int, w: int) -> float | None:
                     clean_word = "".join(c for c in text if c.isalnum())
                     if clean_word in days:
                         conf = int(data["conf"][i])
-                        if conf < 30:
+                        # Hari campuran (Senin/Rabu dll)
+                        min_conf = 15 if clean_word in days else 30
+                        if conf < min_conf:
                             continue
                         top = int(data["top"][i] / 4) + y1_crop
                         height = int(data["height"][i] / 4)
-                        if int(h * 0.55) <= top <= int(h * 0.78):
+                        if int(h * 0.50) <= top <= int(h * 0.78):
                             curr_y_centers.append(top + height / 2.0)
 
             if curr_y_centers:
@@ -401,6 +416,7 @@ def locate_date_box(
     image_path: Path,
     y_override: int | None = None,
     folder_address_consensus: float | None = None,
+    folder_date_consensus: float | None = None,
 ) -> tuple[int, int, int, int] | None:
     h, w = arr.shape[:2]
     template = determine_template(image_path, arr)
@@ -420,9 +436,17 @@ def locate_date_box(
     y_date_local = detect_date_y_center(arr, h, w)
 
     # Stage 1a: Validasi Red Guide — Stage 1 hanya valid jika Y-date sejajar (±10px) dengan Red Guide
+    # KECUALI jika didukung oleh konsensus tanggal tingkat folder
     if y_date_local is not None:
-        guide = find_red_guide(arr)
-        if guide and abs(y_date_local - guide[1]) > 10:
+        is_valid = False
+        if folder_date_consensus is not None and abs(y_date_local - folder_date_consensus) <= 10:
+            is_valid = True
+        else:
+            guide = find_red_guide(arr)
+            if not guide or abs(y_date_local - guide[1]) <= 10:
+                is_valid = True
+                
+        if not is_valid:
             y_date_local = None
 
     if y_date_local is not None:
@@ -431,6 +455,15 @@ def locate_date_box(
         x1 = int(w * 0.047)
         x2 = int(w * 0.49)
         print(f"  STAGE 1 (Tanggal): Y_date={y_date_local:.1f} TextBox Y={y1}-{y2}")
+        return max(0, x1), max(0, y1), min(w, x2), min(h, y2)
+
+    # STAGE 1b: Konsensus Tanggal Folder (jika OCR lokal gagal tapi folder punya voting tanggal)
+    if y_date_local is None and folder_date_consensus is not None:
+        y1 = int(folder_date_consensus - box_h / 2)
+        y2 = y1 + box_h
+        x1 = int(w * 0.047)
+        x2 = int(w * 0.49)
+        print(f"  STAGE 1b (Konsensus Tanggal Folder): Y_date={folder_date_consensus:.1f} TextBox Y={y1}-{y2}")
         return max(0, x1), max(0, y1), min(w, x2), min(h, y2)
 
     # STAGE 2: Alamat Konsensus (OCR) - Fallback Kedua
@@ -611,6 +644,7 @@ def process_image(
     date_text: str,
     y_override: int | None = None,
     folder_address_consensus: float | None = None,
+    folder_date_consensus: float | None = None,
 ) -> bool:
     try:
         img = Image.open(image_path)
@@ -626,7 +660,8 @@ def process_image(
         arr, 
         image_path, 
         y_override=y_override, 
-        folder_address_consensus=folder_address_consensus
+        folder_address_consensus=folder_address_consensus,
+        folder_date_consensus=folder_date_consensus
     )
 
     is_fallback = False
@@ -683,7 +718,7 @@ def main() -> int:
     else:
         input_dir = ask_existing_folder()
 
-    date_text = args.date.strip() if args.date else ask_date_text()
+    global_date_text = args.date.strip() if args.date else None
     output_dir = (
         Path(clean_prompt_value(args.output)).expanduser().resolve()
         if args.output
@@ -700,16 +735,23 @@ def main() -> int:
         print(f"Tidak ada file gambar di: {input_dir}")
         return 0
 
+    # Cek apakah ada file date.txt di folder gambar mana pun
+    any_date_txt_exists = any((img_path.parent / "date.txt").exists() for img_path in images)
+    if not global_date_text and not any_date_txt_exists:
+        global_date_text = ask_date_text()
+
     # Kelompokkan file berdasarkan parent folder untuk pre-scan tingkat folder
     images_by_folder = {}
     for img_path in images:
         images_by_folder.setdefault(img_path.parent, []).append(img_path)
 
     folder_address_consensuses = {}
+    folder_date_consensuses = {}
 
     print("Melakukan pra-pemindaian folder untuk mencari panduan posisi...")
     for folder, folder_images in images_by_folder.items():
         valid_addresses = []
+        valid_dates = []
         
         for img_path in folder_images:
             try:
@@ -720,6 +762,10 @@ def main() -> int:
                     y_addr = detect_address_y_top(arr, h_img, w_img)
                     if y_addr:
                         valid_addresses.append(y_addr)
+                        
+                    y_date = detect_date_y_center(arr, h_img, w_img)
+                    if y_date:
+                        valid_dates.append(y_date)
             except Exception:
                 pass
 
@@ -735,6 +781,18 @@ def main() -> int:
                 folder_address_consensuses[folder] = avg_y
                 print(f"[VOTING] Folder '{folder.name}': Konsensus Alamat Y-top={avg_y:.1f}")
 
+        # Aturan konsensus tanggal (minimal 2 file konsisten < 10px)
+        if len(valid_dates) >= 2:
+            best_date_cluster = []
+            for ref_y in valid_dates:
+                cluster = [y for y in valid_dates if abs(y - ref_y) < 10]
+                if len(cluster) > len(best_date_cluster):
+                    best_date_cluster = cluster
+            if len(best_date_cluster) >= 2:
+                avg_y_date = sum(best_date_cluster) / len(best_date_cluster)
+                folder_date_consensuses[folder] = avg_y_date
+                print(f"[VOTING] Folder '{folder.name}': Konsensus Tanggal Y-center={avg_y_date:.1f}")
+
     success = 0
     failed_detections = []
 
@@ -748,18 +806,39 @@ def main() -> int:
             continue
 
         addr_consensus = folder_address_consensuses.get(image_path.parent)
+        date_consensus = folder_date_consensuses.get(image_path.parent)
+
+        # Ambil tanggal dinamis dari date.txt local jika ada
+        date_text = None
+        local_date_file = image_path.parent / "date.txt"
+        if local_date_file.exists():
+            try:
+                date_text = local_date_file.read_text(encoding="utf-8").strip()
+            except Exception as e:
+                print(f"  [WARNING] Gagal membaca {local_date_file.name}: {e}")
+        
+        if not date_text:
+            if not global_date_text:
+                if not sys.stdin.isatty():
+                    print(f"  [SKIP] File '{rel_path}' dilewati karena tidak memiliki 'date.txt' dan berjalan non-interaktif.")
+                    failed_detections.append(rel_path)
+                    continue
+                print(f"\n[PROMPT] File '{rel_path}' tidak memiliki 'date.txt'.")
+                global_date_text = ask_date_text()
+            date_text = global_date_text
 
         ok = process_image(
             image_path, 
             out_path, 
             date_text, 
             y_override=args.y_override, 
-            folder_address_consensus=addr_consensus
+            folder_address_consensus=addr_consensus,
+            folder_date_consensus=date_consensus
         )
         
         if ok:
             success += 1
-            print(f"[OK] {rel_path}")
+            print(f"[OK] {rel_path} (Tanggal: {date_text})")
             if args.preview:
                 preview_path = preview_dir / rel_path
                 ensure_dir(str(preview_path.parent))
@@ -770,7 +849,7 @@ def main() -> int:
 
     print(f"\nSelesai. {success}/{len(images)} gambar berhasil diproses.")
     if failed_detections:
-        print(f"\n[WARNING] Sebanyak {len(failed_detections)} file GAGAL dideteksi posisinya (dilewati, tidak diproses):")
+        print(f"\n[WARNING] Sebanyak {len(failed_detections)} file GAGAL dideteksi posisinya/tanggalnya (dilewati, tidak diproses):")
         for f_path in failed_detections:
             print(f"  - {f_path}")
             

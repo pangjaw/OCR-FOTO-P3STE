@@ -8,15 +8,25 @@ ENV/
 
 # Project Specific Directories (Local Media & Temporary files)
 input_foto/
-input_pdf/
 output_foto/
-output_pdf_foto/
 Hasil_Edit/
 Hasil_Generative/
 preview/
 tmp/
 logs/*.csv
 logs/*.log
+
+# Folder kerja - abaikan isi tapi lacak folder via .gitkeep
+input_pdf/*
+!input_pdf/.gitkeep
+pdf_imo/*
+!pdf_imo/.gitkeep
+output_pdf_foto/*
+!output_pdf_foto/.gitkeep
+hasil_gabung/*
+!hasil_gabung/.gitkeep
+Export_Foto/*
+!Export_Foto/.gitkeep
 
 # Obsidian local configurations (workspace layout, caches)
 .obsidian/workspace.json

@@ -1,0 +1,351 @@
+import argparse
+import os
+import re
+from pathlib import Path
+from collections import defaultdict
+from dataclasses import dataclass
+import pdfplumber
+import fitz  # PyMuPDF
+
+DEFAULT_INPUT_DIR = r"C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\pdf_imo"
+DEFAULT_PHOTOS_DIR = r"C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\output_pdf_foto\Export_Foto"
+DEFAULT_OUTPUT_DIR = r"C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\hasil_gabung\output"
+
+@dataclass
+class AssetRow:
+    page_number: int
+    code: str
+    title: str
+    asset_type: str
+    detail: str
+    top: float
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Gabungkan foto hasil edit (format 2026) ke dalam PDF format 2025 asli dengan menghapus kolase lama."
+    )
+    parser.add_argument(
+        "--input",
+        default=DEFAULT_INPUT_DIR,
+        help=f"Folder PDF input 2025. Default: {DEFAULT_INPUT_DIR}",
+    )
+    parser.add_argument(
+        "--photos",
+        default=DEFAULT_PHOTOS_DIR,
+        help=f"Folder foto hasil edit (Export_Foto). Default: {DEFAULT_PHOTOS_DIR}",
+    )
+    parser.add_argument(
+        "--output",
+        default=DEFAULT_OUTPUT_DIR,
+        help=f"Folder PDF hasil gabung. Default: {DEFAULT_OUTPUT_DIR}",
+    )
+    return parser.parse_args()
+
+def ensure_dir(path: Path) -> None:
+    path.mkdir(parents=True, exist_ok=True)
+
+def normalize_spaces(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip()
+
+def sanitize_segment(text: str) -> str:
+    text = normalize_spaces(text)
+    text = "".join("_" if ord(char) < 32 else char for char in text)
+    text = re.sub(r'[<>:"/\\|?*]', "_", text)
+    text = re.sub(r"\s+", " ", text).strip(" .")
+    return text or "UNKNOWN"
+
+def detect_asset_type(code: str, title: str) -> str:
+    upper = f"{code} {title}".upper()
+    if code.startswith("AXL") or "AXLE COUNTER" in upper:
+        return "AXC"
+    if code.startswith("WSL") or "WESEL" in upper:
+        return "WESEL"
+    if code.startswith("SIN") or "SINYAL" in upper:
+        return "SINYAL"
+    return "UNKNOWN"
+
+def extract_detail(title: str, asset_type: str) -> str:
+    original = normalize_spaces(title)
+
+    def after(marker: str) -> str | None:
+        match = re.search(re.escape(marker), original, flags=re.IGNORECASE)
+        if not match:
+            return None
+        return normalize_spaces(original[match.end() :]).lstrip(": -")
+
+    detail = None
+    if asset_type == "AXC":
+        detail = after("COUNTER")
+    elif asset_type == "WESEL":
+        detail = after("ELEKTRIK")
+    elif asset_type == "SINYAL":
+        detail = after("ELEKTRIK") or after("SINYAL MUKA") or after("SINYAL")
+
+    if not detail:
+        detail = original
+
+    sanitized = sanitize_segment(detail)
+    # Workaround: ZP 41B -> ZP 41 (karena typo di PDF 2025 asli)
+    if "ZP 41B" in sanitized.upper() or "ZP41B" in sanitized.upper():
+        sanitized = re.sub(r'ZP\s*41B', 'ZP 41', sanitized, flags=re.IGNORECASE)
+    return sanitized
+
+def is_valid_asset_title(title: str) -> bool:
+    words = title.split()
+    code_pattern = re.compile(r"^[A-Z]{2,4}\d{4,}$")
+    if all(code_pattern.match(w) for w in words):
+        return False
+    upper = title.upper()
+    valid_keywords = ["AXLE", "COUNTER", "WESEL", "SINYAL"]
+    if any(kw in upper for kw in valid_keywords):
+        return True
+    return False
+
+def extract_asset_rows(page: pdfplumber.page.Page) -> list[AssetRow]:
+    lines = defaultdict(list)
+    for word in page.extract_words(use_text_flow=True):
+        lines[round(float(word["top"]), 1)].append(word)
+
+    rows = []
+    code_pattern = re.compile(r"^[A-Z]{2,4}\d{4,}$")
+
+    for top in sorted(lines):
+        words = sorted(lines[top], key=lambda w: float(w["x0"]))
+        code_index = None
+        code = None
+        for idx, word in enumerate(words):
+            if code_pattern.match(word["text"]):
+                code_index = idx
+                code = word["text"]
+                break
+        if code_index is None or not code:
+            continue
+
+        title = normalize_spaces(" ".join(word["text"] for word in words[code_index + 1 :])).lstrip(": -")
+        if not title:
+            continue
+
+        if not is_valid_asset_title(title):
+            continue
+
+        asset_type = detect_asset_type(code, title)
+        detail = extract_detail(title, asset_type)
+        rows.append(
+            AssetRow(
+                page_number=page.page_number,
+                code=code,
+                title=title,
+                asset_type=asset_type,
+                detail=detail,
+                top=top,
+            )
+        )
+
+    return rows
+
+def extract_location_from_filename(filename: str) -> str:
+    name_without_ext = filename.rsplit('.', 1)[0]
+    parts = name_without_ext.split('_')
+    if len(parts) >= 3:
+        location_part = parts[2].strip()
+        location_part = re.sub(r'\s*\(\d+\)\s*$', '', location_part)
+        return location_part.upper()
+    return "BOGOR"
+
+def extract_date_from_page1(page: pdfplumber.page.Page) -> str:
+    text = page.extract_text() or ""
+    date_pattern = re.compile(r"Tanggal\s*:\s*(\d{4}-\d{2}-\d{2})", re.IGNORECASE)
+    match = date_pattern.search(text)
+    
+    months_id = {
+        1: "Januari", 2: "Februari", 3: "Maret", 4: "April",
+        5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus",
+        9: "September", 10: "Oktober", 11: "November", 12: "Desember"
+    }
+    
+    if match:
+        date_str = match.group(1)
+        y, m, d = map(int, date_str.split('-'))
+        return f"{d:02d} {months_id[m]} {y}"
+    
+    return "06 Januari 2025" # default fallback
+
+def extract_checklist_title(page: pdfplumber.page.Page, filename: str) -> str:
+    text = page.extract_text() or ""
+    for line in text.split('\n'):
+        line_clean = normalize_spaces(line)
+        if "PERAWATAN" in line_clean.upper():
+            if line_clean.upper().startswith("STE"):
+                line_clean = line_clean[3:].strip()
+            return line_clean.upper()
+    name_without_ext = filename.rsplit('.', 1)[0]
+    parts = name_without_ext.split('_')
+    if len(parts) >= 2:
+        return parts[1].strip().upper()
+    return "PERAWATAN AXLE COUNTER SIEMENS 1 BULANAN"
+
+def get_text_width(text: str, fontname: str, fontsize: float) -> float:
+    return fitz.get_text_length(text, fontname=fontname, fontsize=fontsize)
+
+def draw_centered_text(page, text: str, y_baseline: float, fontname: str, fontsize: float):
+    w = get_text_width(text, fontname, fontsize)
+    x = (page.rect.width - w) / 2
+    page.insert_text((x, y_baseline), text, fontname=fontname, fontsize=fontsize, color=(0, 0, 0))
+
+def draw_centered_label(page, text: str, img_x0: float, img_x1: float, y_baseline: float, fontname: str, fontsize: float):
+    w = get_text_width(text, fontname, fontsize)
+    center_img = (img_x0 + img_x1) / 2
+    x = center_img - w / 2
+    page.insert_text((x, y_baseline), text, fontname=fontname, fontsize=fontsize, color=(0, 0, 0))
+
+def draw_header(page, location: str, date_str: str, checklist_title: str):
+    draw_centered_text(page, "FOTO DOKUMENTASI", 38.9, "hebo", 7.2)
+    draw_centered_text(page, f"{checklist_title} {location}", 53.3, "hebo", 7.2)
+    draw_centered_text(page, date_str, 67.7, "hebo", 7.2)
+
+def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: Path = None) -> str:
+    # 1. Buka dengan pdfplumber untuk mencari daftar aset
+    with pdfplumber.open(str(pdf_path)) as plumber_pdf:
+        if len(plumber_pdf.pages) == 0:
+            return "failed: PDF has 0 pages"
+        page1 = plumber_pdf.pages[0]
+        assets = extract_asset_rows(page1)
+        date_str = extract_date_from_page1(page1)
+        checklist_title = extract_checklist_title(page1, pdf_path.name)
+    
+    if not assets:
+        return "failed: no assets found on page 1"
+        
+    location = extract_location_from_filename(pdf_path.name)
+    
+    # 2. Periksa apakah foto lengkap (Option B: skip PDF jika tidak lengkap)
+    missing_assets = []
+    asset_photo_paths = {}
+    
+    # Dukungan subfolder aset
+    subfolder = Path()
+    if input_root and pdf_path.is_relative_to(input_root):
+        subfolder = pdf_path.parent.relative_to(input_root)
+        
+    for r in assets:
+        # Tentukan folder foto hasil edit
+        folder_detail = photos_dir / subfolder / sanitize_segment(r.asset_type) / r.detail
+        
+        # Validasi 3 foto
+        f0 = folder_detail / "0.jpg"
+        f50 = folder_detail / "50.jpg"
+        f100 = folder_detail / "100.jpg"
+        
+        if not (f0.is_file() and f50.is_file() and f100.is_file()):
+            missing_assets.append(r.detail)
+        else:
+            asset_photo_paths[r.detail] = (f0, f50, f100)
+            
+    if missing_assets:
+        return f"skipped: missing photos for assets: {', '.join(missing_assets)}"
+        
+    # 3. Lakukan modifikasi menggunakan PyMuPDF
+    doc = fitz.open(str(pdf_path))
+    
+    # Hapus halaman terakhir (halaman kolase lama)
+    if len(doc) > 0:
+        doc.delete_page(-1)
+        
+    # Buat halaman-halaman foto baru
+    assets_per_page = 4
+    for i, r in enumerate(assets):
+        page_idx = i // assets_per_page
+        asset_idx_on_page = i % assets_per_page
+        
+        # Jika baris pertama pada halaman, buat halaman baru
+        if asset_idx_on_page == 0:
+            page = doc.new_page(width=595, height=842)
+            draw_header(page, location, date_str, checklist_title)
+            
+        # Dapatkan referensi halaman aktif
+        page = doc[-1]
+        
+        # Gambar baris aset
+        y_title_base = 82.1 + asset_idx_on_page * 183
+        title_text = f"{r.code} : {r.title}"
+        page.insert_text((31.5, y_title_base), title_text, fontname="helv", fontsize=7.2, color=(0, 0, 0))
+        
+        # Tempel foto
+        y_img_top = 89.1 + asset_idx_on_page * 183
+        y_img_bottom = y_img_top + 148.8
+        
+        f0_path, f50_path, f100_path = asset_photo_paths[r.detail]
+        
+        # Kolom 1 (0%)
+        rect_col0 = fitz.Rect(31.5, y_img_top, 180.3, y_img_bottom)
+        page.insert_image(rect_col0, filename=str(f0_path))
+        
+        # Kolom 2 (50%)
+        rect_col1 = fitz.Rect(210.4, y_img_top, 359.2, y_img_bottom)
+        page.insert_image(rect_col1, filename=str(f50_path))
+        
+        # Kolom 3 (100%)
+        rect_col2 = fitz.Rect(389.8, y_img_top, 538.6, y_img_bottom)
+        page.insert_image(rect_col2, filename=str(f100_path))
+        
+        # Gambar label di bawah foto
+        y_label_base = 251.3 + asset_idx_on_page * 183
+        draw_centered_label(page, "Foto 0%", 31.5, 180.3, y_label_base, "helv", 7.2)
+        draw_centered_label(page, "Foto 50%", 210.4, 359.2, y_label_base, "helv", 7.2)
+        draw_centered_label(page, "Foto 100%", 389.8, 538.6, y_label_base, "helv", 7.2)
+        
+    # Simpan berkas hasil gabung
+    out_pdf_path = output_dir / subfolder / pdf_path.name
+    ensure_dir(out_pdf_path.parent)
+    doc.save(str(out_pdf_path))
+    doc.close()
+    
+    return "ok"
+
+def main():
+    args = parse_args()
+    input_dir = Path(args.input).resolve()
+    photos_dir = Path(args.photos).resolve()
+    output_dir = Path(args.output).resolve()
+    
+    if not input_dir.is_dir():
+        print(f"Folder input tidak ditemukan: {input_dir}")
+        return 1
+    if not photos_dir.is_dir():
+        print(f"Folder foto hasil edit tidak ditemukan: {photos_dir}")
+        return 1
+        
+    ensure_dir(output_dir)
+    
+    pdf_files = sorted([p for p in input_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".pdf"])
+    if not pdf_files:
+        print(f"Tidak ada berkas PDF di: {input_dir}")
+        return 0
+        
+    print(f"Mulai pemrosesan {len(pdf_files)} berkas PDF...")
+    print(f"Input:  {input_dir}")
+    print(f"Photos: {photos_dir}")
+    print(f"Output: {output_dir}\n")
+    
+    success = 0
+    skipped = 0
+    failed = 0
+    
+    for pdf_path in pdf_files:
+        status = process_pdf(pdf_path, photos_dir, output_dir, input_dir)
+        if status == "ok":
+            success += 1
+            print(f"[OK] {pdf_path.name}")
+        elif status.startswith("skipped"):
+            skipped += 1
+            print(f"[SKIP] {pdf_path.name} - {status}")
+        else:
+            failed += 1
+            print(f"[FAIL] {pdf_path.name} - {status}")
+            
+    print(f"\nSelesai. Sukses: {success}, Dilewati: {skipped}, Gagal: {failed}.")
+    return 0 if success > 0 or skipped > 0 else 1
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())
