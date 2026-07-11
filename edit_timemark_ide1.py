@@ -484,6 +484,12 @@ def main():
             asset_type = parts[0]
             detail = parts[1]
             asset_key = None
+        elif len(parts) == 1 and input_dir:
+            # Single asset folder input: input_dir = 03_photos_export/AXC/ZP 42B BOO
+            asset_type = input_dir.parent.name
+            detail = input_dir.name
+            photo_name = parts[0]
+            asset_key = (asset_type, detail, photo_name)
         else:
             asset_type = None
             detail = None
