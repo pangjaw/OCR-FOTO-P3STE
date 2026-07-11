@@ -32,6 +32,14 @@ schedule.json
 05_pdf_merged/*
 !05_pdf_merged/.gitkeep
 
+# Stale folder names (from older structure)
+input_pdf/
+pdf_imo/
+output_pdf_foto/
+hasil_gabung/
+Export_Foto/
+imo_lain/
+
 # Obsidian local configurations (workspace layout, caches)
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
