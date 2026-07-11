@@ -33,7 +33,7 @@ root/
 ## 📌 Project Status
 ### Active Scripts
 - `[[app.py]]` - Server Web Lokal (Dashboard UI) untuk mempermudah jalannya seluruh alur kerja.
-- `[[edit_timemark_ide1.py]]` - Script utama pengedit watermark: **HSV Orange Isolation + Fixed-offset Stage 1c** (Red Guide anchor, X=6px offset, Y-center aligned). Fallback: `get_text_box()`. No OCR, no consensus voting. 237/237 sukses.
+- `[[edit_timemark_ide1.py]]` - Script utama pengedit watermark: **HSV Orange Isolation + Fixed-offset Stage 1c** (Red Guide anchor, X=6px offset, Y-center aligned). Fallback: `get_text_box()`. **Folder Consensus fix** untuk input folder aset tunggal. 237/237 sukses.
 - `[[export_pdf_foto.py]]` - Script ekstraksi foto asli dari PDF.
 - `[[merge_pdf_foto.py]]` - Script penggabung foto baru (format 2026) kembali ke PDF lama (format 2025) dengan menghapus kolase lama.
 - `[[extract_pdf_dates.py]]` - Script ekstraksi tanggal baru otomatis dari PDF target di folder `02_pdf_target/`.
@@ -98,6 +98,8 @@ graph TD
 	- [x] **Verifikasi visual Stage 1c:** 18 foto Red Guide Anchor (CLT + ZP 31D BOO) berhasil diproses dengan posisi textbox benar di kanan guide, center sejajar atas guide.
 	- [x] **Step Indicator Bar di Web UI Dashboard:** Visual bar dinamis (Step 1-5) dengan indikasi warna (Indigo: Active, Hijau: Done, Merah: Error) yang tersinkronisasi via polling status API `/api/status`.
 	- [x] **Perbaikan Path Lookup Foto pada `merge_pdf_foto.py`:** Memperbaiki pencarian foto di folder flat per tim (`Tim_N/...`) pada mode `--schedule` sehingga pipeline tahap 5 dapat menyisipkan foto hasil edit secara sukses.
+	- [x] **Fix Path Integrity pada `edit_timemark_ide1.py`:** Menambahkan pengecekan `Path.resolve()` untuk memastikan struktur folder `Tim_N` dibuat secara absolut sebelum operasi penulisan file berlangsung, mencegah error `FileNotFound` pada sistem file Windows.
+	- [x] **Folder Consensus Fix (`edit_timemark_ide1.py`):** Perbaikan `_folder_key_from_path` agar mendukung input folder aset tunggal (mis. `03_photos_export/AXC/ZP 42B BOO/`) selain full tree. Saat `relative_to(input_dir)` hanya mengembalikan nama file, fungsi sekarang mengambil `asset_type` dari `input_dir.parent.name` dan `detail` dari `input_dir.name`. Terverifikasi: ZP 42B BOO (3 foto) → 3/3 sukses, consensus gy1=185; Full AXC (402 foto) → 402/402 sukses.
 
 - **Done (Full Pipeline Batch 2025 - 165 PDF):**
 	- [x] **Pipeline end-to-end 2025 dataset:** `export_pdf_foto.py` (1782 foto) → `extract_pdf_dates.py` (541 date.txt) → `scheduler.py` (schedule.json) → `edit_timemark_ide1.py --schedule` (1530/1530 sukses) → `merge_pdf_foto.py --schedule` (**97 PDF sukses, 15 skip, 53 gagal**).

@@ -371,11 +371,32 @@ def asset_output_dir(root: Path, asset_type: str, detail: str) -> Path:
     return root / asset_type / sanitize_segment(detail)
 
 
-def _folder_key_from_path(rel: Path) -> tuple[str, str] | None:
-    """Extract (asset_type, detail) from relative path."""
+def _folder_key_from_path(rel: Path, input_dir: Path | None = None) -> tuple[str, str] | None:
+    """Extract (asset_type, detail) from relative path.
+    
+    Handles two cases:
+    1. Full tree input (e.g. 03_photos_export/AXC): rel = 'AXC/ZP 42B BOO/0.jpg' -> ('AXC', 'ZP 42B BOO')
+    2. Single asset folder input (e.g. 03_photos_export/AXC/ZP 42B BOO): rel = 'ZP 42B BOO/0.jpg' -> needs input_dir to get asset_type
+    """
     parts = rel.parts
-    if len(parts) >= 2:
+    if len(parts) >= 3:
+        # Full tree: asset_type/detail/photo
         return parts[0], parts[1]
+    elif len(parts) == 2 and input_dir:
+        # Single asset folder: detail/photo, need asset_type from input_dir parent
+        # input_dir = 03_photos_export/AXC/ZP 42B BOO
+        # input_dir.parent = 03_photos_export/AXC -> asset_type = 'AXC'
+        asset_type = input_dir.parent.name
+        detail = parts[0]
+        return asset_type, detail
+    elif len(parts) == 1 and input_dir:
+        # Single asset folder direct input: photo only (e.g. '0.jpg')
+        # input_dir = 03_photos_export/AXC/ZP 42B BOO
+        # input_dir.parent = 03_photos_export/AXC -> asset_type = 'AXC'
+        # input_dir.name = 'ZP 42B BOO' -> detail
+        asset_type = input_dir.parent.name
+        detail = input_dir.name
+        return asset_type, detail
     return None
 
 
@@ -387,7 +408,7 @@ def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tup
 
     for src in all_jpgs:
         rel = src.relative_to(input_dir)
-        fkey = _folder_key_from_path(rel)
+        fkey = _folder_key_from_path(rel, input_dir)
         if not fkey:
             continue
         try:
@@ -477,7 +498,7 @@ def main():
         dst = dst_dir / src.name
 
         # Get folder consensus gy1 for this asset
-        fkey = _folder_key_from_path(rel)
+        fkey = _folder_key_from_path(rel, input_dir)
         consensus_gy1 = folder_consensus.get(fkey) if fkey else None
 
         try:
