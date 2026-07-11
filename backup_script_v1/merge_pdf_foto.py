@@ -1,5 +1,4 @@
 import argparse
-import json
 import os
 import re
 from pathlib import Path
@@ -8,9 +7,9 @@ from dataclasses import dataclass
 import pdfplumber
 import fitz  # PyMuPDF
 
-DEFAULT_INPUT_DIR = "./02_pdf_target"
-DEFAULT_PHOTOS_DIR = "./04_photos_edited"
-DEFAULT_OUTPUT_DIR = "./05_pdf_merged"
+DEFAULT_INPUT_DIR = r"C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\pdf_imo"
+DEFAULT_PHOTOS_DIR = r"C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\output_pdf_foto\Export_Foto"
+DEFAULT_OUTPUT_DIR = r"C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\hasil_gabung\output"
 
 @dataclass
 class AssetRow:
@@ -39,11 +38,6 @@ def parse_args():
         "--output",
         default=DEFAULT_OUTPUT_DIR,
         help=f"Folder PDF hasil gabung. Default: {DEFAULT_OUTPUT_DIR}",
-    )
-    parser.add_argument(
-        "--schedule",
-        default=None,
-        help="Path ke schedule.json untuk lookup Tim folder foto.",
     )
     return parser.parse_args()
 
@@ -209,7 +203,7 @@ def draw_header(page, location: str, date_str: str, checklist_title: str):
     draw_centered_text(page, f"{checklist_title} {location}", 53.3, "hebo", 7.2)
     draw_centered_text(page, date_str, 67.7, "hebo", 7.2)
 
-def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: Path = None, schedule_lookup: dict | None = None) -> str:
+def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: Path = None) -> str:
     # 1. Buka dengan pdfplumber untuk mencari daftar aset
     with pdfplumber.open(str(pdf_path)) as plumber_pdf:
         if len(plumber_pdf.pages) == 0:
@@ -224,25 +218,18 @@ def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: 
         
     location = extract_location_from_filename(pdf_path.name)
     
-    # 2. Periksa apakah foto lengkap
+    # 2. Periksa apakah foto lengkap (Option B: skip PDF jika tidak lengkap)
     missing_assets = []
     asset_photo_paths = {}
-
+    
     # Dukungan subfolder aset
     subfolder = Path()
     if input_root and pdf_path.is_relative_to(input_root):
         subfolder = pdf_path.parent.relative_to(input_root)
-
-    # Resolve Tim folder if schedule provided
-    photo_lookup_dir = photos_dir
-    if schedule_lookup is not None:
-        tim = schedule_lookup.get(pdf_path.name)
-        if tim:
-            photo_lookup_dir = photos_dir / f"Tim_{tim}"
-            print(f"    [SCHEDULE] Tim {tim} → {photo_lookup_dir}")
-
+        
     for r in assets:
-        folder_detail = photo_lookup_dir / subfolder / sanitize_segment(r.asset_type) / r.detail
+        # Tentukan folder foto hasil edit
+        folder_detail = photos_dir / subfolder / sanitize_segment(r.asset_type) / r.detail
         
         # Validasi 3 foto
         f0 = folder_detail / "0.jpg"
@@ -310,11 +297,6 @@ def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: 
     # Simpan berkas hasil gabung
     out_pdf_path = output_dir / subfolder / pdf_path.name
     ensure_dir(out_pdf_path.parent)
-    
-    if os.environ.get("OVERWRITE", "1") == "0" and out_pdf_path.exists():
-        doc.close()
-        return f"skipped: {out_pdf_path.name} sudah ada (overwrite=off)"
-    
     doc.save(str(out_pdf_path))
     doc.close()
     
@@ -339,18 +321,6 @@ def main():
     if not pdf_files:
         print(f"Tidak ada berkas PDF di: {input_dir}")
         return 0
-
-    # Load schedule if provided
-    schedule_lookup = None
-    if args.schedule:
-        sched_path = Path(args.schedule)
-        if not sched_path.exists():
-            print(f"[ERROR] Schedule file not found: {sched_path}")
-            return 1
-        with open(sched_path, encoding="utf-8") as f:
-            sched_data = json.load(f)
-        schedule_lookup = {e["file"]: e["tim"] for e in sched_data.get("schedules", [])}
-        print(f"[SCHEDULE] Loaded {len(schedule_lookup)} file→Tim mappings.")
         
     print(f"Mulai pemrosesan {len(pdf_files)} berkas PDF...")
     print(f"Input:  {input_dir}")
@@ -362,7 +332,7 @@ def main():
     failed = 0
     
     for pdf_path in pdf_files:
-        status = process_pdf(pdf_path, photos_dir, output_dir, input_dir, schedule_lookup)
+        status = process_pdf(pdf_path, photos_dir, output_dir, input_dir)
         if status == "ok":
             success += 1
             print(f"[OK] {pdf_path.name}")

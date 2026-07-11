@@ -1,5 +1,8 @@
 # 🗂️ OCR Foto Timemark - Project Dashboard
 
+> [!warning] **🤖 Untuk AI Assistant: Baca [[AGENTS]] terlebih dahulu!**
+> File ini berisi status tracker dan checklist. Untuk memahami kode, fungsi, dan alur data, **wajib** baca [[AGENTS]] sebelum melanjutkan.
+
 > [!abstract] **Project Overview**
 > Project ini digunakan untuk melakukan koreksi tanggal watermark Timemark pada foto dokumentasi kerja secara batch, baik dari folder foto langsung maupun hasil ekstraksi file PDF.
 
@@ -12,13 +15,29 @@
 
 ---
 
+## 📁 Struktur Folder (Baru — 2026-07-11)
+
+```
+root/
+├── 01_pdf_source/          ← PDF mentah
+├── 02_pdf_target/          ← PDF target/imo
+├── 03_photos_export/       ← source images hasil export
+├── 04_photos_edited/       ← foto sudah edit timemark
+├── 05_pdf_merged/          ← PDF hasil gabung
+├── backup_script_v1/
+├── Notes/
+├── logs/
+├── *.py, *.json, *.md di root
+```
+
 ## 📌 Project Status
 ### Active Scripts
 - `[[app.py]]` - Server Web Lokal (Dashboard UI) untuk mempermudah jalannya seluruh alur kerja.
-- `[[edit_timemark_ide1.py]]` - Script utama pengedit watermark (Ide 1 / Y-center average + voting folder).
+- `[[edit_timemark_ide1.py]]` - Script utama pengedit watermark (Ide 1 / Y-center average + voting folder) + **Time Scheduling**.
 - `[[export_pdf_foto.py]]` - Script ekstraksi foto asli dari PDF.
 - `[[merge_pdf_foto.py]]` - Script penggabung foto baru (format 2026) kembali ke PDF lama (format 2025) dengan menghapus kolase lama.
-- `[[extract_pdf_dates.py]]` - Script ekstraksi tanggal baru otomatis dari PDF target di folder `pdf_imo/`.
+- `[[extract_pdf_dates.py]]` - Script ekstraksi tanggal baru otomatis dari PDF target di folder `02_pdf_target/`.
+- `[[scheduler.py]]` - [NEW] Script penjadwalan 2 Tim (07:00-18:00) — baca PDF urut + `asset_waktu_mapping.json` → output `schedule.json`.
 
 ### Status Kerja
 ```mermaid
@@ -32,8 +51,8 @@ graph TD
 
 - **Done (Selesai):**
 	- [x] **Web UI Dashboard Terpadu (`app.py`):** Penggabungan seluruh skrip ke dalam satu UI web lokal modern dengan visual *dark glassmorphism*, pemantauan progres real-time via log terminal, dan konfigurasi direktori kerja.
-	- [x] **Dukungan Subfolder Aset Seluruh Pipeline:** Modifikasi alur kerja pada skrip ekspor, ekstraksi tanggal, dan penggabungan PDF agar mempertahankan struktur subfolder aset (seperti subfolder per resor di `input_pdf/` dan `pdf_imo/`) ke dalam hasil akhir di `hasil_gabung/`.
-	- [x] **Ekstraksi Tanggal Otomatis & Pemetaan `date.txt`:** Implementasi script `extract_pdf_dates.py` untuk mengambil tanggal baru dari halaman foto dokumentasi PDF target di folder `pdf_imo/`, menerjemahkannya ke Bahasa Indonesia disingkat, dan menyimpannya sebagai file metadata `date.txt` per folder aset.
+	- [x] **Dukungan Subfolder Aset Seluruh Pipeline:** Modifikasi alur kerja pada skrip ekspor, ekstraksi tanggal, dan penggabungan PDF agar mempertahankan struktur subfolder aset ke dalam hasil akhir.
+	- [x] **Ekstraksi Tanggal Otomatis & Pemetaan `date.txt`:** Implementasi script `extract_pdf_dates.py` untuk mengambil tanggal baru dari halaman foto dokumentasi PDF target di folder `02_pdf_target/`, menerjemahkannya ke Bahasa Indonesia disingkat, dan menyimpannya sebagai file metadata `date.txt` per folder aset.
 	- [x] **Integrasi Tanggal Dinamis di Script Utama:** Modifikasi `edit_timemark_ide1.py` agar secara otomatis membaca tanggal baru dari file `date.txt` di subfolder aset secara dinamis tanpa intervensi manual (prompt) dari user.
 	- [x] **Gabung Foto PDF (`merge_pdf_foto.py`):** Berhasil membuat skrip penggabung foto hasil edit (format 2026) kembali ke PDF lama 2025. Hasil batch 19 PDF: 19 berkas sukses ter-upgrade dengan layout 2026 yang baru secara dinamis dan rapi.
 	- [x] **FINAL — Semua 168 foto Berhasil:** Deteksi noise kuning Red Guide di ZP 13 dengan Opsi A (ratio-based `r > g*1.3`) sukses. Stage logging ditambahkan agar user tahu stage mana yang dipakai per file. Semua file lolos dengan Stage 1 (Tanggal), Stage 2 (Alamat), atau Stage 3 (Red Guide).
@@ -65,6 +84,16 @@ graph TD
 	- [x] Eksperimen PaddleOCR — gagal (oneDNN bug di Windows, skip).
 	- [x] Eksperimen EasyOCR — preprocessing gak bantu (gak bisa fokus 1 baris).
 	- [x] Tesseract `--psm 7` tetap engine terbaik untuk kasus ini.
+
+- **Done (Time + 2 Teams Scheduling):**
+	- [x] **Mapping Manual Aset → Waktu:** `asset_waktu_mapping.json` — scan PDF halaman 1.
+	- [x] **`scheduler.py` [NEW]:** Baca PDF + mapping + date → hitung jadwal 07:00-18:00 per Tim → output `schedule.json`.
+	- [x] **`edit_timemark_ide1.py` — Arg `--schedule` & Tim folder:** `--schedule schedule.json`, format `"Rabu, Jul 08 2026 09:30"`, output ke `04_photos_edited/Tim_{n}/...`.
+	- [x] **`merge_pdf_foto.py` — Arg `--schedule`:** path foto dari `Tim_{n}` folder via schedule.json lookup.
+	- [x] **Overflow Aman:** Aset mulai < 18:00 tetap selesai 3 fotonya, file berikutnya pindah Tim/reset jam.
+
+- **To Do:**
+	- [ ] **Testing pipeline penuh:** 2+ file, verifikasi format, output, Tim rotation.
 
 ---
 

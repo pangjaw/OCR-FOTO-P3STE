@@ -27,10 +27,11 @@ OCR-FOTO-P3STE/
   templates/                # Halaman UI Dashboard Web
     index.html
 
-  input_pdf/                # Folder PDF sumber untuk diekstrak fotonya
-  pdf_imo/                  # Folder berisi PDF target (untuk diambil tanggal barunya)
-  output_pdf_foto/          # Hasil ekstraksi PDF → foto per aset (folder kerja ide1)
-  hasil_gabung/             # Hasil akhir penggabungan PDF laporan baru
+  01_pdf_source/            # Folder PDF sumber untuk diekstrak fotonya (PDF 2026)
+  02_pdf_target/            # Folder berisi PDF target (untuk diambil tanggal barunya) (PDF 2025)
+  03_photos_export/          # Hasil ekstraksi PDF → foto per aset (folder kerja edit)
+  04_photos_edited/          # Hasil edit foto timemark dengan Tim subfolder
+  05_pdf_merged/             # Hasil akhir penggabungan PDF laporan baru
 
   Notes/                    # Obsidian vault
     Daily/                  #   Log harian
@@ -110,27 +111,27 @@ pip install -r requirements.txt
    ```bash
    python edit_timemark_ide1.py
    ```
-2. Isi lokasi folder input foto (misalnya `output_pdf_foto`) dan masukkan tanggal target secara manual (misal: `Sabtu, Apr 29 2025`).
-3. Cek hasil revisi foto di dalam folder `<folder input>/Export_Foto/`.
+2. Isi lokasi folder input foto (misalnya `03_photos_export`) dan masukkan tanggal target secara manual (misal: `Sabtu, Apr 29 2025`).
+3. Cek hasil revisi foto di dalam folder `04_photos_edited/`.
 
 ### Opsi B: Alur Otomatis (Mengambil Tanggal dari PDF Laporan)
-1. Kumpulkan seluruh file PDF laporan target yang ingin direvisi tanggal fotonya ke dalam folder `pdf_imo/`.
+1. Kumpulkan seluruh file PDF laporan target yang ingin direvisi tanggal fotonya ke dalam folder `02_pdf_target/`.
 2. Jalankan script ekstraksi tanggal:
    ```bash
    python extract_pdf_dates.py
    ```
-   Script ini akan memindai **Halaman Pertama (Halaman 1)** di setiap PDF target, mengekstrak tanggalnya menggunakan regex, menerjemahkannya ke format tanggal bahasa Indonesia singkat (contoh: `Senin, Jan 06 2025`), dan menyimpannya sebagai file `date.txt` di subfolder aset `output_pdf_foto/` yang sesuai secara otomatis.
+   Script ini akan memindai **Halaman Pertama (Halaman 1)** di setiap PDF target, mengekstrak tanggalnya menggunakan regex, menerjemahkannya ke format tanggal bahasa Indonesia singkat (contoh: `Senin, Jan 06 2025`), dan menyimpannya sebagai file `date.txt` di subfolder aset `03_photos_export/` yang sesuai secara otomatis.
 3. Jalankan script edit timemark secara batch untuk seluruh folder:
    ```bash
    python edit_timemark_ide1.py
    ```
-   Masukkan lokasi folder input: `C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\output_pdf_foto`
+   Masukkan lokasi folder input: `C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\03_photos_export`
    Masukkan tanggal baru: (Langsung tekan **Enter** / kosongkan, karena script akan otomatis memuat tanggal dari file `date.txt` yang ada di tiap subfolder aset).
 
 ### Opsi C: Menjalankan Untuk Folder Spesifik
 Jika Anda hanya ingin memproses subfolder aset tertentu saja, gunakan parameter `--input` diikuti path folder aset tersebut:
 ```bash
-python edit_timemark_ide1.py --input "output_pdf_foto/AXC/ZP 22A CLT"
+python edit_timemark_ide1.py --input "03_photos_export/AXC/ZP 22A CLT"
 ```
 *(Kosongkan tanggal baru jika ingin otomatis membaca file `date.txt` di dalam folder tersebut).*
 
@@ -165,10 +166,10 @@ Jika `--input` tidak diisi, script akan bertanya lokasi folder input. Jika `--da
 
 Contoh CLI tanpa prompt:
 ```bash
-python edit_timemark_ide1.py --input "C:\Users\dikarm\Documents\Server\OCR-FOTO-P3STE\output_pdf_foto" --date "Sabtu, Apr 29 2025"
+python edit_timemark_ide1.py --input "C:\...\OCR-FOTO-P3STE\03_photos_export" --date "Sabtu, Apr 29 2025"
 ```
 
-Script membaca foto `.jpg`, `.jpeg`, dan `.png` sampai ke subfolder. Folder bernama `Export_Foto` akan dilewati supaya hasil export lama tidak diproses ulang.
+Script membaca foto `.jpg`, `.jpeg`, dan `.png` sampai ke subfolder. Folder hasil output (`04_photos_edited`) akan dilewati supaya hasil edit lama tidak diproses ulang.
 
 ## Detail Tahap PDF
 
@@ -214,7 +215,7 @@ WSL11079 : PENGGERAK WESEL W43 BOO
 Contoh output:
 
 ```text
-output_pdf_foto/
+03_photos_export/
   WESEL/
     W23A BOO/
       0.jpg
@@ -253,23 +254,25 @@ Jangan menimpa file asli.
 Output foto:
 
 ```text
-root_folder_input/
-  Export_Foto/
-    subfolder_asli/
-      image.jpg
+04_photos_edited/
+  Tim_1/
+    WESEL/
+      W23A BOO/
+        image.jpg
 ```
 
 Output PDF:
 
 ```text
-output_pdf/
-  01-06-2026_PERAWATAN WESEL ELEKTRIK 2 MINGGUAN_Bogor (1)_revisi.pdf
+05_pdf_merged/
+  01-06-2026_PERAWATAN WESEL ELEKTRIK 2 MINGGUAN_Bogor (1).pdf
+```
 ```
 
 Output foto dari PDF:
 
 ```text
-output_pdf_foto/
+03_photos_export/
   WESEL/
     W23A BOO/
       0.jpg

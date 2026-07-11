@@ -1,6 +1,5 @@
 import argparse
 import datetime
-import os
 import re
 from pathlib import Path
 import pdfplumber
@@ -11,8 +10,8 @@ from export_pdf_foto import (
     ensure_dir
 )
 
-DEFAULT_PDF_IMO_DIR = "./02_pdf_target"
-DEFAULT_OUTPUT_ROOT = "./03_photos_export"
+DEFAULT_PDF_IMO_DIR = "./pdf_imo"
+DEFAULT_OUTPUT_ROOT = "./output_pdf_foto"
 
 INDONESIAN_DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
 INDONESIAN_MONTHS = {
@@ -157,10 +156,16 @@ def main() -> int:
         with pdfplumber.open(str(pdf_path)) as pdf:
             pdf_assets = []
             
+            # Dukungan subfolder aset
+            subfolder = Path()
+            if pdf_path.is_relative_to(pdf_dir):
+                subfolder = pdf_path.parent.relative_to(pdf_dir)
+                
             for page in pdf.pages:
                 rows = extract_asset_rows(page)
                 for r in rows:
-                    out_dir = asset_output_dir(output_root, r.asset_type, r.detail)
+                    # Cari folder output aset
+                    out_dir = asset_output_dir(output_root / subfolder, r.asset_type, r.detail)
                     ensure_dir(out_dir)
                     pdf_assets.append((r.code, r.detail, out_dir))
 
@@ -174,9 +179,6 @@ def main() -> int:
             for out_dir in unique_dirs:
                 date_file = out_dir / "date.txt"
                 try:
-                    if os.environ.get("OVERWRITE", "1") == "0" and date_file.exists():
-                        print(f"  [SKIP] {out_dir.relative_to(output_root)}/date.txt sudah ada (overwrite=off)")
-                        continue
                     date_file.write_text(formatted_date, encoding="utf-8")
                     print(f"  [UPDATE] {out_dir.relative_to(output_root)}/date.txt -> '{formatted_date}'")
                     updated_folders += 1

@@ -4,5 +4,4 @@ opencv-python
 pytesseract
 pdfplumber
 pypdf
-pymupdf
 flask

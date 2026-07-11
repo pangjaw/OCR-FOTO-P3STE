@@ -1,0 +1,31 @@
+{
+  "_metadata": {
+    "description": "Mapping folder detail output_pdf_foto → asset id di data_acuan_tenaga_gabungan.json",
+    "sumber": "Judul halaman 1 PDF di input_pdf",
+    "tanggal_scan": "2026-07-10"
+  },
+  "AXC": {
+    "ZP 10A BOO":   { "asset_id": 8, "catatan": "Axle Counter Siemens - dari judul PDF 'PERAWATAN AXLE COUNTER SIEMENS'" },
+    "ZP 10B BOO":   { "asset_id": 8, "catatan": "Axle Counter Siemens" },
+    "ZP 20A BOO":   { "asset_id": 8, "catatan": "Axle Counter Siemens" },
+    "ZP 20B BOO":   { "asset_id": 8, "catatan": "Axle Counter Siemens" },
+    "ZP 20C BOO":   { "asset_id": 8, "catatan": "Axle Counter Siemens" }
+  },
+  "WESEL": {
+    "PENGGERAK WESEL W23A BOO":  { "asset_id": 18, "catatan": "Penggerak Wesel Elektrik - dari judul PDF 'PERAWATAN WESEL ELEKTRIK'" },
+    "PENGGERAK WESEL W41 BOO":   { "asset_id": 18, "catatan": "Penggerak Wesel Elektrik" },
+    "PENGGERAK WESEL W43 BOO":   { "asset_id": 18, "catatan": "Penggerak Wesel Elektrik" },
+    "PENGGERAK WESEL W61A1 BOO": { "asset_id": 18, "catatan": "Penggerak Wesel Elektrik" },
+    "PENGGERAK WESEL W61A2 BOO": { "asset_id": 18, "catatan": "Penggerak Wesel Elektrik" }
+  },
+  "SINYAL": {
+    "KELUAR DAN LANGSIR JL22A BOO": { "asset_id": 6, "catatan": "Peraga Sinyal Elektrik - dari judul PDF 'PERAWATAN PERAGA SINYAL ELEKTRIK'" },
+    "KELUAR DAN LANGSIR JL42A BOO": { "asset_id": 6, "catatan": "Peraga Sinyal Elektrik" },
+    "LANGSIR L20 BOO":              { "asset_id": 6, "catatan": "Peraga Sinyal Elektrik" },
+    "MASUK J10 BOO":                { "asset_id": 6, "catatan": "Peraga Sinyal Elektrik" },
+    "MASUK J20 BOO":                { "asset_id": 6, "catatan": "Peraga Sinyal Elektrik" }
+  },
+  "PDSE": {
+    "_placeholder": { "asset_id": 5, "catatan": "Peralatan Dalam Sinyal Elektrik (420 menit) - mapping manual nanti" }
+  }
+}

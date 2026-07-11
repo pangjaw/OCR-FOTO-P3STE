@@ -12,9 +12,8 @@ This repository is configured as an **Obsidian Vault**. The workspace metadata a
 - [Notes/Templates/](file:///Notes/Templates/) - Reusable note templates.
 
 ## 🤖 Instructions for AI Assistants
-1. **Read Before Working:** 
-   Always read [Dashboard.md](file:///Dashboard.md) before making edits or proposing plans.
-2. **Update After Working:**
-   When you finish a task, update [Dashboard.md](file:///Dashboard.md) if task statuses change.
-3. **Daily Logs:**
-   If a new day starts, feel free to create a new log in [Notes/Daily/YYYY-MM-DD.md](file:///Notes/Daily/) using the [Template - Daily Note.md](file:///Notes/Templates/Template%20-%20Daily%20Note.md) format.
+1. **Read AGENTS.md First:** Always read the root [AGENTS.md](file:///AGENTS.md) **before making ANY edits or proposing plans.** It contains the complete code map, function reference, data flow pipeline, and domain glossary.
+2. **Read Dashboard.md Second:** After AGENTS.md, read [Dashboard.md](file:///Dashboard.md) for current task statuses.
+3. **Update After Working:** When you finish a task, update [Dashboard.md](file:///Dashboard.md) if task statuses change.
+4. **Daily Logs:** If a new day starts, feel free to create a new log in [Notes/Daily/YYYY-MM-DD.md](file:///Notes/Daily/) using the [Template - Daily Note.md](file:///Notes/Templates/Template%20-%20Daily%20Note.md) format.
+5. **Debug & Fix Rule (CRITICAL):** Jika user meminta "debug ocr dan stage nya" (atau perintah investigasi serupa), AI assistant **CUKUP** menampilkan hasil pembacaan OCR / data deteksi internal serta menjelaskan mengapa stage tersebut terpilih. **JANGAN langsung melakukan perbaikan/modifikasi kode (fix/edit file program) sebelum ada perintah atau konfirmasi persetujuan tertulis dari user!**

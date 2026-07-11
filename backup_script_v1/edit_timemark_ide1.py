@@ -1,8 +1,6 @@
 import argparse
-import json
 import os
 import sys
-from datetime import datetime
 from pathlib import Path
 
 import cv2
@@ -12,23 +10,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter
 
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-DEFAULT_OUTPUT_DIR = "./04_photos_edited"
-
-
-
-INDONESIAN_DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
-INDONESIAN_MONTHS = {
-    1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "Mei", 6: "Jun",
-    7: "Jul", 8: "Agt", 9: "Sep", 10: "Okt", 11: "Nov", 12: "Des"
-}
-
-
-def iso_to_timemark(iso_str: str) -> str:
-    """Convert ISO '2026-07-11T09:30:00' → 'Rabu, Jul 11 2026 09:30'"""
-    dt = datetime.fromisoformat(iso_str)
-    day_name = INDONESIAN_DAYS[dt.weekday()]
-    month_name = INDONESIAN_MONTHS[dt.month]
-    return f"{day_name}, {month_name} {dt.day:02d} {dt.year} {dt.hour:02d}:{dt.minute:02d}"
+DEFAULT_EXPORT_DIR_NAME = "Export_Foto"
 
 
 def parse_args():
@@ -43,17 +25,12 @@ def parse_args():
     parser.add_argument(
         "--output",
         default=None,
-        help=f"Folder output gambar. Default: {DEFAULT_OUTPUT_DIR}",
+        help=f"Folder output gambar. Default: <folder input>/{DEFAULT_EXPORT_DIR_NAME}",
     )
     parser.add_argument(
         "--date",
         default=None,
         help="Teks tanggal baru. Jika kosong, script akan bertanya.",
-    )
-    parser.add_argument(
-        "--schedule",
-        default=None,
-        help="Path ke schedule.json untuk timestamp per-foto otomatis + subfolder Tim.",
     )
     parser.add_argument(
         "--preview",
@@ -106,10 +83,10 @@ def list_images(folder: Path, output_dir: Path | None = None) -> list[Path]:
     for path in folder.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in exts:
             continue
-        if skip_output and path.resolve().is_relative_to(skip_output):
-            continue
         rel_parts = path.relative_to(folder).parts
-        if "Export_Foto" in rel_parts:
+        if DEFAULT_EXPORT_DIR_NAME.lower() in [part.lower() for part in rel_parts]:
+            continue
+        if skip_output and path.resolve().is_relative_to(skip_output):
             continue
         images.append(path)
 
@@ -443,11 +420,11 @@ def locate_date_box(
 ) -> tuple[int, int, int, int] | None:
     h, w = arr.shape[:2]
     template = determine_template(image_path, arr)
-    box_h = int(h * 0.060)  # 18px untuk h=300 (cukup cover tanggal + jam lama)
+    box_h = int(h * 0.046)  # Tinggi standar 13px untuk h=300
 
     # 0. Jika y_override diset, skip semua deteksi dan pakai posisi manual
     if y_override is not None:
-        box_h_manual = int(h * 0.060)
+        box_h_manual = int(h * 0.053)
         y1 = max(0, y_override - box_h_manual // 2)
         y2 = min(h, y_override + box_h_manual // 2)
         x1 = int(w * 0.047)
@@ -609,7 +586,7 @@ def get_shape_box(
     text_y = y1 + ((h - text_h) // 2) - bbox[1]
 
     shape_pad_x = max(3, int(font_size * 0.28))
-    shape_pad_y = max(1, int(font_size * 0.12))
+    shape_pad_y = max(2, int(font_size * 0.22))
     shape_box = (
         max(0, text_x + bbox[0] - shape_pad_x),
         max(0, text_y + bbox[1] - shape_pad_y),
@@ -698,8 +675,8 @@ def process_image(
     shape_box, font, text_x, text_y, font_size = get_shape_box(w, h, date_text, (x1, y1, x2, y2))
     sx1, sy1, sx2, sy2 = shape_box
 
-    # Masking & Erase — crop padding 1px presisi ke shape_box
-    pad = 1
+    # Masking & Erase
+    pad = 2
     y1p = max(0, sy1 - pad)
     x1p = max(0, sx1 - pad)
     y2p = min(h, sy2 + pad)
@@ -745,7 +722,7 @@ def main() -> int:
     output_dir = (
         Path(clean_prompt_value(args.output)).expanduser().resolve()
         if args.output
-        else Path(DEFAULT_OUTPUT_DIR).expanduser().resolve()
+        else input_dir / DEFAULT_EXPORT_DIR_NAME
     )
     preview_dir = output_dir / "preview"
 
@@ -760,7 +737,7 @@ def main() -> int:
 
     # Cek apakah ada file date.txt di folder gambar mana pun
     any_date_txt_exists = any((img_path.parent / "date.txt").exists() for img_path in images)
-    if not args.schedule and not global_date_text and not any_date_txt_exists:
+    if not global_date_text and not any_date_txt_exists:
         global_date_text = ask_date_text()
 
     # Kelompokkan file berdasarkan parent folder untuk pre-scan tingkat folder
@@ -816,83 +793,39 @@ def main() -> int:
                 folder_date_consensuses[folder] = avg_y_date
                 print(f"[VOTING] Folder '{folder.name}': Konsensus Tanggal Y-center={avg_y_date:.1f}")
 
-    # --- Load schedule if provided ---
-    schedule_lookup = None
-    if args.schedule:
-        sched_path = Path(args.schedule)
-        if not sched_path.exists():
-            print(f"[ERROR] Schedule file not found: {sched_path}")
-            return 1
-        with open(sched_path, encoding="utf-8") as f:
-            sched_data = json.load(f)
-        schedule_lookup = {}
-        for entry in sched_data.get("schedules", []):
-            tim_n = entry["tim"]
-            for a in entry["assets"]:
-                for photo_name, iso_ts in a["photos"].items():
-                    schedule_lookup[(a["type"], a["detail"], photo_name)] = (iso_ts, tim_n)
-        print(f"[SCHEDULE] Loaded {len(schedule_lookup)} photo timestamps.")
-
     success = 0
     failed_detections = []
 
     for image_path in images:
         rel_path = image_path.relative_to(input_dir)
-        addr_consensus = folder_address_consensuses.get(image_path.parent)
-        date_consensus = folder_date_consensuses.get(image_path.parent)
-
-        # --- Determine date_text & output path ---
-        date_text = None
-
-        if schedule_lookup is not None:
-            parts = rel_path.parts
-            if len(parts) >= 3:
-                asset_type = parts[-3]
-                detail = parts[-2]
-                photo_name = parts[-1]
-                key = (asset_type, detail, photo_name)
-                entry = schedule_lookup.get(key)
-                if entry:
-                    iso_ts, tim_n = entry
-                    date_text = iso_to_timemark(iso_ts)
-                    out_path = output_dir / f"Tim_{tim_n}" / asset_type / detail / photo_name
-                    ensure_dir(str(out_path.parent))
-                else:
-                    out_path = output_dir / rel_path
-                    ensure_dir(str(out_path.parent))
-            else:
-                out_path = output_dir / rel_path
-                ensure_dir(str(out_path.parent))
-        else:
-            out_path = output_dir / rel_path
-            ensure_dir(str(out_path.parent))
+        out_path = output_dir / rel_path
+        ensure_dir(str(out_path.parent))
 
         if out_path.resolve() == image_path.resolve():
             print(f"[FAIL] Output sama dengan file asli, dilewati: {image_path}")
             continue
 
-        if os.environ.get("OVERWRITE", "1") == "0" and out_path.exists():
-            print(f"  [SKIP] {rel_path} sudah ada (overwrite=off)")
-            continue
+        addr_consensus = folder_address_consensuses.get(image_path.parent)
+        date_consensus = folder_date_consensuses.get(image_path.parent)
 
-        # Fallback date resolution (date.txt / prompt)
+        # Ambil tanggal dinamis dari date.txt local jika ada
+        date_text = None
+        local_date_file = image_path.parent / "date.txt"
+        if local_date_file.exists():
+            try:
+                date_text = local_date_file.read_text(encoding="utf-8").strip()
+            except Exception as e:
+                print(f"  [WARNING] Gagal membaca {local_date_file.name}: {e}")
+        
         if not date_text:
-            local_date_file = image_path.parent / "date.txt"
-            if local_date_file.exists():
-                try:
-                    date_text = local_date_file.read_text(encoding="utf-8").strip()
-                except Exception as e:
-                    print(f"  [WARNING] Gagal membaca {local_date_file.name}: {e}")
-
-            if not date_text:
-                if not global_date_text:
-                    if schedule_lookup is not None or not sys.stdin.isatty():
-                        print(f"  [SKIP] File '{rel_path}' dilewati karena tidak memiliki 'date.txt' dan berjalan non-interaktif.")
-                        failed_detections.append(rel_path)
-                        continue
-                    print(f"\n[PROMPT] File '{rel_path}' tidak memiliki 'date.txt'.")
-                    global_date_text = ask_date_text()
-                date_text = global_date_text
+            if not global_date_text:
+                if not sys.stdin.isatty():
+                    print(f"  [SKIP] File '{rel_path}' dilewati karena tidak memiliki 'date.txt' dan berjalan non-interaktif.")
+                    failed_detections.append(rel_path)
+                    continue
+                print(f"\n[PROMPT] File '{rel_path}' tidak memiliki 'date.txt'.")
+                global_date_text = ask_date_text()
+            date_text = global_date_text
 
         ok = process_image(
             image_path, 
@@ -902,11 +835,11 @@ def main() -> int:
             folder_address_consensus=addr_consensus,
             folder_date_consensus=date_consensus
         )
-
+        
         if ok:
             success += 1
             print(f"[OK] {rel_path} (Tanggal: {date_text})")
-            if args.preview and schedule_lookup is None:
+            if args.preview:
                 preview_path = preview_dir / rel_path
                 ensure_dir(str(preview_path.parent))
                 preview_path.write_bytes(out_path.read_bytes())

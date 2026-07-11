@@ -1,804 +1,207 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR Foto Timemark - Dashboard Kontrol</title>
-    <!-- Google Fonts: Inter & JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(17, 25, 40, 0.7);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --accent-blue: #3b82f6;
-            --accent-blue-glow: rgba(59, 130, 246, 0.5);
-            --accent-green: #10b981;
-            --accent-green-glow: rgba(16, 185, 129, 0.3);
-            --accent-red: #ef4444;
-            --accent-yellow: #f59e0b;
-            --font-main: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR Foto Timemark</title>
+  <meta name="description" content="Pipeline koreksi watermark Timemark.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{
+      font-family:'Inter',system-ui,sans-serif;
+      background:linear-gradient(150deg,#080811 0%,#0f0f24 30%,#16163a 60%,#0e0e2a 100%);
+      color:#e2e8f0;display:flex;align-items:center;justify-content:center;padding:.75rem
+    }
+    .app{width:100%;max-width:1320px;height:100%;display:flex;flex-direction:column;gap:.5rem}
+    .header{text-align:center;flex-shrink:0}
+    .header h1{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#a5b4fc,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .header p{font-size:.65rem;color:#475569;margin-top:.05rem}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    .main{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;flex:1;min-height:0}
 
-        body {
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(at 10% 20%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 90% 80%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
-            background-attachment: fixed;
-            color: var(--text-primary);
-            font-family: var(--font-main);
-            min-height: 100vh;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
+    .col{display:flex;flex-direction:column;gap:.5rem;min-height:0}
+    .col-left .card{flex:1;min-height:0}
+    .col-right .card:first-child{flex-shrink:0}
+    .col-right .card:last-child{flex:1;min-height:0}
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+    .card{
+      background:rgba(255,255,255,.018);border:1px solid rgba(255,255,255,.05);
+      border-radius:10px;padding:.5rem;display:flex;flex-direction:column;min-width:0;overflow:hidden
+    }
+    .card .lbl{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#64748b;flex-shrink:0;margin-bottom:.3rem}
+    .card ul{list-style:none;overflow-y:auto;flex:1;min-height:0;display:flex;flex-direction:column;gap:1px}
+    .card li{font-size:.72rem;padding:.12rem .3rem;background:rgba(255,255,255,.015);border-radius:3px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+    .card .empty{color:#334155;font-size:.65rem;text-align:center;padding:.6rem 0}
+    .card ul::-webkit-scrollbar{width:3px}
+    .card ul::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
 
-        .logo-section h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(to right, #3b82f6, #10b981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    .ctrl{display:flex;flex-direction:column;gap:.4rem}
+    .btn-group{display:flex;gap:.4rem}
+    .btn{
+      padding:.45rem .55rem;border:none;border-radius:7px;font-weight:600;font-size:.72rem;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:.25rem;font-family:inherit;transition:all .2s
+    }
+    .btn-primary{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;flex:1}
+    .btn-primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px -6px rgba(99,102,241,.4)}
+    .btn-primary:disabled{opacity:.35;cursor:not-allowed}
+    .btn-primary.running{background:linear-gradient(135deg,#f59e0b,#d97706)}
+    .btn-stop{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;display:none}
+    .btn-stop:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px -6px rgba(239,68,68,.4)}
+    .btn-stop:disabled{opacity:.35;cursor:not-allowed}
+    .btn-secondary{background:rgba(255,255,255,.05);color:#94a3b8}
+    .btn-secondary:hover{background:rgba(255,255,255,.09);color:#e2e8f0}
+    .step-sel{
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:7px;
+      color:#e2e8f0;padding:.45rem .4rem;font-size:.68rem;font-family:inherit;cursor:pointer;
+      outline:none;flex:1;appearance:none;-webkit-appearance:none;text-align:center
+    }
+    .step-sel:hover{border-color:rgba(99,102,241,.4)}
+    .step-sel option{background:#16163a;color:#e2e8f0}
 
-        .logo-section p {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 0.2rem;
-        }
+    .toggle-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.2rem}
+    .toggle-label{font-size:.58rem;color:#64748b;text-transform:uppercase;letter-spacing:.03em;font-weight:600;white-space:nowrap}
+    .toggle-label.on{color:#4ade80}.toggle-label.off{color:#ef4444}
+    .switch{position:relative;width:44px;height:24px;flex-shrink:0}
+    .switch input{opacity:0;width:0;height:0}
+    .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.08);border-radius:99px;transition:.25s;border:1px solid rgba(255,255,255,.1)}
+    .slider::before{content:"";position:absolute;height:18px;width:18px;left:3px;bottom:2px;background:#6366f1;border-radius:50%;transition:.25s}
+    input:checked+.slider{background:rgba(99,102,241,.3);border-color:rgba(99,102,241,.5)}
+    input:checked+.slider::before{transform:translateX(18px)}
+    .prog-wrap{background:rgba(255,255,255,.04);border-radius:99px;height:5px;overflow:hidden}
+    .prog-bar{height:100%;border-radius:99px;width:0%;background:linear-gradient(90deg,#6366f1,#38bdf8);transition:width .35s ease}
+    .status-text{font-size:.62rem;color:#64748b;text-align:center}
 
-        .server-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-        }
+    .row-inline{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem}
+    .path-hint{flex:1;font-size:.55rem;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'JetBrains Mono',monospace}
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--accent-green);
-            box-shadow: 0 0 10px var(--accent-green);
-            animation: pulse 2s infinite;
-        }
-
-        .status-dot.running {
-            background-color: var(--accent-yellow);
-            box-shadow: 0 0 10px var(--accent-yellow);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.5; }
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 1.5rem;
-            flex-grow: 1;
-        }
-
-        .panel {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .panel-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Config Form Styles */
-        .config-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .config-group label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        .config-input-wrapper {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .config-input {
-            flex-grow: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 0.5rem 0.75rem;
-            color: var(--text-primary);
-            font-size: 0.8rem;
-            font-family: var(--font-mono);
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .config-input:focus {
-            border-color: var(--accent-blue);
-        }
-
-        .btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border);
-            color: var(--text-primary);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-primary {
-            background: var(--accent-blue);
-            border: none;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: #2563eb;
-            box-shadow: 0 0 15px var(--accent-blue-glow);
-        }
-
-        .btn-success {
-            background: var(--accent-green);
-            border: none;
-        }
-
-        .btn-success:hover:not(:disabled) {
-            background: #059669;
-            box-shadow: 0 0 15px var(--accent-green-glow);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* File list overview */
-        .file-list-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            overflow: hidden;
-        }
-
-        .file-section {
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.15);
-            padding: 0.75rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .file-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .file-count {
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-        }
-
-        .file-list {
-            max-height: 100px;
-            overflow-y: auto;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-            padding-right: 0.2rem;
-        }
-
-        .file-list::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .file-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-        }
-
-        .file-item {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0.2rem;
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        /* Right panel layout */
-        .main-content {
-            display: grid;
-            grid-template-rows: auto 1fr;
-            gap: 1.5rem;
-        }
-
-        .control-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        .control-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.75rem;
-        }
-
-        /* Progress Card */
-        .progress-section {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 1rem;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-        }
-
-        .progress-status {
-            font-weight: 600;
-        }
-
-        .progress-bar-bg {
-            background: rgba(255, 255, 255, 0.08);
-            height: 12px;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(to right, #3b82f6, #10b981);
-            border-radius: 6px;
-            transition: width 0.4s ease;
-            box-shadow: 0 0 10px var(--accent-blue-glow);
-        }
-
-        /* Console Log styles */
-        .console-panel {
-            background: #050811;
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-        }
-
-        .console-header {
-            background: rgba(17, 25, 40, 0.9);
-            border-bottom: 1px solid var(--card-border);
-            padding: 0.75rem 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .console-title {
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .console-terminal {
-            flex-grow: 1;
-            padding: 1.25rem;
-            font-family: var(--font-mono);
-            font-size: 0.82rem;
-            line-height: 1.5;
-            overflow-y: auto;
-            background: #02040a;
-            display: flex;
-            flex-direction: column;
-            gap: 0.35rem;
-            color: #d1d5db;
-            height: 380px;
-        }
-
-        /* Log Entry types */
-        .log-entry {
-            display: flex;
-            gap: 0.75rem;
-            word-break: break-all;
-        }
-
-        .log-time {
-            color: #4b5563;
-            flex-shrink: 0;
-            user-select: none;
-        }
-
-        .log-msg {
-            white-space: pre-wrap;
-        }
-
-        .log-type-system {
-            color: var(--accent-yellow);
-            font-weight: bold;
-        }
-
-        .log-type-command {
-            color: #38bdf8;
-            font-weight: 500;
-        }
-
-        .log-type-stdout {
-            color: #e5e7eb;
-        }
-
-        .log-type-success {
-            color: var(--accent-green);
-            font-weight: 500;
-        }
-
-        .log-type-error {
-            color: var(--accent-red);
-            font-weight: bold;
-        }
-    </style>
+    .log-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.15rem;flex-shrink:0}
+    .log-hdr>span{font-size:.58rem;color:#475569;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+    .log-clear{background:none;border:none;color:#334155;cursor:pointer;font-size:.58rem;padding:.1rem .3rem;border-radius:3px;font-family:inherit}
+    .log-clear:hover{color:#e2e8f0;background:rgba(255,255,255,.05)}
+    .log-box{
+      background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.04);border-radius:7px;padding:.3rem .4rem;
+      overflow-y:auto;flex:1;min-height:0;
+      font-family:'JetBrains Mono','Fira Code',monospace;font-size:.6rem;line-height:1.4
+    }
+    .log-box::-webkit-scrollbar{width:3px}
+    .log-box::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
+    .log-entry{color:#64748b;animation:fadeIn .1s ease}
+    .log-entry .ts{color:#334155;margin-right:.25rem}
+    .log-entry.success .msg{color:#4ade80}
+    .log-entry.error .msg{color:#ef4444}
+    .log-entry.system .msg{color:#60a5fa}
+    .log-entry.command .msg{color:#a78bfa}
+    .log-entry.stdout .msg{color:#94a3b8}
+    .log-empty{color:#334155;text-align:center;padding:1rem 0;font-size:.62rem}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  </style>
 </head>
 <body>
-
-    <header>
-        <div class="logo-section">
-            <h1>⚙️ OCR Foto Timemark</h1>
-            <p>Sistem Pemrosesan Batch Watermark Foto & PDF Laporan Terpadu</p>
-        </div>
-        <div class="server-status" id="serverStatusText">
-            <div class="status-dot" id="serverStatusDot"></div>
-            <span>Sistem Siap</span>
-        </div>
-    </header>
-
-    <div class="dashboard-grid">
-        <!-- Panel Kiri: Konfigurasi & Berkas -->
-        <div class="panel">
-            <div class="panel-title">
-                <span>📁 Pengaturan Folder</span>
-                <button class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" id="saveConfigBtn">Simpan</button>
-            </div>
-            
-            <div class="config-group">
-                <label for="input_pdf">Folder PDF 2026 (Sumber Foto)</label>
-                <div class="config-input-wrapper">
-                    <input type="text" id="input_pdf" class="config-input">
-                    <button class="btn" style="padding: 0.5rem;" onclick="browseFolder('input_pdf')" title="Pilih Folder">📁</button>
-                </div>
-            </div>
-
-            <div class="config-group">
-                <label for="pdf_imo">Folder PDF 2025 (Target Template)</label>
-                <div class="config-input-wrapper">
-                    <input type="text" id="pdf_imo" class="config-input">
-                    <button class="btn" style="padding: 0.5rem;" onclick="browseFolder('pdf_imo')" title="Pilih Folder">📁</button>
-                </div>
-            </div>
-
-            <div class="config-group">
-                <label for="output_pdf_foto">Folder Output Foto Kerja</label>
-                <div class="config-input-wrapper">
-                    <input type="text" id="output_pdf_foto" class="config-input">
-                    <button class="btn" style="padding: 0.5rem;" onclick="browseFolder('output_pdf_foto')" title="Pilih Folder">📁</button>
-                </div>
-            </div>
-
-            <div class="config-group">
-                <label for="hasil_gabung">Folder Hasil Gabung PDF</label>
-                <div class="config-input-wrapper">
-                    <input type="text" id="hasil_gabung" class="config-input">
-                    <button class="btn" style="padding: 0.5rem;" onclick="browseFolder('hasil_gabung')" title="Pilih Folder">📁</button>
-                </div>
-            </div>
-
-            <div class="file-list-container">
-                <div class="panel-title" style="border: none; padding: 0; font-size: 0.95rem;">
-                    <span>📊 Deteksi Berkas</span>
-                    <button class="btn" style="padding: 0.2rem 0.4rem; font-size: 0.7rem;" id="refreshFilesBtn">Segarkan</button>
-                </div>
-
-                <div class="file-section">
-                    <div class="file-section-header">
-                        <span>PDF 2026 (Input)</span>
-                        <span class="file-count" id="countInputPdf">0</span>
-                    </div>
-                    <div class="file-list" id="listInputPdf">
-                        <div class="file-item">Memuat...</div>
-                    </div>
-                </div>
-
-                <div class="file-section">
-                    <div class="file-section-header">
-                        <span>PDF 2025 (IMO)</span>
-                        <span class="file-count" id="countPdfImo">0</span>
-                    </div>
-                    <div class="file-list" id="listPdfImo">
-                        <div class="file-item">Memuat...</div>
-                    </div>
-                </div>
-
-                <div class="file-section">
-                    <div class="file-section-header">
-                        <span>Hasil Gabung</span>
-                        <span class="file-count" id="countHasilGabung">0</span>
-                    </div>
-                    <div class="file-list" id="listHasilGabung">
-                        <div class="file-item">Memuat...</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Panel Kanan: Kontrol & Output Terminal -->
-        <div class="main-content">
-            <div class="control-card">
-                <div class="panel-title" style="border: none; padding: 0;">
-                    <span>🕹️ Kontrol Pemrosesan</span>
-                </div>
-
-                <div class="control-buttons">
-                    <button class="btn btn-success" id="btnRunAll">
-                        🚀 Jalankan Semua Tahap
-                    </button>
-                    <button class="btn" id="btnRunStep1">
-                        1. Ekstrak Foto (2026)
-                    </button>
-                    <button class="btn" id="btnRunStep2">
-                        2. Edit Watermark
-                    </button>
-                    <button class="btn" id="btnRunStep3">
-                        3. Gabung Kembali PDF
-                    </button>
-                </div>
-
-                <div class="progress-section">
-                    <div class="progress-header">
-                        <span class="progress-status" id="progressStatusText">Menunggu perintah...</span>
-                        <span id="progressPercent">0%</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" id="progressBarFill"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Terminal Output -->
-            <div class="console-panel">
-                <div class="console-header">
-                    <div class="console-title">
-                        <span>⚡ Terminal Log Keluaran</span>
-                    </div>
-                    <button class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" id="btnClearLogs">Bersihkan Log</button>
-                </div>
-                <div class="console-terminal" id="terminalLog">
-                    <div class="log-entry">
-                        <span class="log-time">--:--:--</span>
-                        <span class="log-msg log-type-system">Dashboard OCR Foto Timemark terhubung. Menunggu proses dimulai...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="app">
+    <div class="header">
+      <h1>OCR Foto Timemark</h1>
+      <p>Copy PDF ke folder lalu proses — 5-step batch</p>
     </div>
 
-    <script>
-        // DOM Elements
-        const inputPdfEl = document.getElementById('input_pdf');
-        const pdfImoEl = document.getElementById('pdf_imo');
-        const outputPdfFotoEl = document.getElementById('output_pdf_foto');
-        const hasilGabungEl = document.getElementById('hasil_gabung');
-        
-        const listInputPdf = document.getElementById('listInputPdf');
-        const listPdfImo = document.getElementById('listPdfImo');
-        const listHasilGabung = document.getElementById('listHasilGabung');
-        
-        const countInputPdf = document.getElementById('countInputPdf');
-        const countPdfImo = document.getElementById('countPdfImo');
-        const countHasilGabung = document.getElementById('countHasilGabung');
-        
-        const saveConfigBtn = document.getElementById('saveConfigBtn');
-        const refreshFilesBtn = document.getElementById('refreshFilesBtn');
-        const btnClearLogs = document.getElementById('btnClearLogs');
-        
-        const btnRunAll = document.getElementById('btnRunAll');
-        const btnRunStep1 = document.getElementById('btnRunStep1');
-        const btnRunStep2 = document.getElementById('btnRunStep2');
-        const btnRunStep3 = document.getElementById('btnRunStep3');
-        
-        const progressStatusText = document.getElementById('progressStatusText');
-        const progressPercent = document.getElementById('progressPercent');
-        const progressBarFill = document.getElementById('progressBarFill');
-        
-        const serverStatusText = document.getElementById('serverStatusText');
-        const serverStatusDot = document.getElementById('serverStatusDot');
-        const terminalLog = document.getElementById('terminalLog');
+    <div class="main">
+      <!-- KIRI: 2 card vertikal -->
+      <div class="col col-left">
+        <div class="card">
+          <div class="lbl">📂 Upload Folder IMO 2026</div>
+          <div class="row-inline">
+            <button class="btn btn-secondary folder-btn" data-folder="01_pdf_source" style="font-size:.66rem;padding:.3rem .5rem">Buka Folder</button>
+            <span class="path-hint" id="hint-01">…</span>
+          </div>
+          <div class="lbl">📄 PDF 2026 — foto mentah</div>
+          <ul id="list-01"><li class="empty">Memuat…</li></ul>
+        </div>
+        <div class="card">
+          <div class="lbl">📂 Upload Folder IMO 2025</div>
+          <div class="row-inline">
+            <button class="btn btn-secondary folder-btn" data-folder="02_pdf_target" style="font-size:.66rem;padding:.3rem .5rem">Buka Folder</button>
+            <span class="path-hint" id="hint-02">…</span>
+          </div>
+          <div class="lbl">📄 PDF 2025 — target / imo</div>
+          <ul id="list-02"><li class="empty">Memuat…</li></ul>
+        </div>
+      </div>
 
-        let isRunningGlobal = false;
+      <!-- KANAN: tombol (atas) + log (bawah) -->
+      <div class="col col-right">
+        <div class="card">
+          <div class="lbl">⚙️ Kontrol Proses</div>
+          <div class="ctrl">
+            <div class="toggle-row">
+              <span class="toggle-label" id="toggle-lbl-off">Skip</span>
+              <label class="switch">
+                <input type="checkbox" id="toggle-ow" checked>
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label on" id="toggle-lbl-on">Overwrite</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-secondary" id="btn-refresh">🔄 Refresh</button>
+              <select class="step-sel" id="step-sel">
+                <option value="all">Semua Tahap</option>
+                <option value="step1">Step 1 — Export Foto</option>
+                <option value="step2">Step 2 — Ekstrak Tanggal</option>
+                <option value="step3">Step 3 — Scheduler</option>
+                <option value="step4">Step 4 — Edit Timemark</option>
+                <option value="step5">Step 5 — Gabung PDF</option>
+              </select>
+              <button class="btn btn-primary" id="btn-run">▶ Jalankan</button>
+              <button class="btn btn-stop" id="btn-stop">⏹ Stop</button>
+            </div>
+            <div class="prog-wrap"><div class="prog-bar" id="progress-bar"></div></div>
+            <div class="status-text" id="status-text">Idle</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="log-hdr"><span>Terminal Log</span><button class="log-clear" id="btn-clear-log">clear</button></div>
+          <div class="log-box" id="log-box"><div class="log-empty">Menunggu log…</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Fetch config
-        async function fetchConfig() {
-            try {
-                const res = await fetch('/api/config');
-                const config = await res.json();
-                inputPdfEl.value = config.input_pdf;
-                pdfImoEl.value = config.pdf_imo;
-                outputPdfFotoEl.value = config.output_pdf_foto;
-                hasilGabungEl.value = config.hasil_gabung;
-            } catch (err) {
-                console.error("Gagal mengambil konfigurasi:", err);
-            }
-        }
-
-        // Save config
-        saveConfigBtn.addEventListener('click', async () => {
-            const data = {
-                input_pdf: inputPdfEl.value,
-                pdf_imo: pdfImoEl.value,
-                output_pdf_foto: outputPdfFotoEl.value,
-                hasil_gabung: hasilGabungEl.value
-            };
-            try {
-                const res = await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                const result = await res.json();
-                if (result.status === 'ok') {
-                    alert("Konfigurasi folder berhasil disimpan!");
-                    fetchFiles();
-                }
-            } catch (err) {
-                alert("Gagal menyimpan konfigurasi.");
-            }
-        });
-
-        // Browse folder dialog
-        async function browseFolder(inputId) {
-            const inputEl = document.getElementById(inputId);
-            const initialDir = inputEl.value;
-            try {
-                const res = await fetch('/api/select-folder', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ initial_dir: initialDir })
-                });
-                const result = await res.json();
-                if (result.status === 'ok' && result.folder) {
-                    inputEl.value = result.folder;
-                } else if (result.status === 'error') {
-                    alert("Gagal memilih folder: " + result.message);
-                }
-            } catch (err) {
-                console.error("Error memilih folder:", err);
-            }
-        }
-
-        // Fetch file overview
-        async function fetchFiles() {
-            try {
-                const res = await fetch('/api/files');
-                const data = await res.json();
-                
-                renderFileList(listInputPdf, countInputPdf, data.input_pdf);
-                renderFileList(listPdfImo, countPdfImo, data.pdf_imo);
-                renderFileList(listHasilGabung, countHasilGabung, data.hasil_gabung);
-            } catch (err) {
-                console.error("Gagal mengambil daftar berkas:", err);
-            }
-        }
-
-        function renderFileList(listEl, countEl, files) {
-            countEl.textContent = files.length;
-            if (files.length === 0) {
-                listEl.innerHTML = '<div class="file-item">Tidak ada berkas</div>';
-                return;
-            }
-            listEl.innerHTML = files.map(f => `<div class="file-item" title="${f}">${f}</div>`).join('');
-        }
-
-        // Run step
-        async function runStep(step) {
-            if (isRunningGlobal) return;
-            try {
-                const res = await fetch('/api/run', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ step: step })
-                });
-                const result = await res.json();
-                if (result.status === 'error') {
-                    alert(result.message);
-                }
-            } catch (err) {
-                alert("Gagal menjalankan perintah pemrosesan.");
-            }
-        }
-
-        // Event listeners for run buttons
-        btnRunAll.addEventListener('click', () => runStep('all'));
-        btnRunStep1.addEventListener('click', () => runStep('step1'));
-        btnRunStep2.addEventListener('click', () => runStep('step2'));
-        btnRunStep3.addEventListener('click', () => runStep('step3'));
-        
-        refreshFilesBtn.addEventListener('click', fetchFiles);
-        btnClearLogs.addEventListener('click', () => {
-            terminalLog.innerHTML = '';
-        });
-
-        // Poll status
-        async function checkStatus() {
-            try {
-                const res = await fetch('/api/status');
-                const status = await res.json();
-                
-                isRunningGlobal = status.is_running;
-                
-                // Update UI buttons state
-                const btns = [btnRunAll, btnRunStep1, btnRunStep2, btnRunStep3, saveConfigBtn];
-                btns.forEach(btn => btn.disabled = isRunningGlobal);
-
-                // Update server status dot
-                if (isRunningGlobal) {
-                    serverStatusDot.className = 'status-dot running';
-                    serverStatusText.querySelector('span').textContent = 'Memproses...';
-                } else {
-                    serverStatusDot.className = 'status-dot';
-                    serverStatusText.querySelector('span').textContent = 'Sistem Siap';
-                }
-
-                // Update progress bar
-                progressStatusText.textContent = status.status_text;
-                progressPercent.textContent = `${status.progress}%`;
-                progressBarFill.style.width = `${status.progress}%`;
-
-                // If finished and we were running, refresh file list
-                if (!isRunningGlobal && progressStatusText.textContent.includes('selesai')) {
-                    // Hanya refresh berkala jika baru selesai
-                    fetchFiles();
-                }
-            } catch (err) {
-                console.error("Gagal memeriksa status:", err);
-            }
-        }
-
-        // Setup SSE log stream
-        function setupLogStream() {
-            const evtSource = new EventSource("/api/stream-logs");
-            
-            evtSource.onmessage = function(event) {
-                const log = JSON.parse(event.data);
-                
-                const entry = document.createElement('div');
-                entry.className = 'log-entry';
-                
-                const timeSpan = document.createElement('span');
-                timeSpan.className = 'log-time';
-                timeSpan.textContent = log.timestamp;
-                
-                const msgSpan = document.createElement('span');
-                msgSpan.className = `log-msg log-type-${log.type}`;
-                msgSpan.textContent = log.message;
-                
-                entry.appendChild(timeSpan);
-                entry.appendChild(msgSpan);
-                
-                terminalLog.appendChild(entry);
-                
-                // Auto scroll
-                terminalLog.scrollTop = terminalLog.scrollHeight;
-            };
-
-            evtSource.onerror = function() {
-                console.log("Koneksi log terputus. Mencoba menghubungkan kembali...");
-            };
-        }
-
-        // Init
-        fetchConfig();
-        fetchFiles();
-        setupLogStream();
-        
-        // Interval checking status (poll every 1s)
-        setInterval(checkStatus, 1000);
-        // Interval refresh files list (poll every 10s)
-        setInterval(fetchFiles, 10000);
-    </script>
+  <script>
+    const L=id=>document.getElementById(id);
+    document.querySelectorAll('.folder-btn').forEach(b=>b.onclick=()=>fetch('/api/open-folder/'+b.dataset.folder));
+    async function loadConfig(){
+      const r=await fetch('/api/config'),d=await r.json();
+      L('hint-01').textContent=d['01_pdf_source']||'';L('hint-02').textContent=d['02_pdf_target']||''
+    }
+    async function loadFiles(){
+      const r=await fetch('/api/files'),d=await r.json();
+      for(const[k,id]of[['01_pdf_source','list-01'],['02_pdf_target','list-02']]){
+        const fs=d[k]||[],el=L(id);
+        el.innerHTML=fs.length?fs.map(x=>`<li title="${esc(x)}">${esc(x)}</li>`).join(''):'<li class="empty">Kosong</li>'
+      }
+    }
+    L('btn-refresh').onclick=loadFiles;
+    const btn=L('btn-run'),btnStop=L('btn-stop'),pb=L('progress-bar'),st=L('status-text'),tog=L('toggle-ow'),lblOn=L('toggle-lbl-on'),lblOff=L('toggle-lbl-off');
+    tog.onchange=()=>{if(tog.checked){lblOn.className='toggle-label on';lblOff.className='toggle-label'}else{lblOn.className='toggle-label';lblOff.className='toggle-label off'}};
+    btn.onclick=async()=>{
+      if(btn.disabled)return;
+      const step=L('step-sel').value;
+      const overwrite=tog.checked;
+      btn.disabled=true;btn.classList.add('running');btn.innerHTML='⏳ Proses…';
+      btnStop.style.display='inline-flex';btn.innerHTML='⏳ Proses…';
+      try{const r=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({step,overwrite})}),d=await r.json();if(d.status!=='ok'){alert(d.message);rst()}}catch{rst()}
+    };
+    btnStop.onclick=async()=>{btnStop.disabled=true;btnStop.innerHTML='⏹ Stopping…';try{await fetch('/api/stop',{method:'POST'})}catch{};};
+    function rst(){btn.disabled=false;btn.classList.remove('running');btn.innerHTML='▶ Jalankan';btnStop.style.display='none';btnStop.disabled=false;btnStop.innerHTML='⏹ Stop'}
+    setInterval(async()=>{try{const r=await fetch('/api/status'),s=await r.json();pb.style.width=s.progress+'%';st.textContent=s.status_text||'Idle';if(!s.is_running&&btn.disabled)rst()}catch{}},800);
+    const lb=L('log-box');
+    function conn(){const es=new EventSource('/api/stream-logs');es.onmessage=e=>{try{a(JSON.parse(e.data))}catch{}};es.onerror=()=>{es.close();setTimeout(conn,1200)}}
+    function a(l){const em=lb.querySelector('.log-empty');if(em)em.remove();const d=document.createElement('div');d.className='log-entry '+(l.type||'info');d.innerHTML='<span class="ts">'+(l.timestamp||'')+'</span><span class="msg">'+esc(l.message)+'</span>';lb.appendChild(d);lb.scrollTop=lb.scrollHeight}
+    function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+    L('btn-clear-log').onclick=()=>{lb.innerHTML='<div class="log-empty">Log dibersihkan</div>'};
+    loadConfig();loadFiles();conn();
+  </script>
 </body>
 </html>

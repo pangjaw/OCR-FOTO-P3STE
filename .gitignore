@@ -13,20 +13,24 @@ Hasil_Edit/
 Hasil_Generative/
 preview/
 tmp/
+scratch/
 logs/*.csv
 logs/*.log
 
+# Generated runtime files
+schedule.json
+
 # Folder kerja - abaikan isi tapi lacak folder via .gitkeep
-input_pdf/*
-!input_pdf/.gitkeep
-pdf_imo/*
-!pdf_imo/.gitkeep
-output_pdf_foto/*
-!output_pdf_foto/.gitkeep
-hasil_gabung/*
-!hasil_gabung/.gitkeep
-Export_Foto/*
-!Export_Foto/.gitkeep
+01_pdf_source/*
+!01_pdf_source/.gitkeep
+02_pdf_target/*
+!02_pdf_target/.gitkeep
+03_photos_export/*
+!03_photos_export/.gitkeep
+04_photos_edited/*
+!04_photos_edited/.gitkeep
+05_pdf_merged/*
+!05_pdf_merged/.gitkeep
 
 # Obsidian local configurations (workspace layout, caches)
 .obsidian/workspace.json

@@ -1,6 +1,5 @@
 import argparse
 import csv
-import os
 import re
 from collections import defaultdict
 from dataclasses import dataclass
@@ -10,8 +9,8 @@ import pdfplumber
 from pypdf import PdfReader
 
 
-DEFAULT_INPUT_DIR = "./01_pdf_source"
-DEFAULT_OUTPUT_DIR = "./03_photos_export"
+DEFAULT_INPUT_DIR = "./input_pdf"
+DEFAULT_OUTPUT_DIR = "./output_pdf_foto"
 DEFAULT_LOG_DIR = "./logs"
 DEFAULT_START_PAGE = 2
 DEFAULT_RESOLUTION = 220
@@ -235,7 +234,12 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
 
                 labels = ["0%", "50%", "100%"]
                 
-                out_dir = asset_output_dir(output_root, row.asset_type, row.detail)
+                # Dukungan subfolder aset
+                subfolder = Path()
+                if input_root and pdf_path.is_relative_to(input_root):
+                    subfolder = pdf_path.parent.relative_to(input_root)
+                
+                out_dir = asset_output_dir(output_root / subfolder, row.asset_type, row.detail)
                 ensure_dir(out_dir)
 
                 for placement, label, stem in zip(placements[:3], labels, ["0", "50", "100"]):
@@ -258,9 +262,6 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
                     suffix, data = original
                     filename = f"{stem}{suffix}"
                     out_file = out_dir / filename
-                    if os.environ.get("OVERWRITE", "1") == "0" and out_file.exists():
-                        print(f"  [SKIP] {filename} sudah ada (overwrite=off)")
-                        continue
                     status = "ok"
                     try:
                         out_file.write_bytes(data)

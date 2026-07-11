@@ -5,41 +5,19 @@ import subprocess
 import threading
 import time
 from pathlib import Path
-import tkinter as tk
-from tkinter import filedialog
 from flask import Flask, jsonify, request, Response, render_template
 
 app = Flask(__name__)
 
-# Config file path
-CONFIG_FILE = Path("ui_config.json")
-DEFAULT_CONFIG = {
-    "input_pdf": str(Path("./input_pdf").resolve()),
-    "pdf_imo": str(Path("./pdf_imo").resolve()),
-    "output_pdf_foto": str(Path("./output_pdf_foto").resolve()),
-    "hasil_gabung": str(Path("./hasil_gabung").resolve())
+# Fixed folder structure — user hanya upload file
+WORK_DIR = Path(__file__).parent.resolve()
+FOLDERS = {
+    "01_pdf_source": str(WORK_DIR / "01_pdf_source"),
+    "02_pdf_target": str(WORK_DIR / "02_pdf_target"),
+    "03_photos_export": str(WORK_DIR / "03_photos_export"),
+    "04_photos_edited": str(WORK_DIR / "04_photos_edited"),
+    "05_pdf_merged": str(WORK_DIR / "05_pdf_merged"),
 }
-
-def load_config():
-    if CONFIG_FILE.exists():
-        try:
-            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                # Ensure all default keys exist
-                for k, v in DEFAULT_CONFIG.items():
-                    if k not in data:
-                        data[k] = v
-                return data
-        except Exception:
-            pass
-    return DEFAULT_CONFIG.copy()
-
-def save_config(cfg):
-    try:
-        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            json.dump(cfg, f, indent=4)
-    except Exception:
-        pass
 
 # Global state
 state = {
@@ -47,6 +25,7 @@ state = {
     "current_step": None,
     "progress": 0,
     "status_text": "Idle",
+    "process": None,
 }
 
 log_queue = []
@@ -60,13 +39,14 @@ def add_log(message, type="info"):
             "type": type
         }
         log_queue.append(log_entry)
-        # Keep last 1000 logs
         if len(log_queue) > 1000:
             log_queue.pop(0)
 
-def run_command_stream(cmd, step_name):
+def run_command_stream(cmd, step_name, overwrite="1"):
     add_log(f"Menjalankan perintah: {' '.join(cmd)}", "command")
     try:
+        env = os.environ.copy()
+        env["OVERWRITE"] = overwrite
         # Gunakan shell=True pada Windows agar virtual env terpanggil dengan benar
         process = subprocess.Popen(
             cmd,
@@ -75,8 +55,11 @@ def run_command_stream(cmd, step_name):
             text=True,
             bufsize=1,
             encoding="utf-8",
-            shell=True
+            shell=True,
+            env=env
         )
+        
+        state["process"] = process
         
         while True:
             line = process.stdout.readline()
@@ -87,169 +70,166 @@ def run_command_stream(cmd, step_name):
                 add_log(line_str, "stdout")
                 
         process.wait()
+        state["process"] = None
         return process.returncode == 0
     except Exception as e:
         add_log(f"Gagal menjalankan skrip {step_name}: {str(e)}", "error")
+        state["process"] = None
         return False
 
-def pipeline_thread(step_id, config):
+def pipeline_thread(step_id, overwrite="1"):
     global state
     state["is_running"] = True
-    
+
     add_log(f"=== Memulai Pemrosesan Tahap: {step_id.upper()} ===", "system")
-    
+
     success = True
     try:
-        # Step 1: Export PDF Foto
         if step_id == "step1" or step_id == "all":
             state["current_step"] = "step1"
             state["status_text"] = "Mengekstrak foto asli dari PDF 2026..."
             state["progress"] = 10
-            
+
             cmd = [
                 sys.executable, "-u",
-                "export_pdf_foto.py", 
-                "--input", config["input_pdf"], 
-                "--output", config["output_pdf_foto"]
+                "export_pdf_foto.py",
+                "--input", FOLDERS["01_pdf_source"],
+                "--output", FOLDERS["03_photos_export"]
             ]
-            ok = run_command_stream(cmd, "Export PDF Foto")
+            ok = run_command_stream(cmd, "Export PDF Foto", overwrite)
             if not ok:
                 success = False
-                add_log("Tahap 1 (Export PDF Foto) gagal dijalankan.", "error")
+                add_log("Tahap 1 (Export PDF Foto) gagal.", "error")
             else:
-                state["progress"] = 30
-                add_log("Tahap 1 (Export PDF Foto) selesai dengan sukses.", "success")
-                
-        # Step 2: Edit Watermark Timemark (termasuk ekstraksi tanggal otomatis)
+                state["progress"] = 25
+                add_log("Tahap 1 (Export PDF Foto) selesai.", "success")
+
         if (step_id == "step2" or step_id == "all") and success:
             state["current_step"] = "step2"
-            state["status_text"] = "Mengekstrak tanggal target & merevisi watermark..."
-            state["progress"] = 40
-            
-            # Step 2a: extract dates (otomatis)
-            add_log("Melakukan ekstraksi tanggal target dari pdf_imo...", "system")
+            state["status_text"] = "Mengekstrak tanggal target dari PDF 2025..."
+            state["progress"] = 30
+
             cmd_dates = [
                 sys.executable, "-u",
-                "extract_pdf_dates.py", 
-                "--pdf-dir", config["pdf_imo"], 
-                "--output-dir", config["output_pdf_foto"]
+                "extract_pdf_dates.py",
+                "--pdf-dir", FOLDERS["02_pdf_target"],
+                "--output-dir", FOLDERS["03_photos_export"]
             ]
-            ok = run_command_stream(cmd_dates, "Extract PDF Dates")
+            ok = run_command_stream(cmd_dates, "Extract PDF Dates", overwrite)
             if not ok:
                 success = False
-                add_log("Ekstraksi tanggal target (extract_pdf_dates) gagal.", "error")
+                add_log("Ekstraksi tanggal target gagal.", "error")
             else:
-                state["progress"] = 60
-                
-                # Step 2b: edit timemark
-                add_log("Melakukan revisi tanggal watermark Timemark...", "system")
-                cmd_edit = [
-                    sys.executable, "-u",
-                    "edit_timemark_ide1.py", 
-                    "--input", config["output_pdf_foto"]
-                ]
-                ok = run_command_stream(cmd_edit, "Edit Timemark")
-                if not ok:
-                    success = False
-                    add_log("Tahap 2 (Edit Timemark) gagal dijalankan.", "error")
-                else:
-                    state["progress"] = 80
-                    add_log("Tahap 2 (Edit Timemark) selesai dengan sukses.", "success")
-                    
-        # Step 3: Merge PDF Foto
+                state["progress"] = 45
+                add_log("Tahap 2 (Extract PDF Dates) selesai.", "success")
+
         if (step_id == "step3" or step_id == "all") and success:
             state["current_step"] = "step3"
-            state["status_text"] = "Menggabungkan foto baru ke template PDF 2025..."
-            state["progress"] = 90
-            
-            photos_dir = str(Path(config["output_pdf_foto"]) / "Export_Foto")
-            cmd = [
+            state["status_text"] = "Menjadwalkan Tim & waktu pengerjaan..."
+            state["progress"] = 50
+
+            schedule_path = str(WORK_DIR / "schedule.json")
+            cmd_sched = [
                 sys.executable, "-u",
-                "merge_pdf_foto.py", 
-                "--input", config["pdf_imo"], 
-                "--photos", photos_dir, 
-                "--output", config["hasil_gabung"]
+                "scheduler.py",
+                "--pdf-dir", FOLDERS["02_pdf_target"],
+                "--photos-dir", FOLDERS["03_photos_export"],
+                "--output", schedule_path
             ]
-            ok = run_command_stream(cmd, "Merge PDF Foto")
+            ok = run_command_stream(cmd_sched, "Scheduler", overwrite)
             if not ok:
                 success = False
-                add_log("Tahap 3 (Merge PDF Foto) gagal dijalankan.", "error")
+                add_log("Tahap 3 (Scheduler) gagal.", "error")
+            else:
+                state["progress"] = 60
+                add_log("Tahap 3 (Scheduler) selesai.", "success")
+
+        if (step_id == "step4" or step_id == "all") and success:
+            state["current_step"] = "step4"
+            state["status_text"] = "Merevisi watermark Timemark per Tim..."
+            state["progress"] = 65
+
+            schedule_arg = str(WORK_DIR / "schedule.json")
+            cmd_edit = [
+                sys.executable, "-u",
+                "edit_timemark_ide1.py",
+                "--input", FOLDERS["03_photos_export"],
+                "--schedule", schedule_arg
+            ]
+            ok = run_command_stream(cmd_edit, "Edit Timemark", overwrite)
+            if not ok:
+                success = False
+                add_log("Tahap 4 (Edit Timemark) gagal.", "error")
+            else:
+                state["progress"] = 80
+                add_log("Tahap 4 (Edit Timemark) selesai.", "success")
+
+        if (step_id == "step5" or step_id == "all") and success:
+            state["current_step"] = "step5"
+            state["status_text"] = "Menggabungkan foto baru ke PDF 2025..."
+            state["progress"] = 85
+
+            schedule_arg = str(WORK_DIR / "schedule.json")
+            photos_dir = FOLDERS["04_photos_edited"]
+            cmd = [
+                sys.executable, "-u",
+                "merge_pdf_foto.py",
+                "--input", FOLDERS["02_pdf_target"],
+                "--photos", photos_dir,
+                "--output", FOLDERS["05_pdf_merged"],
+                "--schedule", schedule_arg
+            ]
+            ok = run_command_stream(cmd, "Merge PDF Foto", overwrite)
+            if not ok:
+                success = False
+                add_log("Tahap 5 (Merge PDF Foto) gagal.", "error")
             else:
                 state["progress"] = 100
-                add_log("Tahap 3 (Merge PDF Foto) selesai dengan sukses.", "success")
-                
+                add_log("Tahap 5 (Merge PDF Foto) selesai.", "success")
+
         if success:
             state["status_text"] = "Semua proses selesai dengan sukses!"
-            add_log("Alur kerja selesai sepenuhnya tanpa error.", "success")
+            add_log("Alur kerja selesai tanpa error.", "success")
         else:
             state["status_text"] = "Proses terhenti karena kesalahan."
-            add_log("Pemrosesan dibatalkan akibat kegagalan pada salah satu langkah.", "error")
-            
+            add_log("Pemrosesan dibatalkan.", "error")
+
     except Exception as e:
         success = False
         state["status_text"] = f"Kesalahan: {str(e)}"
-        add_log(f"Sistem mengalami crash: {str(e)}", "error")
-        
+        add_log(f"Crash: {str(e)}", "error")
+
     finally:
         state["is_running"] = False
         state["current_step"] = None
+        state["process"] = None
 
 def get_pdf_list(directory):
     path = Path(directory)
     if not path.is_dir():
         return []
-    # Cari berkas PDF secara rekursif dan pertahankan path relatifnya
-    return [str(p.relative_to(path).as_posix()) for p in path.rglob("*.pdf") if p.is_file()]
+    return sorted(
+        [str(p.relative_to(path).as_posix()) for p in path.rglob("*.pdf") if p.is_file()]
+    )
 
-# Web routes
+# --- Web routes ---
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route("/api/select-folder", methods=["POST"])
-def api_select_folder():
-    initial_dir = request.json.get("initial_dir", None)
-    if initial_dir and not Path(initial_dir).is_dir():
-        initial_dir = None
-        
-    result = []
-    def ask():
-        try:
-            root = tk.Tk()
-            root.withdraw()
-            root.attributes("-topmost", True)
-            folder = filedialog.askdirectory(initialdir=initial_dir, title="Pilih Folder")
-            root.destroy()
-            result.append(folder)
-        except Exception as e:
-            result.append(f"error: {str(e)}")
-            
-    t = threading.Thread(target=ask)
-    t.start()
-    t.join()
-    
-    if not result:
-        return jsonify({"status": "ok", "folder": ""})
-    
-    res_val = result[0]
-    if res_val.startswith("error:"):
-        return jsonify({"status": "error", "message": res_val})
-        
-    return jsonify({"status": "ok", "folder": res_val})
-
-@app.route("/api/config", methods=["GET", "POST"])
+@app.route("/api/config")
 def api_config():
-    if request.method == "POST":
-        new_cfg = request.json
-        cfg = load_config()
-        for k in DEFAULT_CONFIG.keys():
-            if k in new_cfg:
-                cfg[k] = str(Path(new_cfg[k]).resolve())
-        save_config(cfg)
-        add_log("Konfigurasi folder diperbarui oleh pengguna.", "system")
-        return jsonify({"status": "ok", "config": cfg})
-    else:
-        return jsonify(load_config())
+    return jsonify(FOLDERS)
+
+@app.route("/api/open-folder/<folder_key>")
+def api_open_folder(folder_key):
+    if folder_key not in FOLDERS:
+        return jsonify({"status": "error", "message": "Folder tidak valid."}), 400
+    path = FOLDERS[folder_key]
+    Path(path).mkdir(parents=True, exist_ok=True)
+    # Windows: buka folder di Explorer
+    subprocess.Popen(["explorer", path], shell=True)
+    return jsonify({"status": "ok", "path": path})
 
 @app.route("/api/status")
 def api_status():
@@ -257,45 +237,54 @@ def api_status():
 
 @app.route("/api/files")
 def api_files():
-    config = load_config()
     return jsonify({
-        "input_pdf": get_pdf_list(config["input_pdf"]),
-        "pdf_imo": get_pdf_list(config["pdf_imo"]),
-        "hasil_gabung": get_pdf_list(config["hasil_gabung"])
+        "01_pdf_source": get_pdf_list(FOLDERS["01_pdf_source"]),
+        "02_pdf_target": get_pdf_list(FOLDERS["02_pdf_target"]),
+        "05_pdf_merged": get_pdf_list(FOLDERS["05_pdf_merged"]),
     })
 
 @app.route("/api/run", methods=["POST"])
 def api_run():
     if state["is_running"]:
         return jsonify({"status": "error", "message": "Proses lain sedang berjalan."}), 400
-        
-    step_id = request.json.get("step", "all")
-    if step_id not in ["step1", "step2", "step3", "all"]:
-        return jsonify({"status": "error", "message": "Tahap tidak valid."}), 400
-        
-    config = load_config()
     
-    # Validasi direktori sebelum jalan
-    for name, dir_path in config.items():
-        if name != "hasil_gabung" and not Path(dir_path).is_dir():
-            # Coba buat foldernya jika belum ada
-            try:
-                Path(dir_path).mkdir(parents=True, exist_ok=True)
-            except Exception:
-                return jsonify({"status": "error", "message": f"Folder {name} ({dir_path}) tidak valid dan tidak dapat dibuat."}), 400
-                
-    # Jalankan di background thread
-    threading.Thread(target=pipeline_thread, args=(step_id, config), daemon=True).start()
+    step_id = request.json.get("step", "all")
+    overwrite = "1" if request.json.get("overwrite", True) else "0"
+    if step_id not in ["step1", "step2", "step3", "step4", "step5", "all"]:
+        return jsonify({"status": "error", "message": "Tahap tidak valid."}), 400
+    
+    # Hapus log queue lama
+    global log_queue
+    log_queue.clear()
+    
+    # Buat folder kerja yang belum ada
+    for name, dir_path in FOLDERS.items():
+        if name != "05_pdf_merged":
+            Path(dir_path).mkdir(parents=True, exist_ok=True)
+    Path(FOLDERS["05_pdf_merged"]).mkdir(parents=True, exist_ok=True)
+    
+    threading.Thread(target=pipeline_thread, args=(step_id, overwrite), daemon=True).start()
     return jsonify({"status": "ok", "message": f"Memulai tahap: {step_id}"})
+
+@app.route("/api/stop", methods=["POST"])
+def api_stop():
+    if not state["is_running"]:
+        return jsonify({"status": "error", "message": "Tidak ada proses yang berjalan."}), 400
+    proc = state.get("process")
+    if proc and proc.poll() is None:
+        proc.terminate()
+        add_log("⏹ Proses dihentikan oleh pengguna.", "error")
+    state["is_running"] = False
+    state["process"] = None
+    state["status_text"] = "Dihentikan"
+    return jsonify({"status": "ok", "message": "Proses dihentikan."})
 
 @app.route("/api/stream-logs")
 def stream_logs():
     def event_stream():
-        # Kirim log yang sudah ada
         with log_lock:
             for log in log_queue:
                 yield f"data: {json.dumps(log)}\n\n"
-        
         last_index = len(log_queue)
         while True:
             time.sleep(0.2)
@@ -309,8 +298,6 @@ def stream_logs():
 if __name__ == "__main__":
     import webbrowser
     port = 5000
-    # Jalankan server secara lokal
     add_log("Server Web Lokal OCR Foto Timemark dimulai.", "system")
-    # Buka browser secara otomatis setelah jeda singkat
     threading.Timer(1.5, lambda: webbrowser.open(f"http://localhost:{port}")).start()
     app.run(host="127.0.0.1", port=port, debug=False)
