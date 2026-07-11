@@ -194,15 +194,19 @@
       L('hint-01').textContent=d['01_pdf_source']||'';L('hint-02').textContent=d['02_pdf_target']||''
     }
     async function loadFiles(){
-      const r=await fetch('/api/files'),d=await r.json();
-      for(const[k,id]of[['01_pdf_source','list-01'],['02_pdf_target','list-02']]){
-        const data=d[k]||{files:[],total:0,truncated:false},fs=data.files,el=L(id);
-        if(!fs.length){el.innerHTML='<li class="empty">Kosong</li>';continue;}
-        let html=fs.map(x=>`<li title="${esc(x)}">${esc(x)}</li>`).join('');
-        if(data.truncated) html+=`<li class="empty" style="color:#f59e0b">… dan ${data.total - fs.length} file lainnya (total ${data.total})</li>`;
-        else if(data.total>0) html+=`<li class="empty" style="color:#475569;font-size:.55rem">Total: ${data.total} file</li>`;
-        el.innerHTML=html;
-      }
+      try{
+        const r=await fetch('/api/files');
+        if(!r.ok){console.warn('loadFiles failed:',r.status);return;}
+        const d=await r.json();
+        for(const[k,id]of[['01_pdf_source','list-01'],['02_pdf_target','list-02']]){
+          const data=d[k]||{files:[],total:0,truncated:false},fs=data.files,el=L(id);
+          if(!fs.length){el.innerHTML='<li class="empty">Kosong</li>';continue;}
+          let html=fs.map(x=>`<li title="${esc(x)}">${esc(x)}</li>`).join('');
+          if(data.truncated) html+=`<li class="empty" style="color:#f59e0b">… dan ${data.total - fs.length} file lainnya (total ${data.total})</li>`;
+          else if(data.total>0) html+=`<li class="empty" style="color:#475569;font-size:.55rem">Total: ${data.total} file</li>`;
+          el.innerHTML=html;
+        }
+      }catch(e){console.warn('loadFiles error:',e);}
     }
     L('btn-refresh').onclick=loadFiles;
     const btn=L('btn-run'),btnStop=L('btn-stop'),pb=L('progress-bar'),st=L('status-text'),tog=L('toggle-ow'),lblOn=L('toggle-lbl-on'),lblOff=L('toggle-lbl-off');
@@ -232,10 +236,20 @@
       }
       if(!s.is_running&&btn.disabled)rst()}catch{}},800);
     const lb=L('log-box');
-    function conn(){const es=new EventSource('/api/stream-logs');es.onmessage=e=>{try{a(JSON.parse(e.data))}catch{}};es.onerror=()=>{es.close();setTimeout(conn,1200)}}
+    let esConn=null, esReconnectTimer=null;
+    function conn(){
+      if(esConn){esConn.close();esConn=null;}
+      if(esReconnectTimer){clearTimeout(esReconnectTimer);esReconnectTimer=null;}
+      const es=new EventSource('/api/stream-logs');
+      esConn=es;
+      es.onopen=()=>{console.log('SSE connected');};
+      es.onmessage=e=>{try{a(JSON.parse(e.data))}catch{}};
+      es.onerror=()=>{es.close();esConn=null;esReconnectTimer=setTimeout(conn,3000);};
+    }
     function a(l){const em=lb.querySelector('.log-empty');if(em)em.remove();const d=document.createElement('div');d.className='log-entry '+(l.type||'info');d.innerHTML='<span class="ts">'+(l.timestamp||'')+'</span><span class="msg">'+esc(l.message)+'</span>';lb.appendChild(d);lb.scrollTop=lb.scrollHeight}
     function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
     L('btn-clear-log').onclick=()=>{lb.innerHTML='<div class="log-empty">Log dibersihkan</div>'};
+    window.addEventListener('beforeunload',()=>{if(esConn){esConn.close();}});
     loadConfig();loadFiles();conn();
   </script>
 </body>

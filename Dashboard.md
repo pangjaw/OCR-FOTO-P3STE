@@ -105,6 +105,7 @@ graph TD
 	- [x] **Pipeline end-to-end 2025 dataset:** `export_pdf_foto.py` (1782 foto) → `extract_pdf_dates.py` (541 date.txt) → `scheduler.py` (schedule.json) → `edit_timemark_ide1.py --schedule` (1530/1530 sukses) → `merge_pdf_foto.py --schedule` (**97 PDF sukses, 15 skip, 53 gagal**).
 	- [x] **53 PDF gagal:** Format SERAT OPTIK, TELEKOMUNIKASI, CATU DAYA, PINTU PERLINTASAN, CTC CTS — tidak memiliki aset di halaman 1 (layout beda dari AXC/WESEL/SINYAL). Perlu parser terpisah kalau mau diproses.
 	- [x] **Fix Browser Freeze (`app.py`):** Limit file listing API ke 100 file + metadata total/truncated. Frontend hanya render 100 `<li>` max + info count.
+	- [x] **Fix EventSource Reconnect Loop:** Cegah multiple SSE connections, tambah cleanup `beforeunload`, delay reconnect 3s, error handling di `loadFiles()`.
 
 ---
 
