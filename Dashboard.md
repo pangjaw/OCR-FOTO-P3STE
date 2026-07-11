@@ -106,6 +106,7 @@ graph TD
 	- [x] **53 PDF gagal:** Format SERAT OPTIK, TELEKOMUNIKASI, CATU DAYA, PINTU PERLINTASAN, CTC CTS — tidak memiliki aset di halaman 1 (layout beda dari AXC/WESEL/SINYAL). Perlu parser terpisah kalau mau diproses.
 	- [x] **Fix Browser Freeze (`app.py`):** Limit file listing API ke 100 file + metadata total/truncated. Frontend hanya render 100 `<li>` max + info count.
 	- [x] **Fix EventSource Reconnect Loop:** Cegah multiple SSE connections, tambah cleanup `beforeunload`, delay reconnect 3s, error handling di `loadFiles()`.
+	- [x] **Simplify File Listing:** Ganti daftar file per folder menjadi tampilan "TOTAL FILE = N" saja untuk menghilangkan freeze dari render banyak DOM element.
 
 ---
 

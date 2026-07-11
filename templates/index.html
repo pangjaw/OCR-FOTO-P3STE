@@ -36,6 +36,8 @@
     .card ul{list-style:none;overflow-y:auto;flex:1;min-height:0;display:flex;flex-direction:column;gap:1px}
     .card li{font-size:.72rem;padding:.12rem .3rem;background:rgba(255,255,255,.015);border-radius:3px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
     .card .empty{color:#334155;font-size:.65rem;text-align:center;padding:.6rem 0}
+    .file-count{font-size:1.4rem;font-weight:700;color:#6366f1;text-align:center;padding:.8rem 0;background:rgba(99,102,241,.08);border-radius:6px;margin-top:.2rem}
+    .file-count .label{font-size:.55rem;font-weight:500;color:#64748b;display:block;margin-top:.15rem;text-transform:uppercase;letter-spacing:.05em}
     .card ul::-webkit-scrollbar{width:3px}
     .card ul::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
 
@@ -123,7 +125,7 @@
             <span class="path-hint" id="hint-01">…</span>
           </div>
           <div class="lbl">📄 PDF 2026 — foto mentah</div>
-          <ul id="list-01"><li class="empty">Memuat…</li></ul>
+          <div class="file-count" id="count-01">Memuat…</div>
         </div>
         <div class="card">
           <div class="lbl">📂 Upload Folder IMO 2025</div>
@@ -132,7 +134,7 @@
             <span class="path-hint" id="hint-02">…</span>
           </div>
           <div class="lbl">📄 PDF 2025 — target / imo</div>
-          <ul id="list-02"><li class="empty">Memuat…</li></ul>
+          <div class="file-count" id="count-02">Memuat…</div>
         </div>
       </div>
 
@@ -198,13 +200,9 @@
         const r=await fetch('/api/files');
         if(!r.ok){console.warn('loadFiles failed:',r.status);return;}
         const d=await r.json();
-        for(const[k,id]of[['01_pdf_source','list-01'],['02_pdf_target','list-02']]){
-          const data=d[k]||{files:[],total:0,truncated:false},fs=data.files,el=L(id);
-          if(!fs.length){el.innerHTML='<li class="empty">Kosong</li>';continue;}
-          let html=fs.map(x=>`<li title="${esc(x)}">${esc(x)}</li>`).join('');
-          if(data.truncated) html+=`<li class="empty" style="color:#f59e0b">… dan ${data.total - fs.length} file lainnya (total ${data.total})</li>`;
-          else if(data.total>0) html+=`<li class="empty" style="color:#475569;font-size:.55rem">Total: ${data.total} file</li>`;
-          el.innerHTML=html;
+        for(const[k,id]of[['01_pdf_source','count-01'],['02_pdf_target','count-02']]){
+          const data=d[k]||{total:0},el=L(id);
+          el.innerHTML=(data.total||0)+'<span class="label">Total File</span>';
         }
       }catch(e){console.warn('loadFiles error:',e);}
     }
