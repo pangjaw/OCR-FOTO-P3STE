@@ -1,0 +1,62 @@
+{
+  "_metadata": {
+    "description": "Daftar jenis ceklis yang dikenali untuk validasi ekstraksi judul di merge_pdf_foto.py",
+    "sumber": "Dari nama file PDF di 02_pdf_target/",
+    "tanggal_update": "2026-07-11"
+  },
+  "search_keyword": "PERAWATAN",
+  "types": {
+    "PERAWATAN AXLE COUNTER SIEMENS 1 BULANAN": {
+      "category": "AXC",
+      "keywords": ["AXLE COUNTER", "SIEMENS"]
+    },
+    "PERAWATAN AXLE COUNTER FRAUSCHER 1 BULANAN": {
+      "category": "AXC",
+      "keywords": ["AXLE COUNTER", "FRAUSCHER"]
+    },
+    "PERAWATAN PERAGA SINYAL ELEKTRIK 1 BULANAN": {
+      "category": "SINYAL",
+      "keywords": ["PERAGA SINYAL ELEKTRIK"]
+    },
+    "PERAWATAN WESEL ELEKTRIK 2 MINGGUAN": {
+      "category": "WESEL",
+      "keywords": ["WESEL ELEKTRIK"]
+    },
+    "PERAWATAN POINT LOCK-PERINTANG-PELALAU 2 MINGGUAN": {
+      "category": "SINYAL",
+      "keywords": ["POINT LOCK", "PERINTANG", "PELALAU"]
+    },
+    "PERAWATAN CATU DAYA 1 BULANAN": {
+      "category": "SINYAL",
+      "keywords": ["CATU DAYA"]
+    },
+    "PERAWATAN PERALATAN DALAM PERSINYALAN ELEKTRIK 1 BULANAN": {
+      "category": "PDSE",
+      "keywords": ["PERALATAN DALAM PERSINYALAN ELEKTRIK"]
+    },
+    "PERAWATAN PERALATAN TELEKOMUNIKASI DI STASIUN 1 BULANAN": {
+      "category": "TELEKOM",
+      "keywords": ["TELEKOMUNIKASI DI STASIUN"]
+    },
+    "PERAWATAN PERALATAN TELEKOMUNIKASI DI LUAR STASIUN 1 BULANAN": {
+      "category": "TELEKOM",
+      "keywords": ["TELEKOMUNIKASI DI LUAR STASIUN"]
+    },
+    "PERAWATAN PERALATAN TELEKOMUNIKASI DI PINTU PERLINTASAN 1 BULANAN": {
+      "category": "TELEKOM",
+      "keywords": ["TELEKOMUNIKASI DI PINTU PERLINTASAN"]
+    },
+    "PERAWATAN SERAT OPTIK 1 BULANAN": {
+      "category": "TELEKOM",
+      "keywords": ["SERAT OPTIK"]
+    },
+    "PERAWATAN PERALATAN PINTU PERLINTASAN 1 BULANAN": {
+      "category": "SINYAL",
+      "keywords": ["PERALATAN PINTU PERLINTASAN"]
+    },
+    "PERAWATAN PERALATAN CTC CTS 1 BULANAN": {
+      "category": "SINYAL",
+      "keywords": ["PERALATAN CTC CTS"]
+    }
+  }
+}

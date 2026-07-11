@@ -272,7 +272,11 @@ def api_stop():
         return jsonify({"status": "error", "message": "Tidak ada proses yang berjalan."}), 400
     proc = state.get("process")
     if proc and proc.poll() is None:
-        proc.terminate()
+        if os.name == "nt":
+            # Windows: kill the process tree since shell=True leaves child processes orphan
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        else:
+            proc.terminate()
         add_log("⏹ Proses dihentikan oleh pengguna.", "error")
     state["is_running"] = False
     state["process"] = None

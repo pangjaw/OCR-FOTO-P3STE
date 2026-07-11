@@ -11,6 +11,7 @@ import fitz  # PyMuPDF
 DEFAULT_INPUT_DIR = "./02_pdf_target"
 DEFAULT_PHOTOS_DIR = "./04_photos_edited"
 DEFAULT_OUTPUT_DIR = "./05_pdf_merged"
+CHECKLIST_CONFIG_PATH = "./checklist_types.json"
 
 @dataclass
 class AssetRow:
@@ -20,6 +21,18 @@ class AssetRow:
     asset_type: str
     detail: str
     top: float
+
+def load_checklist_config(path: str = CHECKLIST_CONFIG_PATH) -> dict:
+    """Load checklist types configuration from JSON file."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"[WARNING] Checklist config not found at {path}, using defaults")
+        return {
+            "search_keyword": "PERAWATAN",
+            "types": {}
+        }
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -56,7 +69,7 @@ def normalize_spaces(text: str) -> str:
 def sanitize_segment(text: str) -> str:
     text = normalize_spaces(text)
     text = "".join("_" if ord(char) < 32 else char for char in text)
-    text = re.sub(r'[<>:"/\\|?*]', "_", text)
+    text = re.sub(r'[<>:\"/\\|?*]', "_", text)
     text = re.sub(r"\s+", " ", text).strip(" .")
     return text or "UNKNOWN"
 
@@ -162,32 +175,63 @@ def extract_date_from_page1(page: pdfplumber.page.Page) -> str:
     text = page.extract_text() or ""
     date_pattern = re.compile(r"Tanggal\s*:\s*(\d{4}-\d{2}-\d{2})", re.IGNORECASE)
     match = date_pattern.search(text)
-    
+
     months_id = {
         1: "Januari", 2: "Februari", 3: "Maret", 4: "April",
         5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus",
         9: "September", 10: "Oktober", 11: "November", 12: "Desember"
     }
-    
+
     if match:
         date_str = match.group(1)
         y, m, d = map(int, date_str.split('-'))
         return f"{d:02d} {months_id[m]} {y}"
-    
+
     return "06 Januari 2025" # default fallback
 
-def extract_checklist_title(page: pdfplumber.page.Page, filename: str) -> str:
+def extract_checklist_title(page: pdfplumber.page.Page, filename: str, config: dict | None = None) -> str:
+    """
+    Ekstrak judul ceklis dari halaman 1 PDF.
+    Prioritas: 1) OCR halaman 1 dengan keyword dari config
+              2) Validasi hasil terhadap known types di config
+              3) Fallback ke parsing filename
+              4) Default hardcoded
+    """
+    if config is None:
+        config = load_checklist_config()
+    
+    search_keyword = config.get("search_keyword", "PERAWATAN")
+    known_types = config.get("types", {})
+    
     text = page.extract_text() or ""
     for line in text.split('\n'):
         line_clean = normalize_spaces(line)
-        if "PERAWATAN" in line_clean.upper():
+        if search_keyword in line_clean.upper():
             if line_clean.upper().startswith("STE"):
                 line_clean = line_clean[3:].strip()
-            return line_clean.upper()
+            extracted = line_clean.upper()
+            
+            # Validasi: cek apakah hasil ekstraksi cocok dengan known type
+            for known_type in known_types:
+                if known_type in extracted or extracted in known_type:
+                    return known_type
+            
+            # Jika tidak cocok tapi mengandung keyword, return hasil OCR
+            return extracted
+    
+    # Fallback: parse dari filename
     name_without_ext = filename.rsplit('.', 1)[0]
     parts = name_without_ext.split('_')
     if len(parts) >= 2:
-        return parts[1].strip().upper()
+        filename_type = parts[1].strip().upper()
+        
+        # Validasi filename type against known types
+        for known_type in known_types:
+            if known_type in filename_type or filename_type in known_type:
+                return known_type
+        
+        return filename_type
+    
     return "PERAWATAN AXLE COUNTER SIEMENS 1 BULANAN"
 
 def get_text_width(text: str, fontname: str, fontsize: float) -> float:
@@ -210,6 +254,9 @@ def draw_header(page, location: str, date_str: str, checklist_title: str):
     draw_centered_text(page, date_str, 67.7, "hebo", 7.2)
 
 def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: Path = None, schedule_lookup: dict | None = None) -> str:
+    # Load checklist config once
+    config = load_checklist_config()
+    
     # 1. Buka dengan pdfplumber untuk mencari daftar aset
     with pdfplumber.open(str(pdf_path)) as plumber_pdf:
         if len(plumber_pdf.pages) == 0:
@@ -217,13 +264,13 @@ def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: 
         page1 = plumber_pdf.pages[0]
         assets = extract_asset_rows(page1)
         date_str = extract_date_from_page1(page1)
-        checklist_title = extract_checklist_title(page1, pdf_path.name)
-    
+        checklist_title = extract_checklist_title(page1, pdf_path.name, config)
+
     if not assets:
         return "failed: no assets found on page 1"
         
     location = extract_location_from_filename(pdf_path.name)
-    
+
     # 2. Periksa apakah foto lengkap
     missing_assets = []
     asset_photo_paths = {}
@@ -248,81 +295,81 @@ def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: 
             folder_detail = photo_lookup_dir / sanitize_segment(r.asset_type) / r.detail
         else:
             folder_detail = photo_lookup_dir / subfolder / sanitize_segment(r.asset_type) / r.detail
-        
+
         # Validasi 3 foto
         f0 = folder_detail / "0.jpg"
         f50 = folder_detail / "50.jpg"
         f100 = folder_detail / "100.jpg"
-        
+
         if not (f0.is_file() and f50.is_file() and f100.is_file()):
             missing_assets.append(r.detail)
         else:
             asset_photo_paths[r.detail] = (f0, f50, f100)
-            
+
     if missing_assets:
         return f"skipped: missing photos for assets: {', '.join(missing_assets)}"
-        
+
     # 3. Lakukan modifikasi menggunakan PyMuPDF
     doc = fitz.open(str(pdf_path))
-    
+
     # Hapus halaman terakhir (halaman kolase lama)
     if len(doc) > 0:
         doc.delete_page(-1)
-        
+
     # Buat halaman-halaman foto baru
     assets_per_page = 4
     for i, r in enumerate(assets):
         page_idx = i // assets_per_page
         asset_idx_on_page = i % assets_per_page
-        
+
         # Jika baris pertama pada halaman, buat halaman baru
         if asset_idx_on_page == 0:
             page = doc.new_page(width=595, height=842)
             draw_header(page, location, date_str, checklist_title)
-            
+
         # Dapatkan referensi halaman aktif
         page = doc[-1]
-        
+
         # Gambar baris aset
         y_title_base = 82.1 + asset_idx_on_page * 183
         title_text = f"{r.code} : {r.title}"
         page.insert_text((31.5, y_title_base), title_text, fontname="helv", fontsize=7.2, color=(0, 0, 0))
-        
+
         # Tempel foto
         y_img_top = 89.1 + asset_idx_on_page * 183
         y_img_bottom = y_img_top + 148.8
-        
+
         f0_path, f50_path, f100_path = asset_photo_paths[r.detail]
-        
+
         # Kolom 1 (0%)
         rect_col0 = fitz.Rect(31.5, y_img_top, 180.3, y_img_bottom)
         page.insert_image(rect_col0, filename=str(f0_path))
-        
+
         # Kolom 2 (50%)
         rect_col1 = fitz.Rect(210.4, y_img_top, 359.2, y_img_bottom)
         page.insert_image(rect_col1, filename=str(f50_path))
-        
+
         # Kolom 3 (100%)
         rect_col2 = fitz.Rect(389.8, y_img_top, 538.6, y_img_bottom)
         page.insert_image(rect_col2, filename=str(f100_path))
-        
+
         # Gambar label di bawah foto
         y_label_base = 251.3 + asset_idx_on_page * 183
         draw_centered_label(page, "Foto 0%", 31.5, 180.3, y_label_base, "helv", 7.2)
         draw_centered_label(page, "Foto 50%", 210.4, 359.2, y_label_base, "helv", 7.2)
         draw_centered_label(page, "Foto 100%", 389.8, 538.6, y_label_base, "helv", 7.2)
-        
+
     # Simpan berkas hasil gabung
     out_pdf_path = output_dir / subfolder / pdf_path.name
     ensure_dir(out_pdf_path.parent)
-    
+
     if os.environ.get("OVERWRITE", "1") == "0" and out_pdf_path.exists():
         doc.close()
         return f"skipped: {out_pdf_path.name} sudah ada (overwrite=off)"
-    
+
     doc.save(str(out_pdf_path))
     doc.close()
-    
+
     return "ok"
 
 def main():
@@ -330,16 +377,16 @@ def main():
     input_dir = Path(args.input).resolve()
     photos_dir = Path(args.photos).resolve()
     output_dir = Path(args.output).resolve()
-    
+
     if not input_dir.is_dir():
         print(f"Folder input tidak ditemukan: {input_dir}")
         return 1
     if not photos_dir.is_dir():
         print(f"Folder foto hasil edit tidak ditemukan: {photos_dir}")
         return 1
-        
+
     ensure_dir(output_dir)
-    
+
     pdf_files = sorted([p for p in input_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".pdf"])
     if not pdf_files:
         print(f"Tidak ada berkas PDF di: {input_dir}")
@@ -356,16 +403,16 @@ def main():
             sched_data = json.load(f)
         schedule_lookup = {e["file"]: e["tim"] for e in sched_data.get("schedules", [])}
         print(f"[SCHEDULE] Loaded {len(schedule_lookup)} file->Tim mappings.")
-        
+
     print(f"Mulai pemrosesan {len(pdf_files)} berkas PDF...")
     print(f"Input:  {input_dir}")
     print(f"Photos: {photos_dir}")
     print(f"Output: {output_dir}\n")
-    
+
     success = 0
     skipped = 0
     failed = 0
-    
+
     for pdf_path in pdf_files:
         status = process_pdf(pdf_path, photos_dir, output_dir, input_dir, schedule_lookup)
         if status == "ok":
@@ -377,7 +424,7 @@ def main():
         else:
             failed += 1
             print(f"[FAIL] {pdf_path.name} - {status}")
-            
+
     print(f"\nSelesai. Sukses: {success}, Dilewati: {skipped}, Gagal: {failed}.")
     return 0 if success > 0 or skipped > 0 else 1
 

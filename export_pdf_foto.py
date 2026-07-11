@@ -98,6 +98,14 @@ def detect_asset_type(code: str, title: str) -> str:
         return "WESEL"
     if code.startswith("SIN") or "SINYAL" in upper:
         return "SINYAL"
+    if code.startswith("CDA") or "CATU DAYA" in upper:
+        return "CATU_DAYA"
+    if code.startswith("JPL") or "PINTU PERLINTASAN" in upper:
+        return "PINTU_PERLINTASAN"
+    if code.startswith("TLK") or code.startswith("TWR") or "TELEKOMUNIKASI" in upper or "RADIO" in upper or "SERAT OPTIK" in upper:
+        return "TELEKOMUNIKASI"
+    if code.startswith("INB") or code.startswith("TRA") or "PERSINYALAN ELEKTRIK" in upper:
+        return "PERSINYALAN_ELEKTRIK"
     return "UNKNOWN"
 
 
@@ -117,6 +125,14 @@ def extract_detail(title: str, asset_type: str) -> str:
         detail = after("ELEKTRIK")
     elif asset_type == "SINYAL":
         detail = after("ELEKTRIK") or after("SINYAL MUKA") or after("SINYAL")
+    elif asset_type == "CATU_DAYA":
+        detail = after("CATU DAYA") or after("UPS") or after("BATTERE") or after("GENSET")
+    elif asset_type == "PINTU_PERLINTASAN":
+        detail = after("PINTU PERLINTASAN") or after("JPL")
+    elif asset_type == "TELEKOMUNIKASI":
+        detail = after("TELEKOMUNIKASI") or after("RADIO") or after("WAYSTATION") or after("SERAT OPTIK")
+    elif asset_type == "PERSINYALAN_ELEKTRIK":
+        detail = after("PERSINYALAN ELEKTRIK") or after("INTERMEDIATE BLOK") or after("TRACK CIRCUIT")
 
     if not detail:
         detail = original
@@ -203,44 +219,71 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
         if not log_exists:
             writer.writeheader()
 
+        # Ekstrak global assets dari Halaman 1 sebagai fallback (Case B)
+        global_assets = extract_asset_rows(pdf.pages[0])
+
         for page_index in range(start_page - 1, len(pdf.pages)):
             page = pdf.pages[page_index]
             rows = extract_asset_rows(page)
-            if not rows:
-                continue
-
+            
             page_height = float(page.height)
             originals = original_images_by_name(reader, page_index)
 
-            for idx, row in enumerate(rows):
-                next_top = rows[idx + 1].top if idx + 1 < len(rows) else page_height
-                row_start = max(0.0, row.top - 2.0)
-                row_end = min(page_height, next_top - 2.0)
-                placements = pick_image_placements(page, row_start, row_end)
+            if rows:
+                # Case A: Ada baris aset di halaman foto (Format 2026 / Per-Asset Photos)
+                for idx, row in enumerate(rows):
+                    next_top = rows[idx + 1].top if idx + 1 < len(rows) else page_height
+                    row_start = max(0.0, row.top - 2.0)
+                    row_end = min(page_height, next_top - 2.0)
+                    placements = pick_image_placements(page, row_start, row_end)
 
-                if len(placements) < 3:
-                    writer.writerow(
-                        {
-                            "pdf": pdf_path.name,
-                            "page": page.page_number,
-                            "asset_code": row.code,
-                            "asset_name": row.title,
-                            "label": "",
-                            "image_name": "",
-                            "output_file": "",
-                            "status": f"skipped: found {len(placements)} placements",
-                        }
-                    )
-                    continue
+                    if len(placements) < 3:
+                        writer.writerow(
+                            {
+                                "pdf": pdf_path.name,
+                                "page": page.page_number,
+                                "asset_code": row.code,
+                                "asset_name": row.title,
+                                "label": "",
+                                "image_name": "",
+                                "output_file": "",
+                                "status": f"skipped: found {len(placements)} placements",
+                            }
+                        )
+                        continue
 
-                labels = ["0%", "50%", "100%"]
-                
-                out_dir = asset_output_dir(output_root, row.asset_type, row.detail)
-                ensure_dir(out_dir)
+                    labels = ["0%", "50%", "100%"]
+                    out_dir = asset_output_dir(output_root, row.asset_type, row.detail)
+                    ensure_dir(out_dir)
 
-                for placement, label, stem in zip(placements[:3], labels, ["0", "50", "100"]):
-                    original = originals.get(str(placement.get("name", "")))
-                    if not original:
+                    for placement, label, stem in zip(placements[:3], labels, ["0", "50", "100"]):
+                        original = originals.get(str(placement.get("name", "")))
+                        if not original:
+                            writer.writerow(
+                                {
+                                    "pdf": pdf_path.name,
+                                    "page": page.page_number,
+                                    "asset_code": row.code,
+                                    "asset_name": row.title,
+                                    "label": label,
+                                    "image_name": str(placement.get("name", "")),
+                                    "output_file": "",
+                                    "status": "failed: original image not found",
+                                }
+                            )
+                            continue
+
+                        suffix, data = original
+                        filename = f"{stem}{suffix}"
+                        out_file = out_dir / filename
+                        if os.environ.get("OVERWRITE", "1") == "0" and out_file.exists():
+                            continue
+                        status = "ok"
+                        try:
+                            out_file.write_bytes(data)
+                            exported += 1
+                        except OSError as exc:
+                            status = f"failed: {exc}"
                         writer.writerow(
                             {
                                 "pdf": pdf_path.name,
@@ -248,37 +291,65 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
                                 "asset_code": row.code,
                                 "asset_name": row.title,
                                 "label": label,
-                                "image_name": str(placement.get("name", "")),
-                                "output_file": "",
-                                "status": "failed: original image not found",
+                                "image_name": filename,
+                                "output_file": str(out_file),
+                                "status": status,
                             }
                         )
-                        continue
+            else:
+                # Case B: Tidak ada baris aset di halaman ini (Format Lama / Shared Photos Page)
+                # Ambil semua penempatan gambar di halaman ini
+                placements = sorted(page.images, key=lambda item: float(item["x0"]))
+                if len(placements) >= 3 and global_assets:
+                    for row in global_assets:
+                        # Lewati jika tipe aset tidak dikenal
+                        if row.asset_type == "UNKNOWN":
+                            continue
 
-                    suffix, data = original
-                    filename = f"{stem}{suffix}"
-                    out_file = out_dir / filename
-                    if os.environ.get("OVERWRITE", "1") == "0" and out_file.exists():
-                        print(f"  [SKIP] {filename} sudah ada (overwrite=off)")
-                        continue
-                    status = "ok"
-                    try:
-                        out_file.write_bytes(data)
-                        exported += 1
-                    except OSError as exc:
-                        status = f"failed: {exc}"
-                    writer.writerow(
-                        {
-                            "pdf": pdf_path.name,
-                            "page": page.page_number,
-                            "asset_code": row.code,
-                            "asset_name": row.title,
-                            "label": label,
-                            "image_name": filename,
-                            "output_file": str(out_file),
-                            "status": status,
-                        }
-                    )
+                        labels = ["0%", "50%", "100%"]
+                        out_dir = asset_output_dir(output_root, row.asset_type, row.detail)
+                        ensure_dir(out_dir)
+
+                        for placement, label, stem in zip(placements[:3], labels, ["0", "50", "100"]):
+                            original = originals.get(str(placement.get("name", "")))
+                            if not original:
+                                writer.writerow(
+                                    {
+                                        "pdf": pdf_path.name,
+                                        "page": page.page_number,
+                                        "asset_code": row.code,
+                                        "asset_name": row.title,
+                                        "label": label,
+                                        "image_name": str(placement.get("name", "")),
+                                        "output_file": "",
+                                        "status": "failed: original image not found",
+                                    }
+                                )
+                                continue
+
+                            suffix, data = original
+                            filename = f"{stem}{suffix}"
+                            out_file = out_dir / filename
+                            if os.environ.get("OVERWRITE", "1") == "0" and out_file.exists():
+                                continue
+                            status = "ok"
+                            try:
+                                out_file.write_bytes(data)
+                                exported += 1
+                            except OSError as exc:
+                                status = f"failed: {exc}"
+                            writer.writerow(
+                                {
+                                    "pdf": pdf_path.name,
+                                    "page": page.page_number,
+                                    "asset_code": row.code,
+                                    "asset_name": row.title,
+                                    "label": label,
+                                    "image_name": filename,
+                                    "output_file": str(out_file),
+                                    "status": status,
+                                }
+                            )
 
     return exported
 
