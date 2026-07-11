@@ -78,12 +78,13 @@
     .row-inline{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem}
     .path-hint{flex:1;font-size:.55rem;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'JetBrains Mono',monospace}
 
-    .log-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.15rem;flex-shrink:0}
-    .log-hdr>span{font-size:.58rem;color:#475569;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
-    .log-clear{background:none;border:none;color:#334155;cursor:pointer;font-size:.58rem;padding:.1rem .3rem;border-radius:3px;font-family:inherit}
-    .log-clear:hover{color:#e2e8f0;background:rgba(255,255,255,.05)}
-    .log-box{
-      background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.04);border-radius:7px;padding:.3rem .4rem;
+    .step-indicator{display:flex;gap:4px;align-items:center}
+    .step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.08);transition:all .3s ease;cursor:help}
+    .step-dot.active{background:#6366f1;border-color:#6366f1;box-shadow:0 0 8px rgba(99,102,241,.6);transform:scale(1.2)}
+    .step-dot.done{background:#4ade80;border-color:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.4)}
+    .step-dot.error{background:#ef4444;border-color:#dc2626;box-shadow:0 0 6px rgba(239,68,68,.4)}
+    .step-bar{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px;margin-bottom:.5rem;font-size:.62rem;color:#94a3b8;transition:opacity .3s ease}
+    .step-bar-label{font-weight:600;color:#e2e8f0;white-space:nowrap}
       overflow-y:auto;flex:1;min-height:0;
       font-family:'JetBrains Mono','Fira Code',monospace;font-size:.6rem;line-height:1.4
     }
@@ -160,6 +161,17 @@
             <div class="status-text" id="status-text">Idle</div>
           </div>
         </div>
+        <!-- Step Indicator Bar (between controls and log) -->
+        <div class="step-bar" id="step-bar" style="display:none">
+          <span class="step-bar-label">Proses: </span>
+          <div class="step-indicator">
+            <span class="step-dot" data-step="step1" title="Step 1: Export Foto"></span>
+            <span class="step-dot" data-step="step2" title="Step 2: Ekstrak Tanggal"></span>
+            <span class="step-dot" data-step="step3" title="Step 3: Scheduler"></span>
+            <span class="step-dot" data-step="step4" title="Step 4: Edit Timemark"></span>
+            <span class="step-dot" data-step="step5" title="Step 5: Gabung PDF"></span>
+          </div>
+        </div>
         <div class="card">
           <div class="log-hdr"><span>Terminal Log</span><button class="log-clear" id="btn-clear-log">clear</button></div>
           <div class="log-box" id="log-box"><div class="log-empty">Menunggu log…</div></div>
@@ -170,6 +182,7 @@
 
   <script>
     const L=id=>document.getElementById(id);
+    const stepOrder=['step1','step2','step3','step4','step5'];
     document.querySelectorAll('.folder-btn').forEach(b=>b.onclick=()=>fetch('/api/open-folder/'+b.dataset.folder));
     async function loadConfig(){
       const r=await fetch('/api/config'),d=await r.json();
@@ -191,11 +204,24 @@
       const overwrite=tog.checked;
       btn.disabled=true;btn.classList.add('running');btn.innerHTML='⏳ Proses…';
       btnStop.style.display='inline-flex';btn.innerHTML='⏳ Proses…';
+      L('step-bar').style.display='flex';
       try{const r=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({step,overwrite})}),d=await r.json();if(d.status!=='ok'){alert(d.message);rst()}}catch{rst()}
     };
     btnStop.onclick=async()=>{btnStop.disabled=true;btnStop.innerHTML='⏹ Stopping…';try{await fetch('/api/stop',{method:'POST'})}catch{};};
-    function rst(){btn.disabled=false;btn.classList.remove('running');btn.innerHTML='▶ Jalankan';btnStop.style.display='none';btnStop.disabled=false;btnStop.innerHTML='⏹ Stop'}
-    setInterval(async()=>{try{const r=await fetch('/api/status'),s=await r.json();pb.style.width=s.progress+'%';st.textContent=s.status_text||'Idle';if(!s.is_running&&btn.disabled)rst()}catch{}},800);
+    function rst(){btn.disabled=false;btn.classList.remove('running');btn.innerHTML='▶ Jalankan';btnStop.style.display='none';btnStop.disabled=false;btnStop.innerHTML='⏹ Stop';L('step-bar').style.display='none'}
+    setInterval(async()=>{try{const r=await fetch('/api/status'),s=await r.json();pb.style.width=s.progress+'%';st.textContent=s.status_text||'Idle';
+      const current=s.current_step;
+      if(current){
+        document.querySelectorAll('.step-dot').forEach(dot=>{
+          const step=dot.dataset.step;
+          dot.classList.remove('active','done','error');
+          if(step===current) dot.classList.add('active');
+          else if(stepOrder.indexOf(step)<stepOrder.indexOf(current)) dot.classList.add('done');
+        });
+        const labels={'step1':'Export Foto','step2':'Ekstrak Tanggal','step3':'Scheduler','step4':'Edit Timemark','step5':'Gabung PDF'};
+        L('step-bar').querySelector('.step-bar-label').textContent='Proses: '+labels[current];
+      }
+      if(!s.is_running&&btn.disabled)rst()}catch{}},800);
     const lb=L('log-box');
     function conn(){const es=new EventSource('/api/stream-logs');es.onmessage=e=>{try{a(JSON.parse(e.data))}catch{}};es.onerror=()=>{es.close();setTimeout(conn,1200)}}
     function a(l){const em=lb.querySelector('.log-empty');if(em)em.remove();const d=document.createElement('div');d.className='log-entry '+(l.type||'info');d.innerHTML='<span class="ts">'+(l.timestamp||'')+'</span><span class="msg">'+esc(l.message)+'</span>';lb.appendChild(d);lb.scrollTop=lb.scrollHeight}

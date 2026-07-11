@@ -17,7 +17,8 @@ OCR-FOTO-P3STE/
   app.py                    # Server Web Lokal (Dashboard UI)
   edit_timemark_ide1.py     # Script utama edit watermark (4-Stage Priority)
   export_pdf_foto.py        # Script ekstraksi foto dari PDF
-  extract_pdf_dates.py      # Script ekstraksi tanggal dari PDF target (pdf_imo) -> date.txt
+  extract_pdf_dates.py      # Script ekstraksi tanggal dari PDF target (02_pdf_target) -> date.txt
+  scheduler.py              # Script penjadwalan Tim & waktu pengerjaan
   merge_pdf_foto.py         # Script penggabung foto baru ke PDF lama
   Dashboard.md              # Halaman indeks Obsidian
   README.md                 # Tujuan project & batasan
@@ -148,8 +149,26 @@ python edit_timemark_ide1.py --input "03_photos_export/AXC/ZP 22A CLT"
 4. Melalui Web UI Dashboard, Anda dapat:
    - Melihat dan merubah konfigurasi jalur folder input/output.
    - Memantau jumlah dan file PDF target yang terdeteksi di subfolder secara otomatis.
-   - Menjalankan pemrosesan per tahap (Ekstraksi Foto, Edit Watermark, atau Gabung PDF) atau sekaligus ("Jalankan Semua Tahap").
-   - Memantau log jalannya program secara real-time di area terminal dashboard.
+    - Menjalankan pemrosesan per tahap (Ekstraksi Foto, Edit Watermark, atau Gabung PDF) atau sekaligus ("Jalankan Semua Tahap").
+    - Memantau log jalannya program secara real-time di area terminal dashboard.
+
+### Opsi E: Alur Kerja Penjadwalan Tim (Time & Team Scheduling)
+Untuk membagi pekerjaan pengeditan secara realistis ke dalam tim kerja (misal: Tim 1 & Tim 2) dengan rentang jam tertentu (contoh: 07:00 s.d 18:00) serta durasi pengerjaan per tipe aset, Anda dapat menggunakan alur berikut:
+1. Buat jadwal pengerjaan tim terlebih dahulu:
+   ```bash
+   python scheduler.py --pdf-dir 02_pdf_target --photos-dir 03_photos_export --output schedule.json
+   ```
+   Perintah ini akan membaca PDF target secara berurutan, menghitung waktu mulai dan selesai untuk 3 foto dari setiap aset berdasarkan `asset_waktu_mapping.json` dan `data_acuan_tenaga_gabungan.json`, membagi rotasi kerja antara Tim 1 & Tim 2, serta menghasilkan file `schedule.json`.
+2. Jalankan pengeditan watermark dengan parameter `--schedule`:
+   ```bash
+   python edit_timemark_ide1.py --input 03_photos_export --schedule schedule.json
+   ```
+   Script akan membaca `schedule.json`, mengambil stempel waktu (timestamp) unik untuk setiap foto dari jadwal, dan mengelompokkan output foto yang telah di-watermark ke dalam subfolder tim yang bersangkutan (misal: `04_photos_edited/Tim_1/` atau `04_photos_edited/Tim_2/`).
+3. Gabungkan foto hasil edit tersebut kembali ke berkas PDF:
+   ```bash
+   python merge_pdf_foto.py --input 02_pdf_target --photos 04_photos_edited --output 05_pdf_merged --schedule schedule.json
+   ```
+   Script penggabung PDF akan mendeteksi opsi `--schedule`, mencari foto-foto hasil edit di subfolder flat per tim (misal `Tim_N/asset_type/detail/0.jpg`) sesuai pemetaan jadwal, dan menggabungkannya ke PDF target di folder output `05_pdf_merged/`.
 
 ---
 

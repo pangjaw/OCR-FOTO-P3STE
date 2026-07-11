@@ -1,7 +1,7 @@
 {
   "_metadata": {
-    "description": "Mapping folder detail output_pdf_foto → asset id di data_acuan_tenaga_gabungan.json",
-    "sumber": "Judul halaman 1 PDF di input_pdf",
+    "description": "Mapping folder detail 03_photos_export → asset id di data_acuan_tenaga_gabungan.json",
+    "sumber": "Judul halaman 1 PDF di 02_pdf_target",
     "tanggal_scan": "2026-07-10"
   },
   "AXC": {

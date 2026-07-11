@@ -33,7 +33,7 @@ root/
 ## 📌 Project Status
 ### Active Scripts
 - `[[app.py]]` - Server Web Lokal (Dashboard UI) untuk mempermudah jalannya seluruh alur kerja.
-- `[[edit_timemark_ide1.py]]` - Script utama pengedit watermark (Ide 1 / Y-center average + voting folder) + **Time Scheduling**.
+- `[[edit_timemark_ide1.py]]` - Script utama pengedit watermark: **HSV Orange Isolation + Fixed-offset Stage 1c** (Red Guide anchor, X=6px offset, Y-center aligned). Fallback: `get_text_box()`. No OCR, no consensus voting. 237/237 sukses.
 - `[[export_pdf_foto.py]]` - Script ekstraksi foto asli dari PDF.
 - `[[merge_pdf_foto.py]]` - Script penggabung foto baru (format 2026) kembali ke PDF lama (format 2025) dengan menghapus kolase lama.
 - `[[extract_pdf_dates.py]]` - Script ekstraksi tanggal baru otomatis dari PDF target di folder `02_pdf_target/`.
@@ -91,15 +91,20 @@ graph TD
 	- [x] **`edit_timemark_ide1.py` — Arg `--schedule` & Tim folder:** `--schedule schedule.json`, format `"Rabu, Jul 08 2026 09:30"`, output ke `04_photos_edited/Tim_{n}/...`.
 	- [x] **`merge_pdf_foto.py` — Arg `--schedule`:** path foto dari `Tim_{n}` folder via schedule.json lookup.
 	- [x] **Overflow Aman:** Aset mulai < 18:00 tetap selesai 3 fotonya, file berikutnya pindah Tim/reset jam.
+	- [x] **Stage 1c (Red Guide Anchor):** Untuk foto dengan Red Guide terdeteksi tapi OCR gagal total (seperti CLT), gunakan posisi baru: textbox di KANAN guide, center sejajar dengan bagian ATAS guide, box extends 25% up / 75% down. Berhasil menangani 18/18 foto gagal sebelumnya (6 folder: ZP 12B/13/14B/20A/24B CLT + ZP 31D BOO). Total: 237/237 foto berhasil (100%).
 
-- **To Do:**
-	- [ ] **Testing pipeline penuh:** 2+ file, verifikasi format, output, Tim rotation.
+- **Done (Testing Pipeline Penuh):**
+	- [x] **Testing pipeline penuh (Stage 1→5):** `export_pdf_foto.py` → `extract_pdf_dates.py` → `scheduler.py` → `edit_timemark_ide1.py --schedule` → `merge_pdf_foto.py --schedule`. **43 PDF berhasil digabung**, 36 di-skip (foto tidak lengkap), 0 error. Tim rotation & overflow berfungsi.
+	- [x] **Verifikasi visual Stage 1c:** 18 foto Red Guide Anchor (CLT + ZP 31D BOO) berhasil diproses dengan posisi textbox benar di kanan guide, center sejajar atas guide.
+	- [x] **Step Indicator Bar di Web UI Dashboard:** Visual bar dinamis (Step 1-5) dengan indikasi warna (Indigo: Active, Hijau: Done, Merah: Error) yang tersinkronisasi via polling status API `/api/status`.
+	- [x] **Perbaikan Path Lookup Foto pada `merge_pdf_foto.py`:** Memperbaiki pencarian foto di folder flat per tim (`Tim_N/...`) pada mode `--schedule` sehingga pipeline tahap 5 dapat menyisipkan foto hasil edit secara sukses.
 
 ---
 
 ## 📅 Daily Logs & Notes
-- [[Notes/Daily/2026-07-10|Log Hari Ini - 2026-07-10]]
-- [[Notes/Daily/2026-07-09|Log Kemarin - 2026-07-09]]
+- [[Notes/Daily/2026-07-11|Log Hari Ini - 2026-07-11]]
+- [[Notes/Daily/2026-07-10|Log Kemarin - 2026-07-10]]
+- [[Notes/Daily/2026-07-09|Log - 2026-07-09]]
 - [[Notes/Daily/2026-07-08|Log - 2026-07-08]]
 - [[Notes/Daily/2026-07-07|Log - 2026-07-07]]
 - 📂 [[Notes/Templates/Template - Daily Note|Daily Note Template]]
@@ -117,3 +122,7 @@ graph TD
 
 > [!tip] **Tips Obsidian**
 > Tekan `Ctrl + Klik` (atau `Cmd + Klik` di Mac) pada link di atas untuk langsung membuka atau membuat catatan tersebut. Gunakan **Graph View** (ikon jaring laba-laba di kiri) untuk melihat koneksi visualnya!
+
+
+
+

@@ -115,7 +115,7 @@ def extract_date_from_pdf(pdf_path: Path) -> datetime.date | None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Ekstrak tanggal dari halaman foto PDF di folder pdf_imo dan simpan ke date.txt di subfolder output_pdf_foto/."
+        description="Ekstrak tanggal dari halaman foto PDF di folder 02_pdf_target dan simpan ke date.txt di subfolder 03_photos_export/."
     )
     parser.add_argument(
         "--pdf-dir",

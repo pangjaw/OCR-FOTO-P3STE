@@ -17,18 +17,18 @@ flowchart TD
     classDef database fill:#dfd,stroke:#333,stroke-width:1px,color:#000;
 
     start([Mulai Program]):::startEnd
-    read_folder[Pindai folder pdf_imo]:::process
+    read_folder[Pindai folder 02_pdf_target]:::process
     loop_pdf{Untuk Setiap PDF asli}:::decision
     
     %% Input databases
-    pdf_imo[(pdf_imo/ - PDF 2025 asli)]:::database
-    export_foto[(Export_Foto/ - Foto hasil edit)]:::database
+    pdf_imo[(02_pdf_target/ - PDF 2025 asli)]:::database
+    export_foto[(04_photos_edited/ - Foto hasil edit)]:::database
     
     %% Steps
     parse_pdf[Buka dengan pdfplumber]:::process
     extract_meta[Ekstrak Metadata Page 1:\n1. Tanggal Laporan\n2. Judul Ceklis Dinamis\n3. Nama Lokasi\n4. Daftar Aset]:::process
     
-    check_photos{Semua 3 Foto\n0%, 50%, 100%\ntersedia di\nExport_Foto?}:::decision
+    check_photos{Semua 3 Foto\n0%, 50%, 100%\ntersedia di\n04_photos_edited?}:::decision
     
     skip_pdf[Log SKIP & Warning:\nLewati berkas PDF ini]:::process
     
@@ -43,7 +43,7 @@ flowchart TD
     
     draw_asset[Gambar Baris Aset:\n1. Judul Aset\n2. Tempel 3 Foto\n3. Gambar Label Foto]:::process
     
-    save_pdf[Simpan PDF hasil ke\nhasil_gabung/output/]:::process
+    save_pdf[Simpan PDF hasil ke\n05_pdf_merged/]:::process
     
     done([Selesai]):::startEnd
 
@@ -91,7 +91,7 @@ Mengambil informasi dari berkas PDF input tanpa berasumsi format tanggal atau ju
 
 ### 2. **Pencocokan & Proteksi Foto (Option B)**
 Skrip menuntut kelengkapan mutlak berkas gambar sebelum mengubah PDF:
-- Menghubungkan nama detail aset dengan direktori penyimpanan foto hasil edit: `output_pdf_foto/Export_Foto/[ASSET_TYPE]/[DETAIL_ASSET]/`.
+- Menghubungkan nama detail aset dengan direktori penyimpanan foto hasil edit: `04_photos_edited/` (atau `04_photos_edited/Tim_{n}/` jika menggunakan mode `--schedule`) di bawah folder `[ASSET_TYPE]/[DETAIL_ASSET]/`.
 - Skrip memverifikasi keberadaan berkas `0.jpg`, `50.jpg`, dan `100.jpg`.
 - **Jika ada satu saja aset yang kekurangan foto**, pemrosesan berkas PDF tersebut langsung dihentikan secara aman untuk menghindari hilangnya data dokumentasi, lalu skrip melompat ke berkas PDF berikutnya.
 

@@ -7,6 +7,8 @@ Project ini dibuat untuk membantu koreksi tanggal watermark Timemark pada foto d
 - Mengganti teks tanggal yang salah pada watermark Timemark.
 - Memproses banyak foto secara batch tanpa menimpa file asli.
 - Mengekspor foto dokumentasi dari PDF dan mengelompokkannya berdasarkan aset.
+- Menjadwalkan pengerjaan aset secara otomatis ke beberapa Tim kerja dengan rentang waktu dinamis.
+- Menyediakan dashboard Web UI lokal untuk mengendalikan pipeline secara real-time.
 - Menjaga hasil revisi tetap rapi dan mudah dicek ulang.
 - Menyiapkan alur lanjutan untuk foto yang tertanam di file PDF.
 - Menyimpan jejak perubahan melalui output baru dan log proses.
@@ -22,10 +24,10 @@ Project ini dibuat untuk membantu koreksi tanggal watermark Timemark pada foto d
 
 ## Output PDF Foto
 
-Foto dari PDF akan dikelompokkan berdasarkan judul aset, misalnya:
+Foto dari PDF akan dikelompokkan berdasarkan judul aset di folder `03_photos_export/`, misalnya:
 
 ```text
-output_pdf_foto/
+03_photos_export/
   WESEL/
     W23A BOO/
       0.jpg
@@ -35,16 +37,19 @@ output_pdf_foto/
 
 ## Output Edit Foto
 
-Saat edit tanggal foto, output default dibuat di dalam folder input:
+Saat edit tanggal foto dengan mode schedule, hasil edit dikelompokkan ke subfolder Tim di `04_photos_edited/`:
 
 ```text
-root_folder_input/
-  Export_Foto/
-    subfolder_asli/
-      image.jpg
+04_photos_edited/
+  Tim_1/
+    WESEL/
+      W23A BOO/
+        0.jpg
+        50.jpg
+        100.jpg
 ```
 
-Struktur subfolder foto asli dipertahankan, dan folder `Export_Foto` tidak ikut diproses ulang.
+Struktur subfolder tipe aset (`WESEL`/`AXC`/`SINYAL`) dan nama detail aset dipertahankan.
 
 ## Panduan Dokumentasi
 
@@ -62,12 +67,14 @@ Gunakan format ini supaya pengerjaan tetap konsisten di device lain.
 - Perbarui jika ada script baru, command berubah, dependensi berubah, atau struktur folder berubah.
 - Tulis instruksi yang bisa langsung diikuti di device baru.
 
-### `memory.md`
+### `Dashboard.md`
 
-- Berisi status terbaru, keputusan teknis, update penting, hasil uji, file referensi, dan next step.
-- Jangan isi dengan output terminal panjang atau semua percobaan kecil.
-- Catatan lama yang tidak lagi penting cukup diringkas; archive terpisah tidak diperlukan.
-- Bagian atas harus selalu mencerminkan kondisi project terbaru.
+- Halaman indeks utama di Obsidian yang menghubungkan catatan status kerja (checklist, status skrip, dll).
+- Halaman patokan utama untuk AI Assistant sebelum bekerja.
+
+### `Notes/Daily/`
+
+- Berisi log harian detail perkembangan project yang diperbarui setiap kali ada pengerjaan atau keputusan baru (menggantikan `memory.md`).
 
 ---
 

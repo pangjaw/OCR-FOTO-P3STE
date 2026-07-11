@@ -14,6 +14,7 @@
 | [system_architecture_gabung foto ke pdf.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/system_architecture_gabung%20foto%20ke%20pdf.md) | Diagram alur merge_pdf_foto.py | 107 |
 | [Notes/Decisions/](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Notes/Decisions/) | ADR (Architecture Decision Records) | 3 docs |
 | [Notes/Test Results.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Notes/Test%20Results.md) | Riwayat hasil pengujian | - |
+| **[Notes/Handover/2026-07-11 - Handover to Claude.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Notes/Handover/2026-07-11%20-%20Handover%20to%20Claude.md)** | **🔄 Handover task — baca ini dulu** | **state penuh** |
 
 ---
 

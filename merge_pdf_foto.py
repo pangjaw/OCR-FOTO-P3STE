@@ -239,10 +239,15 @@ def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: 
         tim = schedule_lookup.get(pdf_path.name)
         if tim:
             photo_lookup_dir = photos_dir / f"Tim_{tim}"
-            print(f"    [SCHEDULE] Tim {tim} → {photo_lookup_dir}")
+            print(f"    [SCHEDULE] Tim {tim} -> {photo_lookup_dir}")
 
     for r in assets:
-        folder_detail = photo_lookup_dir / subfolder / sanitize_segment(r.asset_type) / r.detail
+        # Mode schedule: flat structure Tim_N/asset_type/detail/
+        # Mode non-schedule: keep PDF subfolder structure
+        if schedule_lookup is not None:
+            folder_detail = photo_lookup_dir / sanitize_segment(r.asset_type) / r.detail
+        else:
+            folder_detail = photo_lookup_dir / subfolder / sanitize_segment(r.asset_type) / r.detail
         
         # Validasi 3 foto
         f0 = folder_detail / "0.jpg"
@@ -350,7 +355,7 @@ def main():
         with open(sched_path, encoding="utf-8") as f:
             sched_data = json.load(f)
         schedule_lookup = {e["file"]: e["tim"] for e in sched_data.get("schedules", [])}
-        print(f"[SCHEDULE] Loaded {len(schedule_lookup)} file→Tim mappings.")
+        print(f"[SCHEDULE] Loaded {len(schedule_lookup)} file->Tim mappings.")
         
     print(f"Mulai pemrosesan {len(pdf_files)} berkas PDF...")
     print(f"Input:  {input_dir}")
