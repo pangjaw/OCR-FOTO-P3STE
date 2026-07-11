@@ -38,7 +38,7 @@ DEFAULT_SCHEDULE = Path("schedule.json")
 
 # ─── HSV Orange Isolation ───
 def preprocess_for_guide(img: Image.Image) -> np.ndarray:
-    """Grayscale all colors EXCEPT orange/red (Hue 0-35° or 350-360°, S>45%, V>40%)."""
+    """Grayscale all colors EXCEPT pure red guide (Hue 0-15° or 350-360°, S>60%, V 30-80%)."""
     arr = np.array(img).astype(np.float32) / 255.0
     r, g, b = arr[:,:,0], arr[:,:,1], arr[:,:,2]
 
@@ -59,19 +59,20 @@ def preprocess_for_guide(img: Image.Image) -> np.ndarray:
     bm = m & (maxc == b)
     hue[bm] = 60 * ((r[bm] - g[bm]) / delta[bm]) + 240
 
-    # Orange/red mask: Hue 0-35° or 350-360°, Sat>45%, Val>40%
-    is_orange = (
-        ((hue <= 35) | (hue >= 350))
-        & (sat >= 0.45)
-        & (val >= 0.40)
+    # Pure red mask: Hue 0-15° or 350-360°, Sat>60%, Val 30-80%
+    is_red = (
+        ((hue <= 15) | (hue >= 350))
+        & (sat >= 0.60)
+        & (val >= 0.30)
+        & (val <= 0.80)
     )
 
     gray = 0.299*r + 0.587*g + 0.114*b
 
     out = np.stack([
-        np.where(is_orange, r, gray),
-        np.where(is_orange, g, gray),
-        np.where(is_orange, b, gray),
+        np.where(is_red, r, gray),
+        np.where(is_red, g, gray),
+        np.where(is_red, b, gray),
     ], axis=2)
 
     return (np.clip(out, 0, 1) * 255).astype(np.uint8)
@@ -242,12 +243,13 @@ def draw_textbox(img: Image.Image, box: tuple[int,int,int,int], text: str) -> Im
 
 
 # ─── Core: Locate Date Box (NEW: Stage 1c only) ───
-def locate_date_box(arr_orig: np.ndarray, arr_hsv: np.ndarray, w: int, h: int, y_override: int | None = None):
+def locate_date_box(arr_orig: np.ndarray, arr_hsv: np.ndarray, w: int, h: int,
+                    y_override: int | None = None, consensus_gy1: int | None = None):
     """
     Single-stage detection:
     1. If y_override -> use it
-    2. HSV-isolated guide -> fixed offset textbox
-    3. Original image guide -> fixed offset textbox
+    2. Original image guide -> fixed offset textbox
+    3. Folder consensus gy1 -> fixed offset textbox
     4. Fallback -> get_text_box()
     """
     if y_override is not None:
@@ -259,18 +261,21 @@ def locate_date_box(arr_orig: np.ndarray, arr_hsv: np.ndarray, w: int, h: int, y
         print(f"  STAGE 0 (Y-Override): Y={y_override} Box={x1},{y1},{x2},{y2}")
         return x1, y1, x2, y2
 
-    # Try HSV-isolated guide
-    guide = find_red_guide(arr_hsv)
-    src_note = "HSV-isolated"
-    if guide is None:
-        # Fallback: try original image
-        guide = find_red_guide(arr_orig)
-        src_note = "original"
-    
+    # Use original image (HSV preprocessing damages guide on some photos)
+    guide = find_red_guide(arr_orig)
+    src_note = "original"
     if guide is not None:
         new_box = place_textbox_fixed_offset(guide, w, h)
         gx1, gy1, gx2, gy2 = guide
         print(f"  STAGE 1c (Guide {src_note}): guide=({gx1},{gy1},{gx2},{gy2}) Box={new_box}")
+        return new_box
+
+    # Folder consensus gy1 fallback
+    if consensus_gy1 is not None:
+        # Create synthetic guide at consensus gy1 position (x based on typical guide position)
+        synthetic_guide = (8, consensus_gy1, 9, consensus_gy1 + 84)  # typical guide height ~84px
+        new_box = place_textbox_fixed_offset(synthetic_guide, w, h)
+        print(f"  STAGE 1c (Guide consensus): gy1={consensus_gy1} Box={new_box}")
         return new_box
 
     # No guide at all -> fallback
@@ -309,12 +314,12 @@ def build_schedule_lookup(schedule_data: dict):
 # ─── Process Single Image ───
 def process_image(image_path: Path, output_path: Path, date_text: str,
                   y_override: int | None = None, schedule_lookup: dict | None = None,
-                  asset_key: tuple | None = None):
+                  asset_key: tuple | None = None, consensus_gy1: int | None = None):
     img_orig = Image.open(image_path).convert('RGB')
     orig_w, orig_h = img_orig.size
     arr_orig = np.array(img_orig)
 
-    # HSV isolation
+    # HSV isolation (kept for compatibility, but locate_date_box uses original)
     arr_hsv = preprocess_for_guide(img_orig)
 
     # Determine timemark text
@@ -323,7 +328,7 @@ def process_image(image_path: Path, output_path: Path, date_text: str,
         timemark_text = schedule_lookup.get(asset_key, (date_text, 1))[0]
 
     # Locate box
-    box = locate_date_box(arr_orig, arr_hsv, orig_w, orig_h, y_override)
+    box = locate_date_box(arr_orig, arr_hsv, orig_w, orig_h, y_override, consensus_gy1)
     x1, y1, x2, y2 = box
 
     # Erase: precision mask (rounded rect, 1px pad)
@@ -366,8 +371,48 @@ def asset_output_dir(root: Path, asset_type: str, detail: str) -> Path:
     return root / asset_type / sanitize_segment(detail)
 
 
+def _folder_key_from_path(rel: Path) -> tuple[str, str] | None:
+    """Extract (asset_type, detail) from relative path."""
+    parts = rel.parts
+    if len(parts) >= 2:
+        return parts[0], parts[1]
+    return None
+
+
+def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tuple[str, str], int]:
+    """Pre-scan folders: find Red Guide gy1 consensus per folder (asset_type, detail).
+    Returns {folder_key: consensus_gy1} where consensus_gy1 is median gy1 if >=2 photos agree within 10px."""
+    from collections import defaultdict
+    folder_guides = defaultdict(list)
+
+    for src in all_jpgs:
+        rel = src.relative_to(input_dir)
+        fkey = _folder_key_from_path(rel)
+        if not fkey:
+            continue
+        try:
+            img = Image.open(src).convert('RGB')
+            arr = np.array(img)
+            guide = find_red_guide(arr)
+            if guide:
+                gx1, gy1, gx2, gy2 = guide
+                folder_guides[fkey].append(gy1)
+        except Exception:
+            pass
+
+    consensus = {}
+    for fkey, gy1s in folder_guides.items():
+        if len(gy1s) >= 2:
+            gy1s.sort()
+            # Check if median cluster within 10px
+            median = gy1s[len(gy1s) // 2]
+            if all(abs(g - median) <= 10 for g in gy1s):
+                consensus[fkey] = median
+    return consensus
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Edit timemark on photos (HSV + Fixed-offset)")
+    parser = argparse.ArgumentParser(description="Edit timemark on photos (Fixed-offset + Folder Consensus)")
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Input photos folder")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Output photos folder")
     parser.add_argument("--date", type=str, help="Global date text (e.g. 'Sabtu, Apr 29 2026 08:00')")
@@ -399,6 +444,11 @@ def main():
     print(f"Schedule: {'Yes' if schedule_lookup else 'No'}")
     print("=" * 60)
 
+    # Pre-scan: folder consensus for Red Guide gy1
+    folder_consensus = _collect_folder_consensus(input_dir, all_jpgs)
+    if folder_consensus:
+        print(f"Folder consensus gy1: {folder_consensus}")
+
     ok = 0
     for src in all_jpgs:
         rel = src.relative_to(input_dir)
@@ -409,7 +459,13 @@ def main():
             detail = parts[1]
             photo_name = parts[2]
             asset_key = (asset_type, detail, photo_name)
+        elif len(parts) == 2:
+            asset_type = parts[0]
+            detail = parts[1]
+            asset_key = None
         else:
+            asset_type = None
+            detail = None
             asset_key = None
 
         # Determine output path (respect schedule Tim subfolder)
@@ -417,11 +473,15 @@ def main():
             timemark_text, tim_n = schedule_lookup.get(asset_key, (date_text, 1))
             dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), asset_type, detail)
         else:
-            dst_dir = output_dir / asset_output_dir(Path(""), asset_type, detail) if len(parts) >= 2 else output_dir
+            dst_dir = output_dir / asset_output_dir(Path(""), asset_type, detail) if asset_type and detail else output_dir
         dst = dst_dir / src.name
 
+        # Get folder consensus gy1 for this asset
+        fkey = _folder_key_from_path(rel)
+        consensus_gy1 = folder_consensus.get(fkey) if fkey else None
+
         try:
-            process_image(src, dst, date_text, args.y_override, schedule_lookup, asset_key)
+            process_image(src, dst, date_text, args.y_override, schedule_lookup, asset_key, consensus_gy1)
             ok += 1
         except Exception as e:
             print(f"  ERROR {rel}: {e}")

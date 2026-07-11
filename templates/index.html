@@ -196,8 +196,12 @@
     async function loadFiles(){
       const r=await fetch('/api/files'),d=await r.json();
       for(const[k,id]of[['01_pdf_source','list-01'],['02_pdf_target','list-02']]){
-        const fs=d[k]||[],el=L(id);
-        el.innerHTML=fs.length?fs.map(x=>`<li title="${esc(x)}">${esc(x)}</li>`).join(''):'<li class="empty">Kosong</li>'
+        const data=d[k]||{files:[],total:0,truncated:false},fs=data.files,el=L(id);
+        if(!fs.length){el.innerHTML='<li class="empty">Kosong</li>';continue;}
+        let html=fs.map(x=>`<li title="${esc(x)}">${esc(x)}</li>`).join('');
+        if(data.truncated) html+=`<li class="empty" style="color:#f59e0b">… dan ${data.total - fs.length} file lainnya (total ${data.total})</li>`;
+        else if(data.total>0) html+=`<li class="empty" style="color:#475569;font-size:.55rem">Total: ${data.total} file</li>`;
+        el.innerHTML=html;
       }
     }
     L('btn-refresh').onclick=loadFiles;

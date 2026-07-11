@@ -204,13 +204,20 @@ def pipeline_thread(step_id, overwrite="1"):
         state["current_step"] = None
         state["process"] = None
 
-def get_pdf_list(directory):
+def get_pdf_list(directory, limit=100):
     path = Path(directory)
     if not path.is_dir():
-        return []
-    return sorted(
+        return {"files": [], "total": 0, "truncated": False}
+    all_files = sorted(
         [str(p.relative_to(path).as_posix()) for p in path.rglob("*.pdf") if p.is_file()]
     )
+    total = len(all_files)
+    truncated = total > limit
+    return {
+        "files": all_files[:limit],
+        "total": total,
+        "truncated": truncated
+    }
 
 # --- Web routes ---
 @app.route("/")
@@ -237,10 +244,13 @@ def api_status():
 
 @app.route("/api/files")
 def api_files():
+    r1 = get_pdf_list(FOLDERS["01_pdf_source"])
+    r2 = get_pdf_list(FOLDERS["02_pdf_target"])
+    r5 = get_pdf_list(FOLDERS["05_pdf_merged"])
     return jsonify({
-        "01_pdf_source": get_pdf_list(FOLDERS["01_pdf_source"]),
-        "02_pdf_target": get_pdf_list(FOLDERS["02_pdf_target"]),
-        "05_pdf_merged": get_pdf_list(FOLDERS["05_pdf_merged"]),
+        "01_pdf_source": r1,
+        "02_pdf_target": r2,
+        "05_pdf_merged": r5,
     })
 
 @app.route("/api/run", methods=["POST"])
