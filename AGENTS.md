@@ -353,6 +353,18 @@ python merge_pdf_foto.py [--input 02_pdf_target] [--photos 04_photos_edited]
 2. **Update After Working:** Update [Dashboard.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Dashboard.md) jika status task berubah.
 3. **Daily Logs:** Jika hari baru, buat log di [Notes/Daily/](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Notes/Daily/) pakai template.
 4. **Debug & Fix Rule (CRITICAL):** Jika user minta "debug ocr dan stage nya": **HANYA tampilkan hasil pembacaan OCR + jelaskan stage yang terpilih. JANGAN langsung fix/edit kode sebelum konfirmasi user!**
+5. **Auto-Update Obsidian & GitHub (PERMANENT AGENT INSTRUCTION):** **SETIAP kali ada update kode/script/config, WAJIB otomatis (tanpa perlu diminta user):**
+   - Update `Dashboard.md` (status tracker, checklist, daily logs)
+   - Buat/append `Notes/Daily/YYYY-MM-DD.md` dengan ringkasan perubahan
+   - `git add . && git commit -m "<type>: <subject>" && git push`
+   - **Conventional Commits format:** `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `style:`
+   - Subject ≤ 50 chars, body only when "why" isn't obvious
+5. **Auto-Update Obsidian & GitHub (PERMANENT AGENT INSTRUCTION):** **SETIAP kali ada update kode/script/config, WAJIB otomatis (tanpa perlu diminta user):**
+   - Update `Dashboard.md` (status tracker, checklist, daily logs)
+   - Buat/append `Notes/Daily/YYYY-MM-DD.md` dengan ringkasan perubahan
+   - `git add . && git commit -m "<type>: <subject>" && git push`
+   - **Conventional Commits format:** `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `style:`
+   - Subject ≤ 50 chars, body only when "why" isn't obvious
 
 ---
 
