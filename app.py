@@ -37,16 +37,20 @@ log_generation_lock = threading.Lock()
 stage_queue = []
 stage_lock = threading.Lock()
 
+stage_counts_lock = threading.Lock()
+stage_details_lock = threading.Lock()
+stage_details = []
+
 stage_counts = {
     "stage_0_override": 0,
     "stage_1c_guide_original": 0,
     "stage_1c_guide_consensus": 0,
     "stage_fallback": 0
 }
-stage_counts_lock = threading.Lock()
 
-stage_details = []  # list of {file, stage, asset_type, detail, photo}
-stage_details_lock = threading.Lock()
+# Summary storage for each step
+step_summaries = {}
+step_summaries_lock = threading.Lock()
 
 
 def clear_stage_data():
@@ -119,6 +123,15 @@ def run_command_stream(cmd, step_name, overwrite="1"):
                                 })
                             with stage_lock:
                                 stage_queue.append(data)
+                    except json.JSONDecodeError:
+                        pass
+                # Capture __SUMMARY__ from scripts
+                elif line_str.startswith("__SUMMARY__:"):
+                    try:
+                        summary_json = line_str.split("__SUMMARY__:", 1)[1]
+                        summary = json.loads(summary_json)
+                        with step_summaries_lock:
+                            step_summaries[summary.get("step", step_name)] = summary
                     except json.JSONDecodeError:
                         pass
                 
@@ -295,7 +308,9 @@ def api_open_folder(folder_key):
 
 @app.route("/api/status")
 def api_status():
-    return jsonify(state)
+    # Return state without the Popen object (not JSON serializable)
+    safe_state = {k: v for k, v in state.items() if k != "process"}
+    return jsonify(safe_state)
 
 @app.route("/api/files")
 def api_files():
@@ -409,6 +424,33 @@ def stream_logs():
                         yield f"data: {json.dumps(log_queue[i])}\n\n"
                     last_index = len(log_queue)
     return Response(event_stream(), mimetype="text/event-stream")
+
+
+@app.route("/api/summary")
+def api_summary():
+    with step_summaries_lock:
+        return jsonify(step_summaries)
+
+
+@app.route("/api/download/<file_type>")
+def api_download(file_type):
+    """Download Excel summary files from logs/"""
+    file_map = {
+        "edit_failed": "logs/edit_failed.xlsx",
+        "edit_stages": "logs/edit_stages.xlsx",
+        "merge_failed": "logs/merge_failed.xlsx",
+        "merge_skipped": "logs/merge_skipped.xlsx",
+    }
+    if file_type not in file_map:
+        return jsonify({"status": "error", "message": "File type not found"}), 404
+    
+    file_path = Path(file_map[file_type])
+    if not file_path.exists():
+        return jsonify({"status": "error", "message": "File not generated yet"}), 404
+    
+    from flask import send_file
+    return send_file(file_path, as_attachment=True)
+
 
 if __name__ == "__main__":
     import webbrowser

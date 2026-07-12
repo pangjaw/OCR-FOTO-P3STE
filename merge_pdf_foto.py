@@ -1,4 +1,5 @@
-import argparse
+def log(msg):
+    print(msg, flush=True)
 import json
 import os
 import re
@@ -7,6 +8,10 @@ from collections import defaultdict
 from dataclasses import dataclass
 import pdfplumber
 import fitz  # PyMuPDF
+import openpyxl
+from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
+from datetime import datetime
+import argparse
 
 DEFAULT_INPUT_DIR = "./02_pdf_target"
 DEFAULT_PHOTOS_DIR = "./04_photos_edited"
@@ -28,7 +33,7 @@ def load_checklist_config(path: str = CHECKLIST_CONFIG_PATH) -> dict:
         with open(path, encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
-        print(f"[WARNING] Checklist config not found at {path}, using defaults")
+        log(f"[WARNING] Checklist config not found at {path}, using defaults")
         return {
             "search_keyword": "PERAWATAN",
             "types": {}
@@ -286,7 +291,7 @@ def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path, input_root: 
         tim = schedule_lookup.get(pdf_path.name)
         if tim:
             photo_lookup_dir = photos_dir / f"Tim_{tim}"
-            print(f"    [SCHEDULE] Tim {tim} -> {photo_lookup_dir}")
+            log(f"    [SCHEDULE] Tim {tim} -> {photo_lookup_dir}")
 
     for r in assets:
         # Mode schedule: flat structure Tim_N/asset_type/detail/
@@ -404,28 +409,97 @@ def main():
         schedule_lookup = {e["file"]: e["tim"] for e in sched_data.get("schedules", [])}
         print(f"[SCHEDULE] Loaded {len(schedule_lookup)} file->Tim mappings.")
 
-    print(f"Mulai pemrosesan {len(pdf_files)} berkas PDF...")
-    print(f"Input:  {input_dir}")
-    print(f"Photos: {photos_dir}")
-    print(f"Output: {output_dir}\n")
+    log(f"Mulai pemrosesan {len(pdf_files)} berkas PDF...")
+    log(f"Input:  {input_dir}")
+    log(f"Photos: {photos_dir}")
+    log(f"Output: {output_dir}\n")
 
     success = 0
     skipped = 0
     failed = 0
+    failed_files = []
+    skipped_files = []
 
     for pdf_path in pdf_files:
         status = process_pdf(pdf_path, photos_dir, output_dir, input_dir, schedule_lookup)
         if status == "ok":
             success += 1
-            print(f"[OK] {pdf_path.name}")
+            log(f"[OK] {pdf_path.name}")
         elif status.startswith("skipped"):
             skipped += 1
-            print(f"[SKIP] {pdf_path.name} - {status}")
+            skipped_files.append({
+                "file": pdf_path.name,
+                "reason": status,
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
+            log(f"[SKIP] {pdf_path.name} - {status}")
         else:
             failed += 1
-            print(f"[FAIL] {pdf_path.name} - {status}")
+            failed_files.append({
+                "file": pdf_path.name,
+                "reason": status,
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
+            log(f"[FAIL] {pdf_path.name} - {status}")
 
-    print(f"\nSelesai. Sukses: {success}, Dilewati: {skipped}, Gagal: {failed}.")
+    # Export Excel files
+    logs_dir = Path("logs")
+    ensure_dir(logs_dir)
+    
+    if failed_files:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Failed Files"
+        headers = ["File PDF", "Alasan", "Timestamp"]
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="FF4444", end_color="FF4444", fill_type="solid")
+            cell.font = Font(bold=True, color="FFFFFF")
+        for row_idx, item in enumerate(failed_files, 2):
+            ws.cell(row=row_idx, column=1, value=item["file"])
+            ws.cell(row=row_idx, column=2, value=item["reason"])
+            ws.cell(row=row_idx, column=3, value=item["timestamp"])
+        # Auto-fit columns
+        for col in ws.columns:
+            max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
+            ws.column_dimensions[col[0].column_letter].width = max_length + 2
+        wb.save(logs_dir / "merge_failed.xlsx")
+        log(f"[EXPORT] Failed files saved to logs/merge_failed.xlsx ({len(failed_files)} items)")
+
+    if skipped_files:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Skipped Files"
+        headers = ["File PDF", "Alasan", "Timestamp"]
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="FFA500", end_color="FFA500", fill_type="solid")
+            cell.font = Font(bold=True, color="FFFFFF")
+        for row_idx, item in enumerate(skipped_files, 2):
+            ws.cell(row=row_idx, column=1, value=item["file"])
+            ws.cell(row=row_idx, column=2, value=item["reason"])
+            ws.cell(row=row_idx, column=3, value=item["timestamp"])
+        for col in ws.columns:
+            max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
+            ws.column_dimensions[col[0].column_letter].width = max_length + 2
+        wb.save(logs_dir / "merge_skipped.xlsx")
+        log(f"[EXPORT] Skipped files saved to logs/merge_skipped.xlsx ({len(skipped_files)} items)")
+
+    # Print summary JSON for app.py to capture
+    import sys
+    summary = {
+        "step": "merge",
+        "success": success,
+        "failed": failed,
+        "skipped": skipped,
+        "failed_file": "logs/merge_failed.xlsx" if failed_files else None,
+        "skipped_file": "logs/merge_skipped.xlsx" if skipped_files else None
+    }
+    print(f"__SUMMARY__:{json.dumps(summary)}", flush=True)
+
+    log(f"\nSelesai. Sukses: {success}, Dilewati: {skipped}, Gagal: {failed}.")
     return 0 if success > 0 or skipped > 0 else 1
 
 if __name__ == "__main__":

@@ -20,7 +20,9 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter
 
 import pytesseract
 
-# ─── Config ───
+import openpyxl
+from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
+from datetime import datetime
 TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
@@ -418,11 +420,190 @@ def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tup
         except Exception:
             pass
 
+sy2 = min(h, ty + bbox[3] + shape_pad_y)
+    shape_box = (sx1, sy1, sx2, sy2)
+
+    out = img.copy()
+    draw = ImageDraw.Draw(out)
+
+    radius = max(2, int(box_h * 0.25))
+    overlay = Image.new("RGBA", out.size, (0,0,0,0))
+    odraw = ImageDraw.Draw(overlay)
+    odraw.rounded_rectangle(shape_box, radius=radius, fill=(0,0,0,140))
+    out = Image.alpha_composite(out.convert("RGBA"), overlay).convert("RGB")
+    draw = ImageDraw.Draw(out)
+
+    so = max(1, int(font_size * 0.02))
+    draw.text((tx+so, ty+so), text, font=font, fill=(35,35,35), stroke_width=fit_stroke, stroke_fill=(35,35,35))
+    draw.text((tx, ty), text, font=font, fill=(248,248,248))
+
+    return out
+
+
+# ─── Core: Locate Date Box ───
+def locate_date_box(arr_orig: np.ndarray, arr_hsv: np.ndarray, w: int, h: int,
+                    y_override: int | None = None, consensus_gy1: int | None = None):
+    """
+    Single-stage detection:
+    1. If y_override -> use it
+    2. Original image guide -> fixed offset textbox
+    3. Folder consensus gy1 -> fixed offset textbox
+    4. Fallback -> get_text_box()
+    Returns: (box, stage_name)
+    """
+    if y_override is not None:
+        box_h = int(h * BOX_HEIGHT_RATIO)
+        y1 = max(0, y_override - box_h // 2)
+        y2 = min(h, y1 + box_h)
+        x1 = int(w * 0.047)
+        x2 = int(w * 0.49)
+        return (x1, y1, x2, y2), "stage_0_override"
+
+    # Use original image
+    guide = find_red_guide(arr_orig)
+    if guide is not None:
+        new_box = place_textbox_fixed_offset(guide, w, h)
+        return new_box, "stage_1c_guide_original"
+
+    # Folder consensus gy1 fallback
+    if consensus_gy1 is not None:
+        synthetic_guide = (8, consensus_gy1, 9, consensus_gy1 + 84)
+        new_box = place_textbox_fixed_offset(synthetic_guide, w, h)
+        return new_box, "stage_1c_guide_consensus"
+
+    # No guide at all -> fallback
+    fallback = get_text_box(w, h)
+    return fallback, "stage_fallback"
+
+
+# ─── Schedule Support ───
+def load_schedule(path: Path):
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def iso_to_timemark(iso_str: str) -> str:
+    """2026-07-11T09:30:00 -> Rabu, Jul 11 2026 09:30"""
+    dt = datetime.fromisoformat(iso_str)
+    days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
+    months = ["", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+    return f"{days[dt.weekday()]}, {months[dt.month]} {dt.day:02d} {dt.year} {dt.hour:02d}:{dt.minute:02d}"
+
+
+def build_schedule_lookup(schedule_data: dict):
+    """Build {(asset_type, detail, photo_name): (timemark_text, tim_n)}"""
+    lookup = {}
+    for sched in schedule_data.get("schedules", []):
+        tim_n = sched.get("tim", 1)
+        for asset in sched.get("assets", []):
+            atype = asset["type"]
+            detail = asset["detail"]
+            for pname, iso_ts in asset.get("photos", {}).items():
+                lookup[(atype, detail, pname)] = (iso_to_timemark(iso_ts), tim_n)
+    return lookup
+
+
+# ─── Process Single Image ───
+def process_image(image_path: Path, output_path: Path, date_text: str,
+                  y_override: int | None = None, schedule_lookup: dict | None = None,
+                  asset_key: tuple | None = None, consensus_gy1: int | None = None):
+    img_orig = Image.open(image_path).convert('RGB')
+    orig_w, orig_h = img_orig.size
+    arr_orig = np.array(img_orig)
+
+    # HSV isolation (kept for compatibility, but locate_date_box uses original)
+    arr_hsv = preprocess_for_guide(img_orig)
+
+    # Determine timemark text
+    timemark_text = date_text
+    if schedule_lookup and asset_key:
+        timemark_text = schedule_lookup.get(asset_key, (date_text, 1))[0]
+
+    # Locate box - returns (box, stage)
+    box, stage = locate_date_box(arr_orig, arr_hsv, orig_w, orig_h, y_override, consensus_gy1)
+    x1, y1, x2, y2 = box
+
+    # Erase: precision mask (rounded rect, 1px pad)
+    pad = 1
+    ex1 = max(0, x1 - pad)
+    ey1 = max(0, y1 - pad)
+    ex2 = min(orig_w, x2 + pad)
+    ey2 = min(orig_h, y2 + pad)
+
+    crop = arr_orig[ey1:ey2, ex1:ex2]
+    box_h_px = y2 - y1
+    radius = max(2, int(box_h_px * 0.25))
+
+    mask_img = Image.new("L", (crop.shape[1], crop.shape[0]), 0)
+    md = ImageDraw.Draw(mask_img)
+    md.rounded_rectangle(
+        (x1 - ex1, y1 - ey1, x2 - ex1, y2 - ey1),
+        radius=radius, fill=255
+    )
+    crop_mask = np.array(mask_img) > 0
+
+    arr_work = arr_orig.copy()
+    arr_work[ey1:ey2, ex1:ex2] = diffuse_fill(crop, crop_mask, steps=60)
+    img_erased = Image.fromarray(arr_work)
+
+    # Draw new textbox
+    img_out = draw_textbox(img_erased, box, timemark_text)
+
+    # Save
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    img_out.save(output_path, quality=95, subsampling=0)
+
+    return stage
+
+
+# ─── Main ───
+def sanitize_segment(text: str) -> str:
+    return re.sub(r'[\\/:*?"<>|]', '_', text).strip()
+
+
+def asset_output_dir(root: Path, asset_type: str, detail: str) -> Path:
+    return root / asset_type / sanitize_segment(detail)
+
+
+def _folder_key_from_path(rel: Path, input_dir: Path | None = None) -> tuple[str, str] | None:
+    """Extract (asset_type, detail) from relative path."""
+    parts = rel.parts
+    if len(parts) >= 3:
+        return parts[0], parts[1]
+    elif len(parts) == 2 and input_dir:
+        asset_type = input_dir.parent.name
+        detail = parts[0]
+        return asset_type, detail
+    elif len(parts) == 1 and input_dir:
+        asset_type = input_dir.parent.name
+        detail = input_dir.name
+        return asset_type, detail
+    return None
+
+
+def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tuple[str, str], int]:
+    from collections import defaultdict
+    folder_guides = defaultdict(list)
+
+    for src in all_jpgs:
+        rel = src.relative_to(input_dir)
+        fkey = _folder_key_from_path(rel, input_dir)
+        if not fkey:
+            continue
+        try:
+            img = Image.open(src).convert('RGB')
+            arr = np.array(img)
+            guide = find_red_guide(arr)
+            if guide:
+                gx1, gy1, gx2, gy2 = guide
+                folder_guides[fkey].append(gy1)
+        except Exception:
+            pass
+
     consensus = {}
     for fkey, gy1s in folder_guides.items():
         if len(gy1s) >= 2:
             gy1s.sort()
-            # Check if median cluster within 10px
             median = gy1s[len(gy1s) // 2]
             if all(abs(g - median) <= 10 for g in gy1s):
                 consensus[fkey] = median
@@ -445,70 +626,58 @@ def main():
     if args.clear_output and output_dir.exists():
         shutil.rmtree(output_dir)
 
-    # Load schedule
     schedule_lookup = None
     if args.schedule:
         schedule_data = load_schedule(args.schedule)
         schedule_lookup = build_schedule_lookup(schedule_data)
 
-    # Global date text
     date_text = args.date or datetime.now().strftime("%A, %b %d %Y %H:%M").replace("Monday", "Senin").replace("Tuesday", "Selasa").replace("Wednesday", "Rabu").replace("Thursday", "Kamis").replace("Friday", "Jumat").replace("Saturday", "Sabtu").replace("Sunday", "Minggu")
 
     all_jpgs = list(input_dir.rglob("*.jpg"))
-    print(f"Total foto: {len(all_jpgs)}")
-    print(f"Input: {input_dir}")
-    print(f"Output: {output_dir}")
-    print(f"Date: {date_text}")
-    print(f"Schedule: {'Yes' if schedule_lookup else 'No'}")
-    print("=" * 60)
-
-    # Pre-scan: folder consensus for Red Guide gy1
     folder_consensus = _collect_folder_consensus(input_dir, all_jpgs)
-    if folder_consensus:
-        print(f"Folder consensus gy1: {folder_consensus}")
 
     ok = 0
+    failed = 0
+    stage_counts = {"Stage 1c Original": 0, "Stage 1c Consensus": 0, "Fallback": 0}
+    stage_details = []
+    failed_files = []
+
     for src in all_jpgs:
         rel = src.relative_to(input_dir)
-        # Parse asset_type, detail, photo_name from path
         parts = rel.parts
         if len(parts) >= 3:
-            asset_type = parts[0]
-            detail = parts[1]
-            photo_name = parts[2]
+            asset_type, detail, photo_name = parts[0], parts[1], parts[2]
             asset_key = (asset_type, detail, photo_name)
         elif len(parts) == 2:
-            asset_type = parts[0]
-            detail = parts[1]
+            asset_type, detail, photo_name = parts[0], parts[1], None
             asset_key = None
-        elif len(parts) == 1 and input_dir:
-            # Single asset folder input: input_dir = 03_photos_export/AXC/ZP 42B BOO
-            asset_type = input_dir.parent.name
-            detail = input_dir.name
-            photo_name = parts[0]
-            asset_key = (asset_type, detail, photo_name)
         else:
-            asset_type = None
-            detail = None
-            asset_key = None
+            asset_type, detail, photo_name, asset_key = None, None, None, None
 
-        # Determine output path (respect schedule Tim subfolder)
         if schedule_lookup and asset_key:
             timemark_text, tim_n = schedule_lookup.get(asset_key, (date_text, 1))
-            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), asset_type, detail)
+            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), asset_type or "Misc", detail or "Misc")
         else:
-            dst_dir = output_dir / asset_output_dir(Path(""), asset_type, detail) if asset_type and detail else output_dir
+            dst_dir = output_dir / asset_output_dir(Path(""), asset_type or "Misc", detail or "Misc") if asset_type and detail else output_dir
         dst = dst_dir / src.name
 
-        # Get folder consensus gy1 for this asset
         fkey = _folder_key_from_path(rel, input_dir)
         consensus_gy1 = folder_consensus.get(fkey) if fkey else None
 
         try:
             stage = process_image(src, dst, date_text, args.y_override, schedule_lookup, asset_key, consensus_gy1)
             ok += 1
+            if stage in stage_counts:
+                stage_counts[stage] += 1
+            stage_details.append({
+                "file": str(rel), 
+                "stage": stage, 
+                "asset_type": asset_type, 
+                "detail": detail, 
+                "photo": photo_name, 
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
             # Emit JSON for SSE real-time dashboard
-            import json
             print(json.dumps({
                 "type": "stage",
                 "file": str(rel),
@@ -518,10 +687,72 @@ def main():
                 "photo": photo_name
             }), flush=True)
         except Exception as e:
-            print(f"  ERROR {rel}: {e}")
+            failed += 1
+            failed_files.append({
+                "file": str(rel), 
+                "asset_type": asset_type, 
+                "detail": detail, 
+                "photo": photo_name, 
+                "reason": str(e), 
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
 
-    print("=" * 60)
-    print(f"BERHASIL: {ok}/{len(all_jpgs)}")
+    logs_dir = Path("logs")
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    
+    if stage_details:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Stage Details"
+        headers = ["File", "Stage", "Asset Type", "Detail Aset", "Photo", "Timestamp"]
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+            cell.font = Font(bold=True, color="FFFFFF")
+        for row_idx, item in enumerate(stage_details, 2):
+            ws.cell(row=row_idx, column=1, value=item["file"])
+            ws.cell(row=row_idx, column=2, value=item["stage"])
+            ws.cell(row=row_idx, column=3, value=item["asset_type"])
+            ws.cell(row=row_idx, column=4, value=item["detail"])
+            ws.cell(row=row_idx, column=5, value=item["photo"])
+            ws.cell(row=row_idx, column=6, value=item["timestamp"])
+        for col in ws.columns:
+            max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
+            ws.column_dimensions[col[0].column_letter].width = max_length + 2
+        wb.save(logs_dir / "edit_stages.xlsx")
+
+    if failed_files:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Failed Files"
+        headers = ["File", "Asset Type", "Detail Aset", "Photo", "Alasan", "Timestamp"]
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="FF4444", end_color="FF4444", fill_type="solid")
+            cell.font = Font(bold=True, color="FFFFFF")
+        for row_idx, item in enumerate(failed_files, 2):
+            ws.cell(row=row_idx, column=1, value=item["file"])
+            ws.cell(row=row_idx, column=2, value=item["asset_type"])
+            ws.cell(row=row_idx, column=3, value=item["detail"])
+            ws.cell(row=row_idx, column=4, value=item["photo"])
+            ws.cell(row=row_idx, column=5, value=item["reason"])
+            ws.cell(row=row_idx, column=6, value=item["timestamp"])
+        for col in ws.columns:
+            max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
+            ws.column_dimensions[col[0].column_letter].width = max_length + 2
+        wb.save(logs_dir / "edit_failed.xlsx")
+
+    summary = {
+        "step": "edit",
+        "success": ok,
+        "failed": failed,
+        "stage_counts": stage_counts,
+        "failed_file": "logs/edit_failed.xlsx" if failed_files else None,
+        "stages_file": "logs/edit_stages.xlsx" if stage_details else None
+    }
+    print(f"__SUMMARY__:{json.dumps(summary)}", flush=True)
 
 
 if __name__ == "__main__":

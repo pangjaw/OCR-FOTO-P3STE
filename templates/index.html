@@ -24,7 +24,7 @@
     .main{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;flex:1;min-height:0}
 
     .col{display:flex;flex-direction:column;gap:.5rem;min-height:0}
-    .col-left .card{flex:1;min-height:0}
+    .col-left .card{flex:1;min-height:0;display:flex;flex-direction:column}
     .col-right .card:first-child{flex-shrink:0}
     .col-right .card:last-child{flex:1;min-height:0}
 
@@ -41,29 +41,39 @@
     .card ul::-webkit-scrollbar{width:3px}
     .card ul::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
 
-    /* Stage Tables */
-    .stage-section{flex:1;min-height:0;display:flex;flex-direction:column;gap:.4rem}
-    .stage-tables{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem;flex:1;min-height:0;overflow:hidden}
-    .stage-table-wrap{display:flex;flex-direction:column;min-width:0;background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.04);border-radius:6px;overflow:hidden}
-    .stage-table-header{padding:.3rem .4rem;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.04);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#64748b;text-align:center;white-space:nowrap}
-    .stage-table-header.original{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.2);color:#38bdf8}
-    .stage-table-header.consensus{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);color:#22c55e}
-    .stage-table-header.fallback{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.2);color:#f97316}
-    .stage-table{width:100%;border-collapse:collapse;font-size:.6rem;overflow-y:auto;flex:1;min-height:0;display:block}
-    .stage-table thead{position:sticky;top:0;z-index:1}
-    .stage-table th{padding:.25rem .3rem;text-align:left;font-weight:600;color:#64748b;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.04);white-space:nowrap;font-size:.55rem;text-transform:uppercase;letter-spacing:.03em}
-    .stage-table td{padding:.2rem .3rem;border-bottom:1px solid rgba(255,255,255,.03);color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
-    .stage-table tbody tr:hover td{background:rgba(255,255,255,.02);color:#e2e8f0}
-    .stage-table .asset-name{font-weight:500;color:#cbd5e1;max-width:160px}
-    .stage-table .photo-tag{font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.05rem .2rem;border-radius:3px;background:rgba(255,255,255,.06);color:#6366f1}
-    .stage-table .empty-row td{text-align:center;color:#334155;font-size:.6rem;padding:.8rem 0}
-    .stage-table::-webkit-scrollbar{width:3px;height:3px}
-    .stage-table::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
+    /* Summary cards - equal height */
+    .summary-row{display:flex;gap:.4rem;flex:0 0 auto}
+    .summary-card{flex:1;min-width:0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;padding:.75rem .5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80px}
+    .summary-card.success{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.05)}
+    .summary-card.failed{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.05)}
+    .summary-card.skipped{border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.05)}
+    .summary-card .num{font-size:1.75rem;font-weight:700;line-height:1}
+    .summary-card.success .num{color:#4ade80}
+    .summary-card.failed .num{color:#ef4444}
+    .summary-card.skipped .num{color:#f97316}
+    .summary-card .lbl{font-size:.55rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#64748b;margin-top:.25rem}
+    .summary-card .btn-dl{margin-top:.5rem;padding:.25rem .6rem;font-size:.55rem;font-weight:600;border:none;border-radius:4px;cursor:pointer;background:rgba(255,255,255,.08);color:#94a3b8;transition:all .2s}
+    .summary-card .btn-dl:hover{background:rgba(255,255,255,.15);color:#e2e8f0}
+    .summary-card.success .btn-dl:hover{background:rgba(34,197,94,.2);color:#4ade80}
+    .summary-card.failed .btn-dl:hover{background:rgba(239,68,68,.2);color:#ef4444}
+    .summary-card.skipped .btn-dl:hover{background:rgba(249,115,22,.2);color:#f97316}
+    .summary-card .btn-dl:disabled{opacity:.4;cursor:not-allowed}
 
-    .count-row{display:flex;gap:.5rem;justify-content:center;margin-bottom:.3rem}
-    .count-box{flex:1;min-width:0;padding:.4rem .5rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:6px;text-align:center}
-    .count-box .num{font-size:1.1rem;font-weight:700;color:#6366f1}
-    .count-box .lbl{font-size:.5rem;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-top:.1rem}
+    /* Stage totals - equal height */
+    .stage-totals{display:flex;gap:.4rem;flex:1;min-height:0;align-items:stretch}
+    .stage-box{flex:1;min-width:0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;padding:.75rem .5rem;text-align:center;display:flex;flex-direction:column;justify-content:center}
+    .stage-box.original{border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.05)}
+    .stage-box.consensus{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.05)}
+    .stage-box.fallback{border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.05)}
+    .stage-box .num{font-size:1.5rem;font-weight:700;line-height:1}
+    .stage-box.original .num{color:#38bdf8}
+    .stage-box.consensus .num{color:#4ade80}
+    .stage-box.fallback .num{color:#f97316}
+    .stage-box .lbl{font-size:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#64748b;margin-top:.25rem}
+
+    /* Left card internal spacing */
+    .section-block{display:flex;flex-direction:column;gap:.25rem}
+    .section-block .lbl{margin-top:.5rem}
 
     .ctrl{display:flex;flex-direction:column;gap:.4rem}
     .btn-group{display:flex;gap:.4rem}
@@ -131,9 +141,16 @@
     .log-empty{color:#334155;text-align:center;padding:1rem 0;font-size:.62rem}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
+    .count-row{display:flex;gap:.5rem;justify-content:center;margin-bottom:.3rem}
+    .count-box{flex:1;min-width:0;padding:.4rem .5rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:6px;text-align:center}
+    .count-box .num{font-size:1.1rem;font-weight:700;color:#6366f1}
+    .count-box .lbl{font-size:.5rem;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-top:.1rem}
+
     @media (max-width: 1100px){
-      .stage-tables{grid-template-columns:1fr}
+      .main{grid-template-columns:1fr}
       .app{max-width:100%}
+      .summary-row{flex-direction:column}
+      .stage-totals{flex-direction:column}
     }
   </style>
 </head>
@@ -145,67 +162,57 @@
     </div>
 
     <div class="main">
-      <!-- KIRI: Stage Tracking + PDF Counts -->
+      <!-- KIRI: Progress File + Processing Summary + Stage Totals -->
       <div class="col col-left">
         <div class="card">
-          <div class="lbl">📊 Progress File</div>
-          <div class="count-row">
-            <div class="count-box">
-              <div class="num" id="count-01">0</div>
-              <div class="lbl">PDF 2026</div>
-            </div>
-            <div class="count-box">
-              <div class="num" id="count-02">0</div>
-              <div class="lbl">PDF 2025</div>
-            </div>
-            <div class="count-box">
-              <div class="num" id="count-total">0</div>
-              <div class="lbl">Total Aset</div>
+          <div class="section-block">
+            <div class="lbl">📊 Progress File</div>
+            <div class="count-row">
+              <div class="count-box">
+                <div class="num" id="count-01">0</div>
+                <div class="lbl">PDF 2026</div>
+              </div>
+              <div class="count-box">
+                <div class="num" id="count-02">0</div>
+                <div class="lbl">PDF 2025</div>
+              </div>
             </div>
           </div>
 
-          <div class="stage-section">
-            <div class="stage-tables">
-              <!-- Stage 1c Original -->
-              <div class="stage-table-wrap">
-                <div class="stage-table-header original">Stage 1c Original</div>
-                <table class="stage-table" id="table-original">
-                  <thead>
-                    <tr>
-                      <th style="width:70%">Aset</th>
-                      <th style="width:30%">Foto</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
+          <div class="section-block">
+            <div class="lbl">📈 Processing Summary</div>
+            <div class="summary-row">
+              <div class="summary-card success">
+                <div class="num" id="sum-success">0</div>
+                <div class="lbl">Sukses</div>
               </div>
-
-              <!-- Stage 1c Consensus -->
-              <div class="stage-table-wrap">
-                <div class="stage-table-header consensus">Stage 1c Consensus</div>
-                <table class="stage-table" id="table-consensus">
-                  <thead>
-                    <tr>
-                      <th style="width:70%">Aset</th>
-                      <th style="width:30%">Foto</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
+              <div class="summary-card failed">
+                <div class="num" id="sum-failed">0</div>
+                <div class="lbl">Gagal</div>
+                <button class="btn-dl" id="dl-edit-failed" disabled>⬇ Excel</button>
               </div>
+              <div class="summary-card skipped">
+                <div class="num" id="sum-skipped">0</div>
+                <div class="lbl">Terskip</div>
+                <button class="btn-dl" id="dl-merge-skipped" disabled>⬇ Excel</button>
+              </div>
+            </div>
+          </div>
 
-              <!-- Fallback -->
-              <div class="stage-table-wrap">
-                <div class="stage-table-header fallback">Fallback</div>
-                <table class="stage-table" id="table-fallback">
-                  <thead>
-                    <tr>
-                      <th style="width:70%">Aset</th>
-                      <th style="width:30%">Foto</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
+          <div class="section-block">
+            <div class="lbl">🎯 Stage Totals</div>
+            <div class="stage-totals">
+              <div class="stage-box original">
+                <div class="num" id="stage-original">0</div>
+                <div class="lbl">Original</div>
+              </div>
+              <div class="stage-box consensus">
+                <div class="num" id="stage-consensus">0</div>
+                <div class="lbl">Consensus</div>
+              </div>
+              <div class="stage-box fallback">
+                <div class="num" id="stage-fallback">0</div>
+                <div class="lbl">Fallback</div>
               </div>
             </div>
           </div>
@@ -264,54 +271,21 @@
   <script>
     const L=id=>document.getElementById(id);
     const stepOrder=['step1','step2','step3','step4','step5'];
-    document.querySelectorAll('.folder-btn').forEach(b=>b.onclick=()=>fetch('/api/open-folder/'+b.dataset.folder));
-    
+
     // Stage tracking SSE
     let stageEsConn=null, stageEsReconnectTimer=null;
-    const stageTables = {
-      original: L('table-original').querySelector('tbody'),
-      consensus: L('table-consensus').querySelector('tbody'),
-      fallback: L('table-fallback').querySelector('tbody')
-    };
     const stageCounts = {
-      stage_0_override: 0,
       stage_1c_guide_original: 0,
       stage_1c_guide_consensus: 0,
       stage_fallback: 0
     };
-    const seenFiles = new Set(); // track unique file+stage combos
 
     function esc(s){return String(s).replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>')}
 
-    function formatAssetName(file, asset_type, detail, photo){
-      // file is like "0.jpg", asset_type like "AXC", detail like "ZP 60 BOO"
-      const baseName = detail || file.replace(/\.(jpg|JPG)$/i, '');
-      return `${asset_type} ${baseName} ${photo}`;
-    }
-
-    function addRow(tableBody, file, asset_type, detail, photo, stage){
-      const key = `${file}|${stage}`;
-      if(seenFiles.has(key)) return;
-      seenFiles.add(key);
-      
-      const tr = document.createElement('tr');
-      const assetName = formatAssetName(file, asset_type, detail, photo);
-      tr.innerHTML = `
-        <td class="asset-name" title="${esc(assetName)}">${esc(assetName)}</td>
-        <td><span class="photo-tag">${esc(photo)}</span></td>
-      `;
-      tableBody.insertBefore(tr, tableBody.firstChild);
-      
-      // Limit rows to 100
-      while(tableBody.children.length > 100){
-        tableBody.removeChild(tableBody.lastChild);
-      }
-    }
-
-    function updateCounts(){
-      L('table-original').querySelector('thead th:first-child').textContent = `Aset (${stageCounts.stage_1c_guide_original})`;
-      L('table-consensus').querySelector('thead th:first-child').textContent = `Aset (${stageCounts.stage_1c_guide_consensus})`;
-      L('table-fallback').querySelector('thead th:first-child').textContent = `Aset (${stageCounts.stage_fallback})`;
+    function updateStageCounts(){
+      L('stage-original').textContent = stageCounts.stage_1c_guide_original;
+      L('stage-consensus').textContent = stageCounts.stage_1c_guide_consensus;
+      L('stage-fallback').textContent = stageCounts.stage_fallback;
     }
 
     function connectStages(){
@@ -327,15 +301,12 @@
             const stage = data.stage;
             if(stage==='stage_1c_guide_original'){
               stageCounts.stage_1c_guide_original++;
-              addRow(stageTables.original, data.file, data.asset_type, data.detail, data.photo, stage);
             }else if(stage==='stage_1c_guide_consensus'){
               stageCounts.stage_1c_guide_consensus++;
-              addRow(stageTables.consensus, data.file, data.asset_type, data.detail, data.photo, stage);
             }else if(stage==='stage_fallback' || stage==='stage_0_override'){
               stageCounts.stage_fallback++;
-              addRow(stageTables.fallback, data.file, data.asset_type, data.detail, data.photo, stage);
             }
-            updateCounts();
+            updateStageCounts();
           }
         }catch(err){console.warn('stage parse error',err);}
       };
@@ -344,7 +315,6 @@
 
     async function loadConfig(){
       const r=await fetch('/api/config'),d=await r.json();
-      L('hint-01').textContent=d['01_pdf_source']||'';L('hint-02').textContent=d['02_pdf_target']||''
     }
     async function loadFiles(){
       try{
@@ -355,11 +325,41 @@
         const total2 = d['02_pdf_target']?.total || 0;
         L('count-01').textContent=total1;
         L('count-02').textContent=total2;
-        L('count-total').textContent=total1+total2;
       }catch(e){console.warn('loadFiles error:',e);}
     }
     L('btn-refresh').onclick=loadFiles;
-    
+
+    async function loadSummary(){
+      try{
+        const r=await fetch('/api/summary');
+        if(!r.ok) return;
+        const d=await r.json();
+        // d is {edit: {...}, merge: {...}}
+        let success=0, failed=0, skipped=0;
+        let editFailed=false, mergeSkipped=false;
+
+        if(d.edit){
+          success += d.edit.success || 0;
+          failed += d.edit.failed || 0;
+          editFailed = (d.edit.failed || 0) > 0;
+        }
+        if(d.merge){
+          success += d.merge.success || 0;
+          failed += d.merge.failed || 0;
+          skipped += d.merge.skipped || 0;
+          mergeSkipped = (d.merge.skipped || 0) > 0;
+        }
+
+        L('sum-success').textContent = success;
+        L('sum-failed').textContent = failed;
+        L('sum-skipped').textContent = skipped;
+
+        // Enable download buttons if files exist
+        L('dl-edit-failed').disabled = !editFailed;
+        L('dl-merge-skipped').disabled = !mergeSkipped;
+      }catch(e){console.warn('loadSummary error:',e);}
+    }
+
     const btn=L('btn-run'),btnStop=L('btn-stop'),pb=L('progress-bar'),st=L('status-text'),tog=L('toggle-ow'),lblOn=L('toggle-lbl-on'),lblOff=L('toggle-lbl-off');
     tog.onchange=()=>{if(tog.checked){lblOn.className='toggle-label on';lblOff.className='toggle-label'}else{lblOn.className='toggle-label';lblOff.className='toggle-label off'}};
     btn.onclick=async()=>{
@@ -367,35 +367,55 @@
       const step=L('step-sel').value;
       const overwrite=tog.checked;
       btn.disabled=true;btn.classList.add('running');btn.innerHTML='⏳ Proses…';
-      btnStop.style.display='inline-flex';btn.innerHTML='⏳ Proses…';
+      btnStop.style.display='inline-flex';
       L('step-bar').style.display='flex';
       // Reset stage data on new run
-      seenFiles.clear();
-      stageCounts.stage_0_override=0;
       stageCounts.stage_1c_guide_original=0;
       stageCounts.stage_1c_guide_consensus=0;
       stageCounts.stage_fallback=0;
-      stageTables.original.innerHTML='';
-      stageTables.consensus.innerHTML='';
-      stageTables.fallback.innerHTML='';
-      updateCounts();
-      try{const r=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({step,overwrite})}),d=await r.json();if(d.status!=='ok'){alert(d.message);rst()}}catch{rst()}
+      updateStageCounts();
+      // Reset dots
+      document.querySelectorAll('.step-dot').forEach(d=>{d.className='step-dot'});
+      try{const r=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({step,overwrite})}),d=await r.json();if(d.status!=='ok'){alert(d.message);rst()}}catch{rst()};
     };
     btnStop.onclick=async()=>{btnStop.disabled=true;btnStop.innerHTML='⏹ Stopping…';try{await fetch('/api/stop',{method:'POST'})}catch{};};
-    function rst(){btn.disabled=false;btn.classList.remove('running');btn.innerHTML='▶ Jalankan';btnStop.style.display='none';btnStop.disabled=false;btnStop.innerHTML='⏹ Stop';L('step-bar').style.display='none'}
-    setInterval(async()=>{try{const r=await fetch('/api/status'),s=await r.json();pb.style.width=s.progress+'%';st.textContent=s.status_text||'Idle';
-      const current=s.current_step;
-      if(current){
-        document.querySelectorAll('.step-dot').forEach(dot=>{
-          const step=dot.dataset.step;
-          dot.classList.remove('active','done','error');
-          if(step===current) dot.classList.add('active');
-          else if(stepOrder.indexOf(step)<stepOrder.indexOf(current)) dot.classList.add('done');
-        });
-        const labels={'step1':'Export Foto','step2':'Ekstrak Tanggal','step3':'Scheduler','step4':'Edit Timemark','step5':'Gabung PDF'};
-        L('step-bar').querySelector('.step-bar-label').textContent='Proses: '+labels[current];
-      }
-      if(!s.is_running&&btn.disabled)rst()}catch{}},800);
+    function rst(){btn.disabled=false;btn.classList.remove('running');btn.innerHTML='▶ Jalankan';btnStop.style.display='none';btnStop.disabled=false;btnStop.innerHTML='⏹ Stop';}
+
+    // Poll status + summary
+    setInterval(async()=>{
+      try{
+        const r=await fetch('/api/status'),s=await r.json();
+        pb.style.width=s.progress+'%';
+        st.textContent=s.status_text||'Idle';
+        const current=s.current_step;
+        const dots=document.querySelectorAll('.step-dot');
+        if(current){
+          dots.forEach(dot=>{
+            const step=dot.dataset.step;
+            dot.classList.remove('active','done','error');
+            if(step===current) dot.classList.add('active');
+            else if(stepOrder.indexOf(step)<stepOrder.indexOf(current)) dot.classList.add('done');
+          });
+          const labels={'step1':'Export Foto','step2':'Ekstrak Tanggal','step3':'Scheduler','step4':'Edit Timemark','step5':'Gabung PDF'};
+          L('step-bar').querySelector('.step-bar-label').textContent='Proses: '+labels[current];
+        } else if (!s.is_running && btn.disabled) {
+          const isError = s.status_text && (s.status_text.includes('gagal') || s.status_text.includes('Error') || s.status_text.includes('kesalahan') || s.status_text.includes('dibatalkan'));
+          dots.forEach(dot=>{
+            dot.classList.remove('active');
+            if(isError) dot.classList.add('error');
+            else dot.classList.add('done');
+          });
+          L('step-bar').querySelector('.step-bar-label').textContent = isError ? 'Proses: Gagal' : 'Proses: Selesai';
+          rst();
+          loadSummary(); // fetch summary when done
+        }
+      }catch{}
+    },800);
+
+    // Download handlers
+    L('dl-edit-failed').onclick=()=>window.open('/api/download/edit_failed','_blank');
+    L('dl-merge-skipped').onclick=()=>window.open('/api/download/merge_skipped','_blank');
+
     const lb=L('log-box');
     let esConn=null, esReconnectTimer=null;
     function conn(){
@@ -407,7 +427,6 @@
       es.onmessage=e=>{
         try{
           const data=JSON.parse(e.data);
-          // Handle reset event from new run
           if(data.type==='reset'){
             lb.innerHTML='<div class="log-empty">Log direset untuk run baru</div>';
             return;
@@ -418,10 +437,9 @@
       es.onerror=()=>{es.close();esConn=null;esReconnectTimer=setTimeout(conn,3000);};
     }
     function a(l){const em=lb.querySelector('.log-empty');if(em)em.remove();const d=document.createElement('div');d.className='log-entry '+(l.type||'info');d.innerHTML='<span class="ts">'+(l.timestamp||'')+'</span><span class="msg">'+esc(l.message)+'</span>';lb.appendChild(d);lb.scrollTop=lb.scrollHeight}
-    function esc(s){return String(s).replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>')}
     L('btn-clear-log').onclick=()=>{lb.innerHTML='<div class="log-empty">Log dibersihkan</div>'};
     window.addEventListener('beforeunload',()=>{if(esConn){esConn.close();}if(stageEsConn){stageEsConn.close();}});
-    loadConfig();loadFiles();conn();connectStages();
+    loadConfig();loadFiles();conn();connectStages();loadSummary();
   </script>
 </body>
 </html>
