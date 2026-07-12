@@ -59,12 +59,13 @@ def preprocess_for_guide(img: Image.Image) -> np.ndarray:
     bm = m & (maxc == b)
     hue[bm] = 60 * ((r[bm] - g[bm]) / delta[bm]) + 240
 
-    # Pure red mask: Hue 0-15° or 350-360°, Sat>60%, Val 30-80%
+    # Pure red mask: Hue 0-10° or 350-360°, Sat>65%, Val 25-85%
+    # Excludes orange (15-35°) that appears behind red guide
     is_red = (
-        ((hue <= 15) | (hue >= 350))
-        & (sat >= 0.60)
-        & (val >= 0.30)
-        & (val <= 0.80)
+        ((hue <= 10) | (hue >= 350))
+        & (sat >= 0.65)
+        & (val >= 0.25)
+        & (val <= 0.85)
     )
 
     gray = 0.299*r + 0.587*g + 0.114*b
@@ -242,7 +243,7 @@ def draw_textbox(img: Image.Image, box: tuple[int,int,int,int], text: str) -> Im
     return out
 
 
-# ─── Core: Locate Date Box (NEW: Stage 1c only) ───
+# ─── Core: Locate Date Box ───
 def locate_date_box(arr_orig: np.ndarray, arr_hsv: np.ndarray, w: int, h: int,
                     y_override: int | None = None, consensus_gy1: int | None = None):
     """
@@ -251,6 +252,7 @@ def locate_date_box(arr_orig: np.ndarray, arr_hsv: np.ndarray, w: int, h: int,
     2. Original image guide -> fixed offset textbox
     3. Folder consensus gy1 -> fixed offset textbox
     4. Fallback -> get_text_box()
+    Returns: (box, stage_name)
     """
     if y_override is not None:
         box_h = int(h * BOX_HEIGHT_RATIO)
@@ -258,30 +260,23 @@ def locate_date_box(arr_orig: np.ndarray, arr_hsv: np.ndarray, w: int, h: int,
         y2 = min(h, y1 + box_h)
         x1 = int(w * 0.047)
         x2 = int(w * 0.49)
-        print(f"  STAGE 0 (Y-Override): Y={y_override} Box={x1},{y1},{x2},{y2}")
-        return x1, y1, x2, y2
+        return (x1, y1, x2, y2), "stage_0_override"
 
-    # Use original image (HSV preprocessing damages guide on some photos)
+    # Use original image
     guide = find_red_guide(arr_orig)
-    src_note = "original"
     if guide is not None:
         new_box = place_textbox_fixed_offset(guide, w, h)
-        gx1, gy1, gx2, gy2 = guide
-        print(f"  STAGE 1c (Guide {src_note}): guide=({gx1},{gy1},{gx2},{gy2}) Box={new_box}")
-        return new_box
+        return new_box, "stage_1c_guide_original"
 
     # Folder consensus gy1 fallback
     if consensus_gy1 is not None:
-        # Create synthetic guide at consensus gy1 position (x based on typical guide position)
-        synthetic_guide = (8, consensus_gy1, 9, consensus_gy1 + 84)  # typical guide height ~84px
+        synthetic_guide = (8, consensus_gy1, 9, consensus_gy1 + 84)
         new_box = place_textbox_fixed_offset(synthetic_guide, w, h)
-        print(f"  STAGE 1c (Guide consensus): gy1={consensus_gy1} Box={new_box}")
-        return new_box
+        return new_box, "stage_1c_guide_consensus"
 
     # No guide at all -> fallback
     fallback = get_text_box(w, h)
-    print(f"  STAGE FALLBACK (no guide): Box={fallback}")
-    return fallback
+    return fallback, "stage_fallback"
 
 
 # ─── Schedule Support ───
@@ -327,8 +322,8 @@ def process_image(image_path: Path, output_path: Path, date_text: str,
     if schedule_lookup and asset_key:
         timemark_text = schedule_lookup.get(asset_key, (date_text, 1))[0]
 
-    # Locate box
-    box = locate_date_box(arr_orig, arr_hsv, orig_w, orig_h, y_override, consensus_gy1)
+    # Locate box - returns (box, stage)
+    box, stage = locate_date_box(arr_orig, arr_hsv, orig_w, orig_h, y_override, consensus_gy1)
     x1, y1, x2, y2 = box
 
     # Erase: precision mask (rounded rect, 1px pad)
@@ -360,6 +355,8 @@ def process_image(image_path: Path, output_path: Path, date_text: str,
     # Save
     output_path.parent.mkdir(parents=True, exist_ok=True)
     img_out.save(output_path, quality=95, subsampling=0)
+
+    return stage
 
 
 # ─── Main ───
@@ -508,8 +505,18 @@ def main():
         consensus_gy1 = folder_consensus.get(fkey) if fkey else None
 
         try:
-            process_image(src, dst, date_text, args.y_override, schedule_lookup, asset_key, consensus_gy1)
+            stage = process_image(src, dst, date_text, args.y_override, schedule_lookup, asset_key, consensus_gy1)
             ok += 1
+            # Emit JSON for SSE real-time dashboard
+            import json
+            print(json.dumps({
+                "type": "stage",
+                "file": str(rel),
+                "stage": stage,
+                "asset_type": asset_type,
+                "detail": detail,
+                "photo": photo_name
+            }), flush=True)
         except Exception as e:
             print(f"  ERROR {rel}: {e}")
 

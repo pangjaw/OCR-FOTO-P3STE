@@ -31,6 +31,37 @@ state = {
 log_queue = []
 log_lock = threading.Lock()
 
+log_generation = 0
+log_generation_lock = threading.Lock()
+
+stage_queue = []
+stage_lock = threading.Lock()
+
+stage_counts = {
+    "stage_0_override": 0,
+    "stage_1c_guide_original": 0,
+    "stage_1c_guide_consensus": 0,
+    "stage_fallback": 0
+}
+stage_counts_lock = threading.Lock()
+
+stage_details = []  # list of {file, stage, asset_type, detail, photo}
+stage_details_lock = threading.Lock()
+
+
+def clear_stage_data():
+    global stage_counts, stage_details
+    with stage_counts_lock:
+        stage_counts = {
+            "stage_0_override": 0,
+            "stage_1c_guide_original": 0,
+            "stage_1c_guide_consensus": 0,
+            "stage_fallback": 0
+        }
+    with stage_details_lock:
+        stage_details.clear()
+
+
 def add_log(message, type="info"):
     with log_lock:
         log_entry = {
@@ -41,6 +72,7 @@ def add_log(message, type="info"):
         log_queue.append(log_entry)
         if len(log_queue) > 1000:
             log_queue.pop(0)
+
 
 def run_command_stream(cmd, step_name, overwrite="1"):
     add_log(f"Menjalankan perintah: {' '.join(cmd)}", "command")
@@ -68,6 +100,27 @@ def run_command_stream(cmd, step_name, overwrite="1"):
             line_str = line.strip()
             if line_str:
                 add_log(line_str, "stdout")
+                # Parse JSON stage events from edit_timemark_ide1.py
+                if line_str.startswith('{') and line_str.endswith('}'):
+                    try:
+                        data = json.loads(line_str)
+                        if data.get("type") == "stage":
+                            stage = data.get("stage")
+                            with stage_counts_lock:
+                                if stage in stage_counts:
+                                    stage_counts[stage] += 1
+                            with stage_details_lock:
+                                stage_details.append({
+                                    "file": data.get("file"),
+                                    "stage": stage,
+                                    "asset_type": data.get("asset_type"),
+                                    "detail": data.get("detail"),
+                                    "photo": data.get("photo")
+                                })
+                            with stage_lock:
+                                stage_queue.append(data)
+                    except json.JSONDecodeError:
+                        pass
                 
         process.wait()
         state["process"] = None
@@ -76,6 +129,7 @@ def run_command_stream(cmd, step_name, overwrite="1"):
         add_log(f"Gagal menjalankan skrip {step_name}: {str(e)}", "error")
         state["process"] = None
         return False
+
 
 def pipeline_thread(step_id, overwrite="1"):
     global state
@@ -204,6 +258,7 @@ def pipeline_thread(step_id, overwrite="1"):
         state["current_step"] = None
         state["process"] = None
 
+
 def get_pdf_list(directory, limit=100):
     path = Path(directory)
     if not path.is_dir():
@@ -264,8 +319,13 @@ def api_run():
         return jsonify({"status": "error", "message": "Tahap tidak valid."}), 400
     
     # Hapus log queue lama
-    global log_queue
+    global log_queue, log_generation
     log_queue.clear()
+    with log_generation_lock:
+        log_generation += 1
+    
+    # Clear stage data
+    clear_stage_data()
     
     # Buat folder kerja yang belum ada
     for name, dir_path in FOLDERS.items():
@@ -275,6 +335,33 @@ def api_run():
     
     threading.Thread(target=pipeline_thread, args=(step_id, overwrite), daemon=True).start()
     return jsonify({"status": "ok", "message": f"Memulai tahap: {step_id}"})
+
+
+@app.route("/api/stream-stages")
+def stream_stages():
+    def event_stream():
+        with stage_lock:
+            for stage in stage_queue:
+                yield f"data: {json.dumps(stage)}\n\n"
+        last_index = len(stage_queue)
+        while True:
+            time.sleep(0.2)
+            with stage_lock:
+                if len(stage_queue) > last_index:
+                    for i in range(last_index, len(stage_queue)):
+                        yield f"data: {json.dumps(stage_queue[i])}\n\n"
+                    last_index = len(stage_queue)
+    return Response(event_stream(), mimetype="text/event-stream")
+
+
+@app.route("/api/stage-summary")
+def api_stage_summary():
+    with stage_counts_lock:
+        counts = dict(stage_counts)
+    with stage_details_lock:
+        details = list(stage_details)
+    return jsonify({"counts": counts, "details": details})
+
 
 @app.route("/api/stop", methods=["POST"])
 def api_stop():
@@ -300,9 +387,23 @@ def stream_logs():
             for log in log_queue:
                 yield f"data: {json.dumps(log)}\n\n"
         last_index = len(log_queue)
+        # Track generation to detect new runs
+        with log_generation_lock:
+            current_generation = log_generation
         while True:
             time.sleep(0.2)
             with log_lock:
+                # Check if generation changed (new run started)
+                with log_generation_lock:
+                    if log_generation != current_generation:
+                        current_generation = log_generation
+                        # Send reset event
+                        yield f"data: {json.dumps({'type': 'reset', 'generation': current_generation})}\n\n"
+                        # Replay all current logs
+                        for log in log_queue:
+                            yield f"data: {json.dumps(log)}\n\n"
+                        last_index = len(log_queue)
+                        continue
                 if len(log_queue) > last_index:
                     for i in range(last_index, len(log_queue)):
                         yield f"data: {json.dumps(log_queue[i])}\n\n"

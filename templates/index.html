@@ -7,7 +7,7 @@
   <meta name="description" content="Pipeline koreksi watermark Timemark.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%;overflow:hidden}
@@ -16,7 +16,7 @@
       background:linear-gradient(150deg,#080811 0%,#0f0f24 30%,#16163a 60%,#0e0e2a 100%);
       color:#e2e8f0;display:flex;align-items:center;justify-content:center;padding:.75rem
     }
-    .app{width:100%;max-width:1320px;height:100%;display:flex;flex-direction:column;gap:.5rem}
+    .app{width:100%;max-width:1500px;height:100%;display:flex;flex-direction:column;gap:.5rem}
     .header{text-align:center;flex-shrink:0}
     .header h1{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#a5b4fc,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .header p{font-size:.65rem;color:#475569;margin-top:.05rem}
@@ -40,6 +40,30 @@
     .file-count .label{font-size:.55rem;font-weight:500;color:#64748b;display:block;margin-top:.15rem;text-transform:uppercase;letter-spacing:.05em}
     .card ul::-webkit-scrollbar{width:3px}
     .card ul::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
+
+    /* Stage Tables */
+    .stage-section{flex:1;min-height:0;display:flex;flex-direction:column;gap:.4rem}
+    .stage-tables{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem;flex:1;min-height:0;overflow:hidden}
+    .stage-table-wrap{display:flex;flex-direction:column;min-width:0;background:rgba(255,255,255,.01);border:1px solid rgba(255,255,255,.04);border-radius:6px;overflow:hidden}
+    .stage-table-header{padding:.3rem .4rem;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.04);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#64748b;text-align:center;white-space:nowrap}
+    .stage-table-header.original{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.2);color:#38bdf8}
+    .stage-table-header.consensus{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);color:#22c55e}
+    .stage-table-header.fallback{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.2);color:#f97316}
+    .stage-table{width:100%;border-collapse:collapse;font-size:.6rem;overflow-y:auto;flex:1;min-height:0;display:block}
+    .stage-table thead{position:sticky;top:0;z-index:1}
+    .stage-table th{padding:.25rem .3rem;text-align:left;font-weight:600;color:#64748b;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.04);white-space:nowrap;font-size:.55rem;text-transform:uppercase;letter-spacing:.03em}
+    .stage-table td{padding:.2rem .3rem;border-bottom:1px solid rgba(255,255,255,.03);color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+    .stage-table tbody tr:hover td{background:rgba(255,255,255,.02);color:#e2e8f0}
+    .stage-table .asset-name{font-weight:500;color:#cbd5e1;max-width:160px}
+    .stage-table .photo-tag{font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.05rem .2rem;border-radius:3px;background:rgba(255,255,255,.06);color:#6366f1}
+    .stage-table .empty-row td{text-align:center;color:#334155;font-size:.6rem;padding:.8rem 0}
+    .stage-table::-webkit-scrollbar{width:3px;height:3px}
+    .stage-table::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}
+
+    .count-row{display:flex;gap:.5rem;justify-content:center;margin-bottom:.3rem}
+    .count-box{flex:1;min-width:0;padding:.4rem .5rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:6px;text-align:center}
+    .count-box .num{font-size:1.1rem;font-weight:700;color:#6366f1}
+    .count-box .lbl{font-size:.5rem;font-weight:500;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-top:.1rem}
 
     .ctrl{display:flex;flex-direction:column;gap:.4rem}
     .btn-group{display:flex;gap:.4rem}
@@ -106,6 +130,11 @@
     .log-entry.stdout .msg{color:#94a3b8}
     .log-empty{color:#334155;text-align:center;padding:1rem 0;font-size:.62rem}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+    @media (max-width: 1100px){
+      .stage-tables{grid-template-columns:1fr}
+      .app{max-width:100%}
+    }
   </style>
 </head>
 <body>
@@ -116,29 +145,74 @@
     </div>
 
     <div class="main">
-      <!-- KIRI: 2 card vertikal -->
+      <!-- KIRI: Stage Tracking + PDF Counts -->
       <div class="col col-left">
         <div class="card">
-          <div class="lbl">📂 Upload Folder IMO 2026</div>
-          <div class="row-inline">
-            <button class="btn btn-secondary folder-btn" data-folder="01_pdf_source" style="font-size:.66rem;padding:.3rem .5rem">Buka Folder</button>
-            <span class="path-hint" id="hint-01">…</span>
+          <div class="lbl">📊 Progress File</div>
+          <div class="count-row">
+            <div class="count-box">
+              <div class="num" id="count-01">0</div>
+              <div class="lbl">PDF 2026</div>
+            </div>
+            <div class="count-box">
+              <div class="num" id="count-02">0</div>
+              <div class="lbl">PDF 2025</div>
+            </div>
+            <div class="count-box">
+              <div class="num" id="count-total">0</div>
+              <div class="lbl">Total Aset</div>
+            </div>
           </div>
-          <div class="lbl">📄 PDF 2026 — foto mentah</div>
-          <div class="file-count" id="count-01">Memuat…</div>
-        </div>
-        <div class="card">
-          <div class="lbl">📂 Upload Folder IMO 2025</div>
-          <div class="row-inline">
-            <button class="btn btn-secondary folder-btn" data-folder="02_pdf_target" style="font-size:.66rem;padding:.3rem .5rem">Buka Folder</button>
-            <span class="path-hint" id="hint-02">…</span>
+
+          <div class="stage-section">
+            <div class="stage-tables">
+              <!-- Stage 1c Original -->
+              <div class="stage-table-wrap">
+                <div class="stage-table-header original">Stage 1c Original</div>
+                <table class="stage-table" id="table-original">
+                  <thead>
+                    <tr>
+                      <th style="width:70%">Aset</th>
+                      <th style="width:30%">Foto</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <!-- Stage 1c Consensus -->
+              <div class="stage-table-wrap">
+                <div class="stage-table-header consensus">Stage 1c Consensus</div>
+                <table class="stage-table" id="table-consensus">
+                  <thead>
+                    <tr>
+                      <th style="width:70%">Aset</th>
+                      <th style="width:30%">Foto</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <!-- Fallback -->
+              <div class="stage-table-wrap">
+                <div class="stage-table-header fallback">Fallback</div>
+                <table class="stage-table" id="table-fallback">
+                  <thead>
+                    <tr>
+                      <th style="width:70%">Aset</th>
+                      <th style="width:30%">Foto</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
           </div>
-          <div class="lbl">📄 PDF 2025 — target / imo</div>
-          <div class="file-count" id="count-02">Memuat…</div>
         </div>
       </div>
 
-      <!-- KANAN: tombol (atas) + log (bawah) -->
+      <!-- KANAN: Kontrol + Log -->
       <div class="col col-right">
         <div class="card">
           <div class="lbl">⚙️ Kontrol Proses</div>
@@ -191,6 +265,83 @@
     const L=id=>document.getElementById(id);
     const stepOrder=['step1','step2','step3','step4','step5'];
     document.querySelectorAll('.folder-btn').forEach(b=>b.onclick=()=>fetch('/api/open-folder/'+b.dataset.folder));
+    
+    // Stage tracking SSE
+    let stageEsConn=null, stageEsReconnectTimer=null;
+    const stageTables = {
+      original: L('table-original').querySelector('tbody'),
+      consensus: L('table-consensus').querySelector('tbody'),
+      fallback: L('table-fallback').querySelector('tbody')
+    };
+    const stageCounts = {
+      stage_0_override: 0,
+      stage_1c_guide_original: 0,
+      stage_1c_guide_consensus: 0,
+      stage_fallback: 0
+    };
+    const seenFiles = new Set(); // track unique file+stage combos
+
+    function esc(s){return String(s).replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>')}
+
+    function formatAssetName(file, asset_type, detail, photo){
+      // file is like "0.jpg", asset_type like "AXC", detail like "ZP 60 BOO"
+      const baseName = detail || file.replace(/\.(jpg|JPG)$/i, '');
+      return `${asset_type} ${baseName} ${photo}`;
+    }
+
+    function addRow(tableBody, file, asset_type, detail, photo, stage){
+      const key = `${file}|${stage}`;
+      if(seenFiles.has(key)) return;
+      seenFiles.add(key);
+      
+      const tr = document.createElement('tr');
+      const assetName = formatAssetName(file, asset_type, detail, photo);
+      tr.innerHTML = `
+        <td class="asset-name" title="${esc(assetName)}">${esc(assetName)}</td>
+        <td><span class="photo-tag">${esc(photo)}</span></td>
+      `;
+      tableBody.insertBefore(tr, tableBody.firstChild);
+      
+      // Limit rows to 100
+      while(tableBody.children.length > 100){
+        tableBody.removeChild(tableBody.lastChild);
+      }
+    }
+
+    function updateCounts(){
+      L('table-original').querySelector('thead th:first-child').textContent = `Aset (${stageCounts.stage_1c_guide_original})`;
+      L('table-consensus').querySelector('thead th:first-child').textContent = `Aset (${stageCounts.stage_1c_guide_consensus})`;
+      L('table-fallback').querySelector('thead th:first-child').textContent = `Aset (${stageCounts.stage_fallback})`;
+    }
+
+    function connectStages(){
+      if(stageEsConn){stageEsConn.close();stageEsConn=null;}
+      if(stageEsReconnectTimer){clearTimeout(stageEsReconnectTimer);stageEsReconnectTimer=null;}
+      const es=new EventSource('/api/stream-stages');
+      stageEsConn=es;
+      es.onopen=()=>{console.log('Stage SSE connected');};
+      es.onmessage=e=>{
+        try{
+          const data=JSON.parse(e.data);
+          if(data.type==='stage'){
+            const stage = data.stage;
+            if(stage==='stage_1c_guide_original'){
+              stageCounts.stage_1c_guide_original++;
+              addRow(stageTables.original, data.file, data.asset_type, data.detail, data.photo, stage);
+            }else if(stage==='stage_1c_guide_consensus'){
+              stageCounts.stage_1c_guide_consensus++;
+              addRow(stageTables.consensus, data.file, data.asset_type, data.detail, data.photo, stage);
+            }else if(stage==='stage_fallback' || stage==='stage_0_override'){
+              stageCounts.stage_fallback++;
+              addRow(stageTables.fallback, data.file, data.asset_type, data.detail, data.photo, stage);
+            }
+            updateCounts();
+          }
+        }catch(err){console.warn('stage parse error',err);}
+      };
+      es.onerror=()=>{es.close();stageEsConn=null;stageEsReconnectTimer=setTimeout(connectStages,3000);};
+    }
+
     async function loadConfig(){
       const r=await fetch('/api/config'),d=await r.json();
       L('hint-01').textContent=d['01_pdf_source']||'';L('hint-02').textContent=d['02_pdf_target']||''
@@ -200,13 +351,15 @@
         const r=await fetch('/api/files');
         if(!r.ok){console.warn('loadFiles failed:',r.status);return;}
         const d=await r.json();
-        for(const[k,id]of[['01_pdf_source','count-01'],['02_pdf_target','count-02']]){
-          const data=d[k]||{total:0},el=L(id);
-          el.innerHTML=(data.total||0)+'<span class="label">Total File</span>';
-        }
+        const total1 = d['01_pdf_source']?.total || 0;
+        const total2 = d['02_pdf_target']?.total || 0;
+        L('count-01').textContent=total1;
+        L('count-02').textContent=total2;
+        L('count-total').textContent=total1+total2;
       }catch(e){console.warn('loadFiles error:',e);}
     }
     L('btn-refresh').onclick=loadFiles;
+    
     const btn=L('btn-run'),btnStop=L('btn-stop'),pb=L('progress-bar'),st=L('status-text'),tog=L('toggle-ow'),lblOn=L('toggle-lbl-on'),lblOff=L('toggle-lbl-off');
     tog.onchange=()=>{if(tog.checked){lblOn.className='toggle-label on';lblOff.className='toggle-label'}else{lblOn.className='toggle-label';lblOff.className='toggle-label off'}};
     btn.onclick=async()=>{
@@ -216,6 +369,16 @@
       btn.disabled=true;btn.classList.add('running');btn.innerHTML='⏳ Proses…';
       btnStop.style.display='inline-flex';btn.innerHTML='⏳ Proses…';
       L('step-bar').style.display='flex';
+      // Reset stage data on new run
+      seenFiles.clear();
+      stageCounts.stage_0_override=0;
+      stageCounts.stage_1c_guide_original=0;
+      stageCounts.stage_1c_guide_consensus=0;
+      stageCounts.stage_fallback=0;
+      stageTables.original.innerHTML='';
+      stageTables.consensus.innerHTML='';
+      stageTables.fallback.innerHTML='';
+      updateCounts();
       try{const r=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({step,overwrite})}),d=await r.json();if(d.status!=='ok'){alert(d.message);rst()}}catch{rst()}
     };
     btnStop.onclick=async()=>{btnStop.disabled=true;btnStop.innerHTML='⏹ Stopping…';try{await fetch('/api/stop',{method:'POST'})}catch{};};
@@ -241,14 +404,24 @@
       const es=new EventSource('/api/stream-logs');
       esConn=es;
       es.onopen=()=>{console.log('SSE connected');};
-      es.onmessage=e=>{try{a(JSON.parse(e.data))}catch{}};
+      es.onmessage=e=>{
+        try{
+          const data=JSON.parse(e.data);
+          // Handle reset event from new run
+          if(data.type==='reset'){
+            lb.innerHTML='<div class="log-empty">Log direset untuk run baru</div>';
+            return;
+          }
+          a(data);
+        }catch{}
+      };
       es.onerror=()=>{es.close();esConn=null;esReconnectTimer=setTimeout(conn,3000);};
     }
     function a(l){const em=lb.querySelector('.log-empty');if(em)em.remove();const d=document.createElement('div');d.className='log-entry '+(l.type||'info');d.innerHTML='<span class="ts">'+(l.timestamp||'')+'</span><span class="msg">'+esc(l.message)+'</span>';lb.appendChild(d);lb.scrollTop=lb.scrollHeight}
-    function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+    function esc(s){return String(s).replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>')}
     L('btn-clear-log').onclick=()=>{lb.innerHTML='<div class="log-empty">Log dibersihkan</div>'};
-    window.addEventListener('beforeunload',()=>{if(esConn){esConn.close();}});
-    loadConfig();loadFiles();conn();
+    window.addEventListener('beforeunload',()=>{if(esConn){esConn.close();}if(stageEsConn){stageEsConn.close();}});
+    loadConfig();loadFiles();conn();connectStages();
   </script>
 </body>
 </html>
