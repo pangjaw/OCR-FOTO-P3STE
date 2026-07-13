@@ -1,5 +1,6 @@
 import argparse
 import csv
+import json
 import os
 import re
 from collections import defaultdict
@@ -15,6 +16,7 @@ DEFAULT_OUTPUT_DIR = "./03_photos_export"
 DEFAULT_LOG_DIR = "./logs"
 DEFAULT_START_PAGE = 2
 DEFAULT_RESOLUTION = 220
+SAP_MAPPING_PATH = "./sap_station_mapping.json"
 
 
 @dataclass
@@ -25,6 +27,8 @@ class AssetRow:
     asset_type: str
     detail: str
     top: float
+    station: str = "UNKNOWN"
+    funcloc: str = ""
 
 
 def parse_args() -> argparse.Namespace:
@@ -63,6 +67,11 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_RESOLUTION,
         help="Diabaikan saat export original image; tetap diterima untuk kompatibilitas perintah lama.",
     )
+    parser.add_argument(
+        "--sap-mapping",
+        default=SAP_MAPPING_PATH,
+        help=f"Path ke file mapping SAP Functional Location -> Station. Default: {SAP_MAPPING_PATH}",
+    )
     return parser.parse_args()
 
 
@@ -85,26 +94,60 @@ def normalize_spaces(text: str) -> str:
 def sanitize_segment(text: str) -> str:
     text = normalize_spaces(text)
     text = "".join("_" if ord(char) < 32 else char for char in text)
-    text = re.sub(r'[<>:"/\\|?*]', "_", text)
+    text = re.sub(r'[<>:"\/\\|?*]', "_", text)
     text = re.sub(r"\s+", " ", text).strip(" .")
     return text or "UNKNOWN"
 
 
+def load_sap_mapping(path: str) -> dict:
+    """Load SAP Functional Location -> Station mapping from JSON file."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        # Create mapping: functional_loc -> station
+        mapping = {}
+        for floc, info in data.items():
+            mapping[floc] = info.get("station", "UNKNOWN")
+        return mapping
+    except FileNotFoundError:
+        print(f"[WARNING] SAP mapping file not found at {path}. Using description-based station extraction.")
+        return {}
+    except json.JSONDecodeError as e:
+        print(f"[WARNING] Invalid JSON in SAP mapping file: {e}")
+        return {}
+
+
 def detect_asset_type(code: str, title: str) -> str:
     upper = f"{code} {title}".upper()
-    if code.startswith("AXL") or "AXLE COUNTER" in upper:
+    # Check code prefixes FIRST (more specific) before title keywords
+    if code.startswith("AXL"):
         return "AXC"
-    if code.startswith("WSL") or "WESEL" in upper:
+    if code.startswith("WSL"):
         return "WESEL"
-    if code.startswith("SIN") or "SINYAL" in upper:
-        return "SINYAL"
-    if code.startswith("CDA") or "CATU DAYA" in upper:
+    if code.startswith("CDA"):  # CDA = CATU DAYA - check before SINYAL
         return "CATU_DAYA"
-    if code.startswith("JPL") or "PINTU PERLINTASAN" in upper:
+    if code.startswith("SIN"):
+        return "SINYAL"
+    if code.startswith("JPL"):
         return "PINTU_PERLINTASAN"
-    if code.startswith("TLK") or code.startswith("TWR") or "TELEKOMUNIKASI" in upper or "RADIO" in upper or "SERAT OPTIK" in upper:
+    if code.startswith("TLK") or code.startswith("TWR"):
         return "TELEKOMUNIKASI"
-    if code.startswith("INB") or code.startswith("TRA") or "PERSINYALAN ELEKTRIK" in upper:
+    if code.startswith("INB") or code.startswith("TRA"):
+        return "PERSINYALAN_ELEKTRIK"
+    # Fallback to title keywords
+    if "AXLE COUNTER" in upper:
+        return "AXC"
+    if "WESEL" in upper:
+        return "WESEL"
+    if "CATU DAYA" in upper:
+        return "CATU_DAYA"
+    if "SINYAL" in upper:
+        return "SINYAL"
+    if "PINTU PERLINTASAN" in upper:
+        return "PINTU_PERLINTASAN"
+    if "TELEKOMUNIKASI" in upper or "RADIO" in upper or "SERAT OPTIK" in upper:
+        return "TELEKOMUNIKASI"
+    if "PERSINYALAN ELEKTRIK" in upper:
         return "PERSINYALAN_ELEKTRIK"
     return "UNKNOWN"
 
@@ -143,7 +186,23 @@ def extract_detail(title: str, asset_type: str) -> str:
     return res
 
 
-def extract_asset_rows(page: pdfplumber.page.Page) -> list[AssetRow]:
+def extract_station_from_description(desc: str, sap_mapping: dict, funcloc: str) -> str:
+    """Extract station code from description or SAP mapping."""
+    # First try SAP mapping using Functional Location code
+    if funcloc and funcloc in sap_mapping:
+        return sap_mapping[funcloc]
+
+    # Fallback: extract from description (last word if it's a known station code)
+    station_codes = {"BOO", "BOP", "BTT", "CLT", "MSG", "CGB", "BJD", "CCR", "COS", "CS", "BNR"}
+    words = normalize_spaces(desc).split()
+    for word in reversed(words):
+        if word in station_codes:
+            return word
+
+    return "UNKNOWN"
+
+
+def extract_asset_rows(page: pdfplumber.page.Page, sap_mapping: dict) -> list[AssetRow]:
     lines: defaultdict[float, list[dict]] = defaultdict(list)
     for word in page.extract_words(use_text_flow=True):
         lines[round(float(word["top"]), 1)].append(word)
@@ -169,6 +228,10 @@ def extract_asset_rows(page: pdfplumber.page.Page) -> list[AssetRow]:
 
         asset_type = detect_asset_type(code, title)
         detail = extract_detail(title, asset_type)
+
+        # Extract station using SAP mapping or description fallback
+        station = extract_station_from_description(title, sap_mapping, code)
+
         rows.append(
             AssetRow(
                 page_number=page.page_number,
@@ -177,6 +240,8 @@ def extract_asset_rows(page: pdfplumber.page.Page) -> list[AssetRow]:
                 asset_type=asset_type,
                 detail=detail,
                 top=top,
+                station=station,
+                funcloc=code,
             )
         )
 
@@ -201,11 +266,12 @@ def original_images_by_name(reader: PdfReader, page_index: int) -> dict[str, tup
     return images
 
 
-def asset_output_dir(root: Path, asset_type: str, detail: str) -> Path:
-    return root / sanitize_segment(asset_type) / sanitize_segment(detail)
+def asset_output_dir(root: Path, station: str, asset_type: str, detail: str) -> Path:
+    """Return output directory with station in path: root/station/asset_type/detail"""
+    return root / sanitize_segment(station) / sanitize_segment(asset_type) / sanitize_segment(detail)
 
 
-def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int, _resolution: int, input_root: Path = None) -> int:
+def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int, _resolution: int, input_root: Path = None, sap_mapping: dict = None) -> int:
     exported = 0
     log_path = log_dir / "pdf_photo_export_log.csv"
     log_exists = log_path.exists()
@@ -220,12 +286,12 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
             writer.writeheader()
 
         # Ekstrak global assets dari Halaman 1 sebagai fallback (Case B)
-        global_assets = extract_asset_rows(pdf.pages[0])
+        global_assets = extract_asset_rows(pdf.pages[0], sap_mapping or {})
 
         for page_index in range(start_page - 1, len(pdf.pages)):
             page = pdf.pages[page_index]
-            rows = extract_asset_rows(page)
-            
+            rows = extract_asset_rows(page, sap_mapping or {})
+
             page_height = float(page.height)
             originals = original_images_by_name(reader, page_index)
 
@@ -253,7 +319,7 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
                         continue
 
                     labels = ["0%", "50%", "100%"]
-                    out_dir = asset_output_dir(output_root, row.asset_type, row.detail)
+                    out_dir = asset_output_dir(output_root, row.station, row.asset_type, row.detail)
                     ensure_dir(out_dir)
 
                     for placement, label, stem in zip(placements[:3], labels, ["0", "50", "100"]):
@@ -307,7 +373,7 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path, start_page: int
                             continue
 
                         labels = ["0%", "50%", "100%"]
-                        out_dir = asset_output_dir(output_root, row.asset_type, row.detail)
+                        out_dir = asset_output_dir(output_root, row.station, row.asset_type, row.detail)
                         ensure_dir(out_dir)
 
                         for placement, label, stem in zip(placements[:3], labels, ["0", "50", "100"]):
@@ -367,6 +433,13 @@ def main() -> int:
         print("Tidak ada file PDF untuk diproses.")
         return 1
 
+    # Load SAP mapping
+    sap_mapping = load_sap_mapping(args.sap_mapping)
+    if sap_mapping:
+        print(f"[INFO] Loaded SAP mapping: {len(sap_mapping)} Functional Locations")
+    else:
+        print("[WARNING] No SAP mapping loaded, using description-based station extraction")
+
     input_root = Path(args.input)
     output_root = Path(args.output)
     log_dir = Path(args.log_dir)
@@ -378,7 +451,7 @@ def main() -> int:
         if not pdf_path.exists():
             print(f"[SKIP] Tidak ditemukan: {pdf_path}")
             continue
-        exported = export_pdf(pdf_path, output_root, log_dir, args.start_page, args.resolution, input_root)
+        exported = export_pdf(pdf_path, output_root, log_dir, args.start_page, args.resolution, input_root, sap_mapping)
         total += exported
         print(f"[OK] {pdf_path.name}: {exported} foto diekspor")
 

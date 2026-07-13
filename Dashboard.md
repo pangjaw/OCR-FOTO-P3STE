@@ -15,7 +15,8 @@
 |--------|------|--------|---------------------|
 | 1 | **Dashboard.md** (file ini) | Arsitektur sistem, data flow, detection logic, config schemas, glossary, status tracker, daily logs summary | 3-5 menit |
 | 2 | **AGENTS.md** | Complete AI context: function reference dengan nomor line, debugging patterns, critical rules (debug protocol, auto-git commit) | 5-8 menit |
-| 3 | **Notes/Daily/2026-07-12.md** | Update terbaru: browser freeze fix, EventSource reconnect loop fix | 1-2 menit |
+| 3 | **Notes/Daily/2026-07-13.md** | **Update terbaru: 7 asset types synced, merge_pdf_foto.py updated, JSON configs expanded** | 2-3 menit |
+| 3 | **Notes/Daily/2026-07-13.md** | Update terbaru: browser freeze fix, EventSource reconnect loop fix | 1-2 menit |
 | 4 | **Notes/Daily/2026-07-11.md** | Bug fix folder consensus: `_folder_key_from_path` untuk input folder aset tunggal | 1-2 menit |
 | 5 | **Notes/Decisions/ADR-001.md** | ADR-001: Pillow & Numpy vs OpenCV | 1 menit |
 | 6 | **Notes/Decisions/ADR-002.md** | ADR-002: Ekstraksi gambar PDF via pypdf | 1 menit |
@@ -61,25 +62,27 @@
                    └─────────────────┘   └─────────────────┘
 ```
 
-### Struktur Folder (Dipertahankan Seluruh Pipeline)
+### Struktur Folder (Dipertahankan Seluruh Pipeline — Baru: Berbasis Station)
 ```
 root/
 ├── 01_pdf_source/          ← PDF 2026 mentah (input export_pdf_foto.py)
 ├── 02_pdf_target/          ← PDF 2025 target (input merge_pdf_foto.py & extract_pdf_dates.py)
 ├── 03_photos_export/       ← Hasil ekstraksi foto dari PDF (kerja edit)
-│   └── {AXC|WESEL|SINYAL}/ ← Subfolder per tipe aset
-│       └── {detail_aset}/  ← Subfolder per detail aset
-│           ├── 0.jpg
-│           ├── 50.jpg
-│           ├── 100.jpg
-│           └── date.txt    ← Dari extract_pdf_dates.py
-├── 04_photos_edited/       ← Output foto hasil edit timemark
-│   └── Tim_{n}/            ← Subfolder per Tim jika pakai --schedule
-│       └── {AXC|WESEL|SINYAL}/
-│           └── {detail_aset}/
+│   └── {station}/          ← Subfolder per Station (BOO, CLT, BOP, BTT, MSG, CGB, BJD, CCR, COS, CS, BNR, dst)
+│       └── {asset_type}/   ← Subfolder per tipe aset (AXC, WESEL, SINYAL, CATU_DAYA, PINTU_PERLINTASAN, TELEKOMUNIKASI, PERSINYALAN_ELEKTRIK)
+│           └── {detail_aset}/  ← Subfolder per detail aset
 │               ├── 0.jpg
 │               ├── 50.jpg
-│               └── 100.jpg
+│               ├── 100.jpg
+│               └── date.txt    ← Dari extract_pdf_dates.py
+├── 04_photos_edited/       ← Output foto hasil edit timemark
+│   └── Tim_{n}/            ← Subfolder per Tim jika pakai --schedule
+│       └── {station}/
+│           └── {asset_type}/
+│               └── {detail_aset}/
+│                   ├── 0.jpg
+│                   ├── 50.jpg
+│                   └── 100.jpg
 ├── 05_pdf_merged/          ← PDF final hasil gabung
 ├── backup_script_v1/       ← Backup kode lama
 ├── logs/                   ← Log CSV export & merge
@@ -87,7 +90,7 @@ root/
 └── Notes/                  ← Obsidian vault (Daily/, Decisions/, Templates/)
 ```
 
-**Aturan penting:** Subfolder dipertahankan di seluruh pipeline. Jika PDF ada di `01_pdf_source/sub/`, maka outputnya akan di `03_photos_export/sub/`, dst.
+**Aturan penting:** Subfolder dipertahankan di seluruh pipeline. Hierarchy baru: `station/asset_type/detail`. Jika PDF ada di `01_pdf_source/sub/`, maka outputnya akan di `03_photos_export/sub/`, dst.
 
 ---
 
@@ -220,13 +223,21 @@ Rabu, Jul 08 2026
 | **AXC** | Axle Counter — kode aset prefix AXL (contoh: AXL11468) |
 | **WESEL** | Wesel — kode aset prefix WSL (contoh: WSL11080) |
 | **SINYAL** | Sinyal — kode aset prefix SIN |
+| **CATU_DAYA** | Catu Daya — kode aset prefix CDA (Genset, UPS, Battery Bank) |
+| **PINTU_PERLINTASAN** | Pintu Perlintasan — kode aset prefix JPL (Telepon, Elektrik, Gentanik) |
+| **TELEKOMUNIKASI** | Telekomunikasi — kode aset prefix TLK/TWR (Radio, Telepon) |
+| **PERSINYALAN_ELEKTRIK** | Persinyalan Elektrik — kode aset prefix TRA/INB (Serat Optik, Bangunan) |
+| **CATU_DAYA** | Catu Daya — kode aset prefix CDA (Genset, UPS, Battery Bank) |
+| **PINTU_PERLINTASAN** | Pintu Perlintasan — kode aset prefix JPL (Telepon, Elektrik, Gentanik) |
+| **TELEKOMUNIKASI** | Telekomunikasi — kode aset prefix TLK/TWR (Radio, Telepon) |
+| **PERSINYALAN_ELEKTRIK** | Persinyalan Elektrik — kode aset prefix TRA/INB (Serat Optik, Bangunan) |
 | **0%, 50%, 100%** | 3 foto dokumentasi per aset: awal, tengah, akhir |
 | **PDF 2025 vs 2026** | Format lama (2025) = foto kolase halaman terakhir. Format baru (2026) = foto hasil edit disusun ulang |
 | **date.txt** | File metadata di folder aset berisi tanggal target format "Rabu, Jul 08 2026" |
 | **schedule.json** | File penjadwalan: mapping aset→Tim→timestamp ISO per foto |
 | **Konsensus Folder** | Pre-scan folder: 2+ file setuju Y dalam 10px → apply ke semua file |
 | **Overflow Rule** | Aset mulai < 18:00 tetap selesai 3 fotonya. File berikutnya → Tim berikutnya/reset jam |
-| **Waktu Menit** | Durasi pengerjaan per aset (default: AXC/WESEL=45, SINYAL=30) |
+| **Waktu Menit** | Durasi pengerjaan per aset (default: AXC/WESEL=45, SINYAL=30, CATU_DAYA=45, PINTU_PERLINTASAN=45, TELEKOM=60-120, PERSINYALAN=420) |
 | **ZP 41B fix** | Typo di PDF 2025: ZP 41B BOO seharusnya ZP 41 BOO |
 | **diffuse_fill_region** | Inpainting berbasis difusi untuk hapus teks tanggal lama |
 
@@ -293,6 +304,26 @@ Rabu, Jul 08 2026
 - [x] **Fix Path Integrity pada `edit_timemark_ide1.py`:** Menambahkan pengecekan `Path.resolve()` untuk memastikan struktur folder `Tim_N` dibuat secara absolut sebelum operasi penulisan file berlangsung, mencegah error `FileNotFound` pada sistem file Windows.
 - [x] **Folder Consensus Fix (`edit_timemark_ide1.py`):** Perbaikan `_folder_key_from_path` agar mendukung input folder aset tunggal (mis. `03_photos_export/AXC/ZP 42B BOO/`) selain full tree. Saat `relative_to(input_dir)` hanya mengembalikan nama file, fungsi sekarang mengambil `asset_type` dari `input_dir.parent.name` dan `detail` dari `input_dir.name`. Terverifikasi: ZP 42B BOO (3 foto) → 3/3 sukses, consensus gy1=185; Full AXC (402 foto) → 402/402 sukses.
 
+
+### 🆕 Done (2026-07-13) - 7 Asset Types Full Support
+- [x] **Sync detect_asset_type() di merge_pdf_foto.py ke 7 tipe:** CATU_DAYA, PINTU_PERLINTASAN, TELEKOMUNIKASI, PERSINYALAN_ELEKTRIK (seimbang dengan export_pdf_foto.py). Verified: return values identik.
+- [x] **Sync extract_detail() di merge_pdf_foto.py:** Tambah handling detail untuk 4 tipe baru (GENSET/UPS/BATTERE, JPL/JPLE/GENTANIK, TELEPON/RADIO/OTB, BANGUNAN/DALAM PERSINYALAN).
+- [x] **Sync is_valid_asset_title() di merge_pdf_foto.py:** Tambah keywords untuk 7 tipe asset (CATU DAYA, PINTU PERLINTASAN, TELEKOMUNIKASI, PERSINYALAN ELEKTRIK, JPL, GENTANIK, RADIO, SERAT OPTIK, OTB, BANGUNAN, GENSET, UPS, BATTERE, PANEL, RECTIFIER, MESIN, MOTOR, TOWER, ANTENA, INTERLOCKING, INPUT).
+- [x] **ZP 41B workaround dipertahankan** di kedua extract_detail (export & merge).
+- [x] **Update asset_waktu_mapping.json:** Tambah mapping lengkap untuk CATU_DAYA (23 entry), PINTU_PERLINTASAN (7 entry), TELEKOM_STASIUN/LUAR/PINTU (3 split), PERSINYALAN_ELEKTRIK (2 entry) — referensi data_acuan_tenaga_gabungan.json id 5,16,17,34-38.
+- [x] **Update checklist_types.json:** Category split per folder — CATU_DAYA, PINTU_PERLINTASAN, TELEKOM_STASIUN, TELEKOM_LUAR, TELEKOM_PINTU, PERSINYALAN_ELEKTRIK (bukan semua TELEKOM).
+- [x] **Semua 6 script syntax OK**, 3 JSON valid, cross-check detect_asset_type & extract_detail konsisten 100%.
+
+
+### 🆕 Done (2026-07-13) - 7 Asset Types Full Support
+- [x] **Sync detect_asset_type() di merge_pdf_foto.py ke 7 tipe:** CATU_DAYA, PINTU_PERLINTASAN, TELEKOMUNIKASI, PERSINYALAN_ELEKTRIK (seimbang dengan export_pdf_foto.py). Verified: return values identik.
+- [x] **Sync extract_detail() di merge_pdf_foto.py:** Tambah handling detail untuk 4 tipe baru (GENSET/UPS/BATTERE, JPL/JPLE/GENTANIK, TELEPON/RADIO/OTB, BANGUNAN/DALAM PERSINYALAN).
+- [x] **Sync is_valid_asset_title() di merge_pdf_foto.py:** Tambah keywords untuk 7 tipe asset (CATU DAYA, PINTU PERLINTASAN, TELEKOMUNIKASI, PERSINYALAN ELEKTRIK, JPL, GENTANIK, RADIO, SERAT OPTIK, OTB, BANGUNAN, GENSET, UPS, BATTERE, PANEL, RECTIFIER, MESIN, MOTOR, TOWER, ANTENA, INTERLOCKING, INPUT).
+- [x] **ZP 41B workaround dipertahankan** di kedua extract_detail (export & merge).
+- [x] **Update asset_waktu_mapping.json:** Tambah mapping lengkap untuk CATU_DAYA (23 entry), PINTU_PERLINTASAN (7 entry), TELEKOM_STASIUN/LUAR/PINTU (3 split), PERSINYALAN_ELEKTRIK (2 entry) — referensi data_acuan_tenaga_gabungan.json id 5,16,17,34-38.
+- [x] **Update checklist_types.json:** Category split per folder — CATU_DAYA, PINTU_PERLINTASAN, TELEKOM_STASIUN, TELEKOM_LUAR, TELEKOM_PINTU, PERSINYALAN_ELEKTRIK (bukan semua TELEKOM).
+- [x] **Semua 6 script syntax OK**, 3 JSON valid, cross-check detect_asset_type & extract_detail konsisten 100%.
+
 ### Done (Full Pipeline Batch 2025 - 165 PDF)
 - [x] **Pipeline end-to-end 2025 dataset:** `export_pdf_foto.py` (1782 foto) → `extract_pdf_dates.py` (541 date.txt) → `scheduler.py` (schedule.json) → `edit_timemark_ide1.py --schedule` (1530/1530 sukses) → `merge_pdf_foto.py --schedule` (**97 PDF sukses, 15 skip, 53 gagal**).
 - [x] **53 PDF gagal:** Format SERAT OPTIK, TELEKOMUNIKASI, CATU DAYA, PINTU PERLINTASAN, CTC CTS — tidak memiliki aset di halaman 1 (layout beda dari AXC/WESEL/SINYAL). Perlu parser terpisah kalau mau diproses.
@@ -308,6 +339,8 @@ Rabu, Jul 08 2026
 
 | Tanggal | Ringkasan Update | File Terkait | Link |
 |---------|------------------|--------------|------|
+| **2026-07-13** | **Station-based Folder Hierarchy (BREAKING CHANGE)**: Restructured entire pipeline to use Functional Loc → Station mapping. `export_pdf_foto.py` now outputs `station/asset_type/detail/`, all downstream scripts updated (`extract_pdf_dates.py`, `scheduler.py`, `merge_pdf_foto.py`, `edit_timemark_ide1.py`) to handle 4-level depth. Resolves duplicate asset names across stations (e.g., ZP 41 BOO di BOO vs ZP 41 BOO di CLT). SAP mapping via `sap_station_mapping.json`. All 6 scripts syntax OK. | `export_pdf_foto.py`, `extract_pdf_dates.py`, `scheduler.py`, `merge_pdf_foto.py`, `edit_timemark_ide1.py`, `sap_station_mapping.json` | [[Notes/Daily/2026-07-13-Station|📄 Detail]] |
+| **2026-07-13** | **7 Asset Types Full Support**: Sync merge_pdf_foto.py detect_asset_type/extract_detail/is_valid_asset_title ke 7 tipe (AXC, WESEL, SINYAL, CATU_DAYA, PINTU_PERLINTASAN, TELEKOMUNIKASI, PERSINYALAN_ELEKTRIK). Update asset_waktu_mapping.json (35+ entry), checklist_types.json (category split TELEKOM_STASIUN/LUAR/PINTU), ZP 41B workaround kept. Audit passed: 6 scripts syntax OK, 3 JSON valid, cross-check 100% match. | merge_pdf_foto.py, asset_waktu_mapping.json, checklist_types.json, export_pdf_foto.py | [[Notes/Daily/2026-07-13|📄 Detail]] |
 | **2026-07-12** | **Fix browser freeze**: Limit API `/api/files` ke 100 file + metadata total/truncated. Frontend render "TOTAL FILE = N" saja. Fix EventSource reconnect loop (cleanup beforeunload, delay 3s). | `app.py`, `templates/index.html` | [[Notes/Daily/2026-07-12\|📄 Detail]] |
 | **2026-07-11** | **Bug fix Folder Consensus**: `_folder_key_from_path` mendukung input folder aset tunggal (`03_photos_export/AXC/ZP 42B BOO/`). Root cause: `relative_to(input_dir)` return nama file saja. Fix: ambil `asset_type` dari `input_dir.parent.name`, `detail` dari `input_dir.name`. Verified: ZP 42B BOO 3/3 sukses, Full AXC 402/402 sukses. | `edit_timemark_ide1.py` | [[Notes/Daily/2026-07-11\|📄 Detail]] |
 | **2026-07-10** | Pipeline penuh batch 2025: 1782 foto → 1530 edit sukses → 97 PDF merged. 53 gagal (layout SERAT OPTIK, TELEKOM, CATU DAYA, dll). | `export_pdf_foto.py`, `scheduler.py`, `edit_timemark_ide1.py`, `merge_pdf_foto.py` | [[Notes/Daily/2026-07-10\|📄 Detail]] |

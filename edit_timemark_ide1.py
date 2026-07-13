@@ -366,36 +366,44 @@ def sanitize_segment(text: str) -> str:
     return re.sub(r'[\\/:*?"<>|]', '_', text).strip()
 
 
-def asset_output_dir(root: Path, asset_type: str, detail: str) -> Path:
-    return root / asset_type / sanitize_segment(detail)
+def asset_output_dir(root: Path, station: str, asset_type: str, detail: str) -> Path:
+    return root / sanitize_segment(station) / asset_type / sanitize_segment(detail)
 
 
-def _folder_key_from_path(rel: Path, input_dir: Path | None = None) -> tuple[str, str] | None:
-    """Extract (asset_type, detail) from relative path.
+def _folder_key_from_path(rel: Path, input_dir: Path | None = None) -> tuple[str, str, str] | None:
+    """Extract (station, asset_type, detail) from relative path.
     
-    Handles two cases:
-    1. Full tree input (e.g. 03_photos_export/AXC): rel = 'AXC/ZP 42B BOO/0.jpg' -> ('AXC', 'ZP 42B BOO')
-    2. Single asset folder input (e.g. 03_photos_export/AXC/ZP 42B BOO): rel = 'ZP 42B BOO/0.jpg' -> needs input_dir to get asset_type
+    Handles:
+    1. Full tree input (e.g. 03_photos_export): rel = 'BOO/AXC/ZP 42B BOO/0.jpg' -> ('BOO', 'AXC', 'ZP 42B BOO')
+    2. Single station folder input (e.g. 03_photos_export/BOO): rel = 'AXC/ZP 42B BOO/0.jpg' -> ('BOO', 'AXC', 'ZP 42B BOO')
+    3. Single asset folder input (e.g. 03_photos_export/BOO/AXC/ZP 42B BOO): rel = 'ZP 42B BOO/0.jpg' -> ('BOO', 'AXC', 'ZP 42B BOO')
     """
     parts = rel.parts
-    if len(parts) >= 3:
-        # Full tree: asset_type/detail/photo
-        return parts[0], parts[1]
+    if len(parts) >= 4:
+        # Full tree: station/asset_type/detail/photo
+        return parts[0], parts[1], parts[2]
+    elif len(parts) == 3 and input_dir:
+        # Single station folder: asset_type/detail/photo
+        # input_dir = 03_photos_export/BOO -> station = input_dir.name
+        station = input_dir.name
+        asset_type = parts[0]
+        detail = parts[1]
+        return station, asset_type, detail
     elif len(parts) == 2 and input_dir:
-        # Single asset folder: detail/photo, need asset_type from input_dir parent
-        # input_dir = 03_photos_export/AXC/ZP 42B BOO
-        # input_dir.parent = 03_photos_export/AXC -> asset_type = 'AXC'
+        # Single asset folder: detail/photo
+        # input_dir = 03_photos_export/BOO/AXC/ZP 42B BOO
+        # input_dir.parent = 03_photos_export/BOO/AXC -> asset_type
+        # input_dir.parent.parent = 03_photos_export/BOO -> station
+        station = input_dir.parent.parent.name
         asset_type = input_dir.parent.name
         detail = parts[0]
-        return asset_type, detail
+        return station, asset_type, detail
     elif len(parts) == 1 and input_dir:
         # Single asset folder direct input: photo only (e.g. '0.jpg')
-        # input_dir = 03_photos_export/AXC/ZP 42B BOO
-        # input_dir.parent = 03_photos_export/AXC -> asset_type = 'AXC'
-        # input_dir.name = 'ZP 42B BOO' -> detail
+        station = input_dir.parent.parent.name
         asset_type = input_dir.parent.name
         detail = input_dir.name
-        return asset_type, detail
+        return station, asset_type, detail
     return None
 
 
@@ -420,10 +428,20 @@ def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tup
         except Exception:
             pass
 
-sy2 = min(h, ty + bbox[3] + shape_pad_y)
-    shape_box = (sx1, sy1, sx2, sy2)
+    # Compute consensus per folder
+    consensus = {}
+    for fkey, gy1_list in folder_guides.items():
+        if len(gy1_list) >= 2:
+            gy1_list.sort()
+            median_gy1 = gy1_list[len(gy1_list) // 2]
+            # Check if >=2 values within 10px of median
+            close_count = sum(1 for g in gy1_list if abs(g - median_gy1) <= 10)
+            if close_count >= 2:
+                consensus[fkey] = median_gy1
+    return consensus
 
-    out = img.copy()
+
+# ─── Core: Locate Date Box ───
     draw = ImageDraw.Draw(out)
 
     radius = max(2, int(box_h * 0.25))
@@ -544,44 +562,9 @@ def process_image(image_path: Path, output_path: Path, date_text: str,
 
     arr_work = arr_orig.copy()
     arr_work[ey1:ey2, ex1:ex2] = diffuse_fill(crop, crop_mask, steps=60)
-    img_erased = Image.fromarray(arr_work)
-
-    # Draw new textbox
-    img_out = draw_textbox(img_erased, box, timemark_text)
-
-    # Save
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    img_out.save(output_path, quality=95, subsampling=0)
-
-    return stage
 
 
-# ─── Main ───
-def sanitize_segment(text: str) -> str:
-    return re.sub(r'[\\/:*?"<>|]', '_', text).strip()
-
-
-def asset_output_dir(root: Path, asset_type: str, detail: str) -> Path:
-    return root / asset_type / sanitize_segment(detail)
-
-
-def _folder_key_from_path(rel: Path, input_dir: Path | None = None) -> tuple[str, str] | None:
-    """Extract (asset_type, detail) from relative path."""
-    parts = rel.parts
-    if len(parts) >= 3:
-        return parts[0], parts[1]
-    elif len(parts) == 2 and input_dir:
-        asset_type = input_dir.parent.name
-        detail = parts[0]
-        return asset_type, detail
-    elif len(parts) == 1 and input_dir:
-        asset_type = input_dir.parent.name
-        detail = input_dir.name
-        return asset_type, detail
-    return None
-
-
-def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tuple[str, str], int]:
+def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tuple[str, str, str], int]:
     from collections import defaultdict
     folder_guides = defaultdict(list)
 
@@ -641,24 +624,45 @@ def main():
     stage_counts = {"Stage 1c Original": 0, "Stage 1c Consensus": 0, "Fallback": 0}
     stage_details = []
     failed_files = []
+    tim_mapping = {}  # photo_rel_path -> tim_n
 
     for src in all_jpgs:
         rel = src.relative_to(input_dir)
         parts = rel.parts
-        if len(parts) >= 3:
+        if len(parts) >= 4:
+            # Full tree: station/asset_type/detail/photo
+            station, asset_type, detail, photo_name = parts[0], parts[1], parts[2], parts[3]
+            asset_key = (asset_type, detail, photo_name)
+        elif len(parts) == 3:
+            # Single station folder: asset_type/detail/photo
             asset_type, detail, photo_name = parts[0], parts[1], parts[2]
+            station = None  # Will be determined from input_dir
             asset_key = (asset_type, detail, photo_name)
         elif len(parts) == 2:
-            asset_type, detail, photo_name = parts[0], parts[1], None
+            # Single asset folder: detail/photo
+            detail, photo_name = parts[0], parts[1]
+            asset_type = None
+            station = None
             asset_key = None
         else:
-            asset_type, detail, photo_name, asset_key = None, None, None, None
+            asset_type, detail, photo_name, asset_key, station = None, None, None, None, None
 
         if schedule_lookup and asset_key:
             timemark_text, tim_n = schedule_lookup.get(asset_key, (date_text, 1))
-            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), asset_type or "Misc", detail or "Misc")
+            # Need to determine station for output path
+            fkey = _folder_key_from_path(rel, input_dir)
+            if fkey:
+                station = fkey[0]
+            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), station or "UNKNOWN", asset_type or "Misc", detail or "Misc")
+            # Collect tim_mapping for fallback (key: relative path without Tim_N prefix)
+            tim_mapping[str(rel)] = tim_n
         else:
-            dst_dir = output_dir / asset_output_dir(Path(""), asset_type or "Misc", detail or "Misc") if asset_type and detail else output_dir
+            # Collect tim_mapping for fallback (key: relative path without Tim_N prefix)
+            tim_mapping[str(rel)] = 1
+            fkey = _folder_key_from_path(rel, input_dir)
+            if fkey:
+                station = fkey[0]
+            dst_dir = output_dir / asset_output_dir(Path(""), station or "UNKNOWN", asset_type or "Misc", detail or "Misc") if asset_type and detail else output_dir
         dst = dst_dir / src.name
 
         fkey = _folder_key_from_path(rel, input_dir)
@@ -700,6 +704,17 @@ def main():
     logs_dir = Path("logs")
     logs_dir.mkdir(parents=True, exist_ok=True)
     
+    # Write tim_mapping.json if schedule was used
+    if args.schedule and tim_mapping:
+        tim_mapping_data = {
+            "version": 1,
+            "generated_at": datetime.now().isoformat(),
+            "mapping": tim_mapping,
+            "tims_used": sorted(set(tim_mapping.values()))
+        }
+        with open(logs_dir / "tim_mapping.json", "w", encoding="utf-8") as f:
+            json.dump(tim_mapping_data, f, indent=2, ensure_ascii=False)
+
     if stage_details:
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -743,6 +758,17 @@ def main():
             max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
             ws.column_dimensions[col[0].column_letter].width = max_length + 2
         wb.save(logs_dir / "edit_failed.xlsx")
+
+    # Write tim_mapping.json if schedule was used
+    if args.schedule and tim_mapping:
+        tim_mapping_data = {
+            "version": 1,
+            "generated_at": datetime.now().isoformat(),
+            "mapping": tim_mapping,
+            "tims_used": sorted(set(tim_mapping.values()))
+        }
+        with open(logs_dir / "tim_mapping.json", "w", encoding="utf-8") as f:
+            json.dump(tim_mapping_data, f, indent=2, ensure_ascii=False)
 
     summary = {
         "step": "edit",

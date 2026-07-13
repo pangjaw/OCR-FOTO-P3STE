@@ -8,7 +8,10 @@ import pdfplumber
 from export_pdf_foto import (
     extract_asset_rows,
     asset_output_dir,
-    ensure_dir
+    ensure_dir,
+    sanitize_segment,
+    load_sap_mapping,
+    SAP_MAPPING_PATH
 )
 
 DEFAULT_PDF_IMO_DIR = "./02_pdf_target"
@@ -153,14 +156,18 @@ def main() -> int:
 
         formatted_date = format_date_target(dt)
 
+        # Load SAP mapping for station lookup
+        sap_mapping = load_sap_mapping(SAP_MAPPING_PATH)
+
         # Cari seluruh aset di PDF ini untuk memperbarui date.txt di foldernya
         with pdfplumber.open(str(pdf_path)) as pdf:
             pdf_assets = []
-            
+
             for page in pdf.pages:
-                rows = extract_asset_rows(page)
+                rows = extract_asset_rows(page, sap_mapping)
                 for r in rows:
-                    out_dir = asset_output_dir(output_root, r.asset_type, r.detail)
+                    # New signature: asset_output_dir(root, station, asset_type, detail)
+                    out_dir = asset_output_dir(output_root, r.station, r.asset_type, r.detail)
                     ensure_dir(out_dir)
                     pdf_assets.append((r.code, r.detail, out_dir))
 

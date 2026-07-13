@@ -12,7 +12,13 @@ from datetime import datetime, date, timedelta
 
 import pdfplumber
 
-from export_pdf_foto import extract_asset_rows, sanitize_segment, ensure_dir
+from export_pdf_foto import (
+    extract_asset_rows,
+    sanitize_segment,
+    ensure_dir,
+    load_sap_mapping,
+    SAP_MAPPING_PATH
+)
 from extract_pdf_dates import extract_date_from_pdf, format_date_target
 
 # ---------------------------------------------------------------------------
@@ -88,8 +94,8 @@ def get_waktu(asset_type: str, detail: str, mapping: dict, acuan: dict) -> int:
     return defaults.get(asset_type, 45)
 
 
-def read_date_from_photos(photos_dir: Path, asset_type: str, detail: str) -> str | None:
-    fp = photos_dir / sanitize_segment(asset_type) / sanitize_segment(detail) / "date.txt"
+def read_date_from_photos(photos_dir: Path, station: str, asset_type: str, detail: str) -> str | None:
+    fp = photos_dir / sanitize_segment(station) / sanitize_segment(asset_type) / sanitize_segment(detail) / "date.txt"
     if fp.exists():
         return fp.read_text(encoding="utf-8").strip()
     return None
@@ -110,6 +116,9 @@ def m2iso(d: date, m: int) -> str:
 def build_schedule(pdf_dir: Path, photos_dir: Path,
                    mapping: dict, acuan: dict,
                    jam_mulai: int, jam_selesai: int, tim_max: int) -> dict:
+    # Load SAP mapping for station lookup
+    sap_mapping = load_sap_mapping(SAP_MAPPING_PATH)
+    
     files = sorted(p for p in pdf_dir.rglob("*")
                    if p.is_file() and p.suffix.lower() == ".pdf")
     if not files:
@@ -125,7 +134,7 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
             if not doc.pages:
                 continue
             page1 = doc.pages[0]
-            assets = extract_asset_rows(page1)
+            assets = extract_asset_rows(page1, sap_mapping)
 
         if not assets:
             continue
@@ -136,7 +145,7 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
 
         # 1) from date.txt of first asset
         if assets:
-            date_str = read_date_from_photos(photos_dir, assets[0].asset_type, assets[0].detail)
+            date_str = read_date_from_photos(photos_dir, assets[0].station, assets[0].asset_type, assets[0].detail)
 
         # 2) fallback: scan PDF
         if not date_str:

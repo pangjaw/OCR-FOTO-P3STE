@@ -1,0 +1,4279 @@
+{
+  "AXL11468": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 60 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF001",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11469": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 61 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF002",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11470": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 62A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF003",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11471": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 42C BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF004",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11472": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 41B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF005",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11473": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 42A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF006",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11474": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 42B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF007",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11475": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 62B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF008",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11476": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 23A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF009",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11477": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 23B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF010",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11478": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 24B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF011",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11479": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 24A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF012",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11480": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 12A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF013",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11481": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 13 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF014",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11482": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 12B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF015",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11483": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 22A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF016",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11484": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 22B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF017",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11485": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 32B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF018",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11486": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 32A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF019",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11487": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 31E BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF020",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11488": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 52 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF021",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11489": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 72 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF022",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11490": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 92 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF023",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11491": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 31D BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF024",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11492": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 31C BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF025",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11493": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 31B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF026",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11494": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 21C BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF027",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11495": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 31A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF028",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11496": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 10B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF029",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11497": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 10A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF030",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11498": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 213 BOO-CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF031",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11499": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 20A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF032",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11500": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 20B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF033",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11501": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 20C BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF034",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11502": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 21A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF035",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11503": {
+    "station": "BOO",
+    "description": "AXLE COUNTER ZP 21B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SDF036",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11505": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 25 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF001",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11506": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 26A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF002",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11507": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 46A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF003",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11508": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 66A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF004",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11509": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 26B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF005",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11510": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 46B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF006",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11511": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 66B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF007",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11512": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 47A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF008",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11513": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 68 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF009",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11514": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 47B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF010",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11515": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 47C BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF011",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11516": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 26C BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF012",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11517": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 27A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF013",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11518": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 27B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF014",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11519": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 47D BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF015",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11520": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 27C BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF016",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11521": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 28A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF017",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11522": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 48A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF018",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11523": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 48B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF019",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11524": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 48C BTT - BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SDF001",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11525": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 28C BTT - BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SDF002",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11526": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 10A BTT - BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SDF003",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11527": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 20A BTT - BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SDF004",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11528": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 10B BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SDF001",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11529": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 20B BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SDF002",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11530": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 12A BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SDF003",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11531": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 22A BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SDF004",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11532": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 12B BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SDF005",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11533": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 22B BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SDF006",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11534": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 14A BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SDF007",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11535": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 24A BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SDF008",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11536": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 101A BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SDF001",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11537": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 101B BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SDF002",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11538": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 14B BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SDF003",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11539": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 24B MSG - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SDF004",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11540": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 201A MSG - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SDF005",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11541": {
+    "station": "BTT",
+    "description": "AXLE COUNTER ZP 201B MSG - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SDF006",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11562": {
+    "station": "BOP",
+    "description": "AXLE COUNTER ZP 28B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SDF020",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11563": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 10A BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF001",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11564": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 20A BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF002",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11565": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 10B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF003",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11566": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 20B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF004",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11567": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 10C MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF005",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11568": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 20C MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF006",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11569": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 11 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF007",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11570": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 12A MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF008",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11571": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 22A MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF009",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11572": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 12B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF010",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11573": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 22B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF011",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11574": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 13 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF012",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11575": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 14A MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF013",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11576": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 24A MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF014",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11577": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 14B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF015",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11578": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 24B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF016",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11579": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 14C CCR - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF017",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11580": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 24C CCR - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF018",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11581": {
+    "station": "CCR",
+    "description": "AXLE COUNTER ZP 101A MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF019",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11582": {
+    "station": "CCR",
+    "description": "AXLE COUNTER ZP 101B MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF020",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11583": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 201A CCR - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF021",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11584": {
+    "station": "MSG",
+    "description": "AXLE COUNTER ZP 201B CCR - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SDF022",
+    "funct_loc_cat": "L",
+    "model_number": "FRAUSCHER"
+  },
+  "AXL11624": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 11 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF001",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11625": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 12A CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF002",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11626": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 12B CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF003",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11627": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 13 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF004",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11628": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 14A CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF005",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11629": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 14B CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF006",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11630": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 24B CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF007",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11631": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 24A CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF008",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11632": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 22B CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF009",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11633": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 22A CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF010",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11634": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 20B CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF011",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11635": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 20A CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF012",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11706": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 10A CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF013",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "AXL11707": {
+    "station": "CLT",
+    "description": "AXLE COUNTER ZP 10B CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SDF014",
+    "funct_loc_cat": "L",
+    "model_number": "ZPD 43"
+  },
+  "BOOYK_D01-THU1-ST_MSG-SBF006": {
+    "station": "MSG",
+    "description": "SINYAL MASUK J10 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "CDA10061": {
+    "station": "BOO",
+    "description": "CATU DAYA ER SINYAL BOO",
+    "sup_funct_loc": "ST_BOOD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "CDA10062": {
+    "station": "BOP",
+    "description": "CATU DAYA ER SINYAL BOP",
+    "sup_funct_loc": "ST_BOPD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "CDA10063": {
+    "station": "BTT",
+    "description": "CATU DAYA ER SINYAL BTT",
+    "sup_funct_loc": "ST_BTTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "CDA10064": {
+    "station": "COS",
+    "description": "CATU DAYA ER SINYAL IB COS",
+    "sup_funct_loc": "ST_CS_D01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "CDA10065": {
+    "station": "MSG",
+    "description": "CATU DAYA ER SINYAL MSG",
+    "sup_funct_loc": "ST_MSGD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "CDA10066": {
+    "station": "CGB",
+    "description": "CATU DAYA ER SINYAL IB CGB",
+    "sup_funct_loc": "ST_CGBD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "CDA10069": {
+    "station": "CLT",
+    "description": "CATU DAYA ER SINYAL CLT",
+    "sup_funct_loc": "ST_CLTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "CDA10070": {
+    "station": "CLT",
+    "description": "GENSET ER SINYAL CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10008": {
+    "station": "BOO",
+    "description": "KONTAK DETEKSI BTT DARI BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10238": {
+    "station": "CLT",
+    "description": "CATU DAYA ER CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10239": {
+    "station": "CLT",
+    "description": "PANEL LCP CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10240": {
+    "station": "BOO",
+    "description": "INTERLOCKING ELEKTRIK SSI 10 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10241": {
+    "station": "BOO",
+    "description": "INTERLOCKING ELEKTRIK SSI 11 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10242": {
+    "station": "BOO",
+    "description": "DATA LOGGER BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10243": {
+    "station": "BOO",
+    "description": "CTS BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10244": {
+    "station": "BOO",
+    "description": "TECHNICIAN TERMINAL BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10245": {
+    "station": "BOO",
+    "description": "ER RACK A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10246": {
+    "station": "BOO",
+    "description": "ER RACK B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10247": {
+    "station": "BOO",
+    "description": "ER RACK C BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10248": {
+    "station": "BOO",
+    "description": "ER RACK D BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10249": {
+    "station": "BOO",
+    "description": "ER RACK E BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10250": {
+    "station": "BOO",
+    "description": "CATU DAYA ER BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10251": {
+    "station": "BTT",
+    "description": "INTERLOCKING MEKANIK BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "S&H"
+  },
+  "INB10252": {
+    "station": "MSG",
+    "description": "INTERLOCKING MEKANIK MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "S&H"
+  },
+  "INB10253": {
+    "station": "CGB",
+    "description": "INTERLOCKING MEKANIK CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10260": {
+    "station": "BOO",
+    "description": "KONTAK DETEKSI BTT DARI BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10261": {
+    "station": "MSG",
+    "description": "KONTAK DETEKSI BTT DARI MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10262": {
+    "station": "BTT",
+    "description": "KONTAK DETEKSI MSG DARI BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10263": {
+    "station": "CGB",
+    "description": "KONTAK DETEKSI MSG DARI CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10264": {
+    "station": "MSG",
+    "description": "KONTAK DETEKSI CGB DARI MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10265": {
+    "station": "CCR",
+    "description": "KONTAK DETEKSI CGB DARI CCR",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10266": {
+    "station": "CGB",
+    "description": "KONTAK DETEKSI CCR DARI CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10303": {
+    "station": "BTT",
+    "description": "CATU DAYA ER BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10304": {
+    "station": "MSG",
+    "description": "CATU DAYA ER MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10305": {
+    "station": "CGB",
+    "description": "CATU DAYA ER TELEKOMUNIKASI CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10306": {
+    "station": "BTT",
+    "description": "GENSET BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10307": {
+    "station": "MSG",
+    "description": "GENSET MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10308": {
+    "station": "CGB",
+    "description": "GENSET CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10309": {
+    "station": "BOO",
+    "description": "GENSET BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10314": {
+    "station": "BOO",
+    "description": "PC VDU BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10315": {
+    "station": "CLT",
+    "description": "PC VDU CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10339": {
+    "station": "CLT",
+    "description": "CTS CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10371": {
+    "station": "CLT",
+    "description": "INTERLOCKING SSI CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "SSI"
+  },
+  "INB10424": {
+    "station": "CLT",
+    "description": "PANEL PELAYANAN CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10425": {
+    "station": "BOO",
+    "description": "PANEL PELAYANAN BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10512": {
+    "station": "BOO",
+    "description": "PANEL PELAYANAN VDU 1 BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10513": {
+    "station": "BOO",
+    "description": "PANEL PELAYANAN VDU 2 BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10514": {
+    "station": "BOP",
+    "description": "PANEL PELAYANAN VDU 1 BOP",
+    "sup_funct_loc": "ST_BOPD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10515": {
+    "station": "BOP",
+    "description": "PANEL PELAYANAN VDU 2 BOP",
+    "sup_funct_loc": "ST_BOPD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10516": {
+    "station": "BTT",
+    "description": "PANEL PELAYANAN VDU BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10517": {
+    "station": "MSG",
+    "description": "PANEL PELAYANAN VDU 1 MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10518": {
+    "station": "MSG",
+    "description": "PANEL PELAYANAN VDU 2 MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10519": {
+    "station": "BOO",
+    "description": "INTERLOCKING SIL SAFE 4000 BOO",
+    "sup_funct_loc": "ST_BOOD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": "SIL-02 (HIMAX)"
+  },
+  "INB10520": {
+    "station": "BOP",
+    "description": "INTERLOCKING SIL SAFE 4000 BOP",
+    "sup_funct_loc": "ST_BOPD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": "SIL-02 (HIMAX)"
+  },
+  "INB10521": {
+    "station": "BTT",
+    "description": "INTERLOCKING SIL SAFE 4000 BTT",
+    "sup_funct_loc": "ST_BTTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": "SIL-02 (HIMAX)"
+  },
+  "INB10522": {
+    "station": "MSG",
+    "description": "INTERLOCKING SIL SAFE 4000 MSG",
+    "sup_funct_loc": "ST_MSGD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": "SIL-02 (HIMAX)"
+  },
+  "INB10523": {
+    "station": "COS",
+    "description": "INTERMEDIATE BLOK SIL SAFE 4000 COS",
+    "sup_funct_loc": "ST_CS_D01-ER",
+    "funct_loc_cat": "L",
+    "model_number": "SIL-02 (HIMAX)"
+  },
+  "INB10524": {
+    "station": "CGB",
+    "description": "INTERMEDIATE BLOK SIL SAFE 4000 CGB",
+    "sup_funct_loc": "ST_CGBD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": "SIL-02 (HIMAX)"
+  },
+  "INB10529": {
+    "station": "BOO",
+    "description": "PANEL DISPLAY PENGENDALI TSC BOO",
+    "sup_funct_loc": "ST_BOOD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": "VDU"
+  },
+  "INB10530": {
+    "station": "BOO",
+    "description": "DATA LOGGER  BOO",
+    "sup_funct_loc": "ST_BOOD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10531": {
+    "station": "BOP",
+    "description": "DATA LOGGER BOP",
+    "sup_funct_loc": "ST_BOPD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10532": {
+    "station": "BTT",
+    "description": "DATA LOGGER BTT",
+    "sup_funct_loc": "ST_BTTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10533": {
+    "station": "MSG",
+    "description": "DATA LOGGER MSG",
+    "sup_funct_loc": "ST_MSGD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10534": {
+    "station": "BOP",
+    "description": "TECHNICIAN TERMINAL BOP",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10535": {
+    "station": "BOO",
+    "description": "TECHNICIAN TERMINAL BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10536": {
+    "station": "BTT",
+    "description": "TECHNICIAN TERMINAL BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10537": {
+    "station": "MSG",
+    "description": "TECHNICIAN TERMINAL MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10538": {
+    "station": "CLT",
+    "description": "INTERLOCKING SIL SAFE 4000 CLT",
+    "sup_funct_loc": "ST_CLTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": "SIL-02 (HIMAX)"
+  },
+  "INB10539": {
+    "station": "CLT",
+    "description": "DATA LOGGER CLT",
+    "sup_funct_loc": "ST_CLTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10540": {
+    "station": "CLT",
+    "description": "TECHNICIAN TERMINAL CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10541": {
+    "station": "CLT",
+    "description": "PANEL PELAYANAN VDU 1 CLT",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10542": {
+    "station": "CLT",
+    "description": "PANEL PELAYANAN VDU 2 CLT",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10543": {
+    "station": "CLT",
+    "description": "PANEL DISPLAY PENGENDALI TSC CLT",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "VDU"
+  },
+  "INB10544": {
+    "station": "BJD",
+    "description": "PERALATAN BLOK CLT - BJD",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10545": {
+    "station": "BOO",
+    "description": "PERALATAN BLOK CLT - BOO",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10546": {
+    "station": "CLT",
+    "description": "PERALATAN BLOK BOO - CLT",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10547": {
+    "station": "BOP",
+    "description": "PERALATAN BLOK BOO - BOP",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10640": {
+    "station": "BTT",
+    "description": "PANEL PELAYANAN VDU 1 BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "INB10641": {
+    "station": "BTT",
+    "description": "PANEL PELAYANAN VDU 2 BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10337": {
+    "station": "CLT",
+    "description": "BANGUNAN JPL 26N CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10338": {
+    "station": "CLT",
+    "description": "JPL ELEKTRIK NO 26N CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SFF003",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10350": {
+    "station": "BOO",
+    "description": "JPL ELEKTRIK NO 2 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SJF001",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10361": {
+    "station": "BTT",
+    "description": "JPL MEKANIK NO 10 BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10362": {
+    "station": "BTT",
+    "description": "BANGUNAN JPL 10 BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10363": {
+    "station": "BTT",
+    "description": "HT JPL 10 BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10364": {
+    "station": "BTT",
+    "description": "JPL MEKANIK NO 11 BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10365": {
+    "station": "BTT",
+    "description": "RIG JPL 11 BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10366": {
+    "station": "BTT",
+    "description": "BANGUNAN JPL 11 BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10367": {
+    "station": "MSG",
+    "description": "JPL MEKANIK NO 12F MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10368": {
+    "station": "MSG",
+    "description": "HT JPL 12F MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10369": {
+    "station": "MSG",
+    "description": "BANGUNAN JPL 12F MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10370": {
+    "station": "CGB",
+    "description": "JPL MEKANIK NO 15 CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10371": {
+    "station": "CGB",
+    "description": "HT JPL 15 CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10372": {
+    "station": "CGB",
+    "description": "BANGUNAN JPL 15 CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10485": {
+    "station": "BOO",
+    "description": "PESAWAT TELEPON JPL 02 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SJF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10486": {
+    "station": "BOO",
+    "description": "PESAWAT TELEPON JPL 01 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SJF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10487": {
+    "station": "BOP",
+    "description": "PESAWAT TELEPON JPL 04 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SJF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10488": {
+    "station": "BTT",
+    "description": "PESAWAT TELEPON JPL 07 BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOPBTT-SJF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10489": {
+    "station": "BTT",
+    "description": "PESAWAT TELEPON JPL BNR BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOPBTT-SJF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10490": {
+    "station": "BTT",
+    "description": "PESAWAT TELEPON JPL 10 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SJF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10491": {
+    "station": "BTT",
+    "description": "PESAWAT TELEPON JPL 11 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SJF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10492": {
+    "station": "MSG",
+    "description": "PESAWAT TELEPON JPL 12F MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SJF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10493": {
+    "station": "CCR",
+    "description": "PESAWAT TELEPON JPL 15 MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-CGBCCR-SJF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10494": {
+    "station": "CCR",
+    "description": "PESAWAT TELEPON JPL 16 MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-CGBCCR-SJF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10495": {
+    "station": "CCR",
+    "description": "JPL ELEKTRIK NO 15 MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-CGBCCR-SJF003",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10496": {
+    "station": "CCR",
+    "description": "JPL ELEKTRIK NO 16 MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-CGBCCR-SJF004",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10497": {
+    "station": "MSG",
+    "description": "JPL ELEKTRIK NO 12F MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SJF003",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10498": {
+    "station": "BOP",
+    "description": "JPL ELEKTRIK NO 04 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SJF002",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10499": {
+    "station": "BTT",
+    "description": "JPL ELEKTRIK NO 07 BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SJF001",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10500": {
+    "station": "BTT",
+    "description": "JPL ELEKTRIK BNR BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SJF002",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10501": {
+    "station": "BTT",
+    "description": "JPL ELEKTRIK NO 10 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SJF005",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10502": {
+    "station": "BTT",
+    "description": "JPL ELEKTRIK NO 11 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SJF002",
+    "funct_loc_cat": "L",
+    "model_number": "MO-PLN"
+  },
+  "JPL10503": {
+    "station": "BOO",
+    "description": "GENTANIK JPL 02 BOO",
+    "sup_funct_loc": "BOOYK_DD0-TRN1-BOOBTT-SJF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10504": {
+    "station": "BOP",
+    "description": "GENTANIK JPL 04 BOP",
+    "sup_funct_loc": "BOOYK_DD0-TRN1-BOOBTT-SJF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10505": {
+    "station": "BTT",
+    "description": "GENTANIK JPL 07 BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SJF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10506": {
+    "station": "BNR",
+    "description": "GENTANIK JPL BNR BOP-BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SJF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10507": {
+    "station": "BTT",
+    "description": "GENTANIK JPL 1O BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SJF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10508": {
+    "station": "BTT",
+    "description": "GENTANIK JPL 11 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SJF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10509": {
+    "station": "MSG",
+    "description": "GENTANIK JPL 12F MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SJF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10510": {
+    "station": "CCR",
+    "description": "GENTANIK JPL 15 MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-CGBCCR-SJF005",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10511": {
+    "station": "CCR",
+    "description": "GENTANIK JPL 16 MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-CGBCCR-SJF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10512": {
+    "station": "BOO",
+    "description": "SENTRANIK PAP BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10513": {
+    "station": "BOP",
+    "description": "SENTRANIK PPKA BOP",
+    "sup_funct_loc": "ST_BOPD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10514": {
+    "station": "BTT",
+    "description": "SENTRANIK PPKA BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10515": {
+    "station": "MSG",
+    "description": "SENTRANIK PPKA MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "JPL10523": {
+    "station": "BOO",
+    "description": "GENTANIK JPL 01 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SJF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10690": {
+    "station": "CLT",
+    "description": "LOCATION CASE 46.462 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10691": {
+    "station": "CLT",
+    "description": "LOCATION CASE 46.852 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10692": {
+    "station": "CLT",
+    "description": "ER RACK A CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10693": {
+    "station": "CLT",
+    "description": "LOCATION CASE 47.327 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10694": {
+    "station": "CLT",
+    "description": "LOCATION CASE 47.666 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10718": {
+    "station": "BOO",
+    "description": "LOCATION CASE 0.520 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10813": {
+    "station": "BOO",
+    "description": "LOCATION CASE 55 653 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10814": {
+    "station": "CLT",
+    "description": "LOCATION CASE 47 180 ER CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10982": {
+    "station": "CLT",
+    "description": "ER RACK B CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "LCS10983": {
+    "station": "CLT",
+    "description": "ER RACK C CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11045": {
+    "station": "CLT",
+    "description": "SINYAL MASUK J24 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11046": {
+    "station": "CLT",
+    "description": "SINYAL KELUAR J12B CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11047": {
+    "station": "CLT",
+    "description": "SINYAL KELUAR J12A CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11048": {
+    "station": "CLT",
+    "description": "SINYAL KELUAR J22 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11049": {
+    "station": "CLT",
+    "description": "SINYAL MASUK J10 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11066": {
+    "station": "BTT",
+    "description": "SINYAL MASUK A BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11067": {
+    "station": "BTT",
+    "description": "SINYAL MASUK B BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11068": {
+    "station": "BTT",
+    "description": "SINYAL KELUAR C BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11069": {
+    "station": "BTT",
+    "description": "SINYAL KELUAR D BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11070": {
+    "station": "BTT",
+    "description": "SINYAL ULANG SINYAL MASUK AU BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11071": {
+    "station": "BTT",
+    "description": "SINYAL ULANG SINYAL MASUK BU BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11074": {
+    "station": "MSG",
+    "description": "SINYAL MASUK A MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11075": {
+    "station": "MSG",
+    "description": "SINYAL MASUK B MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11076": {
+    "station": "MSG",
+    "description": "SINYAL KELUAR C MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11077": {
+    "station": "MSG",
+    "description": "SINYAL KELUAR D MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11078": {
+    "station": "MSG",
+    "description": "SINYAL ULANG SINYAL MASUK BU MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11081": {
+    "station": "CGB",
+    "description": "SINYAL MASUK A CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11082": {
+    "station": "CGB",
+    "description": "SINYAL MASUK B CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11083": {
+    "station": "CGB",
+    "description": "SINYAL KELUAR C CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11084": {
+    "station": "CGB",
+    "description": "SINYAL KELUAR D CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11085": {
+    "station": "CGB",
+    "description": "SINYAL ULANG SINYAL MASUK AU CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11086": {
+    "station": "CGB",
+    "description": "SINYAL ULANG SINYAL MASUK BU CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11262": {
+    "station": "BOO",
+    "description": "SINYAL MASUK J10 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11263": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L20 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11264": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR J22A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11265": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR J12A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11266": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL32A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11267": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL52A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11268": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL72A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11269": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL92 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11270": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL112 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11271": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL52B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11272": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL32B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11273": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L12B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11274": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L22B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11275": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L22A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11276": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L42A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11277": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL42B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11278": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L14 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11279": {
+    "station": "BOO",
+    "description": "SINYAL MASUK J14 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11280": {
+    "station": "BOO",
+    "description": "SINYAL MUKA MJ14 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11281": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L60 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11411": {
+    "station": "CLT",
+    "description": "SINYAL ULANG JALAN UJ 10 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11691": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL92 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF021",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11692": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL72 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF022",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11693": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL52 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF023",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11694": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL32A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF024",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11695": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL32B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF025",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11696": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL12A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF026",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11697": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL12B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF027",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11698": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL22A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF028",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11699": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL22B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF029",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11700": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL42A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF030",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11701": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL42B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF031",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11702": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL42C BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF032",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11703": {
+    "station": "BOO",
+    "description": "SINYAL KELUAR DAN LANGSIR JL62B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF033",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11704": {
+    "station": "BOO",
+    "description": "SINYAL MASUK J10 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF034",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11705": {
+    "station": "BOO",
+    "description": "SINYAL MASUK J20 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF035",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11706": {
+    "station": "BOO",
+    "description": "SINYAL MUKA MJ20 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF036",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11707": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L80 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF037",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11708": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L60 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF038",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11709": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L62A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF039",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11710": {
+    "station": "BOO",
+    "description": "SINYAL LANGSIR L20 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SAF040",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11711": {
+    "station": "BOP",
+    "description": "SINYAL ULANG JALAN UJ26B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11712": {
+    "station": "BOP",
+    "description": "SINYAL KELUAR DAN LANGSIR JL26A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11713": {
+    "station": "BOP",
+    "description": "SINYAL KELUAR DAN LANGSIR JL46A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11714": {
+    "station": "BOP",
+    "description": "SINYAL KELUAR DAN LANGSIR JL26B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11715": {
+    "station": "BOP",
+    "description": "SINYAL KELUAR DAN LANGSIR JL46B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF005",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11716": {
+    "station": "BOP",
+    "description": "SINYAL KELUAR DAN LANGSIR JL66B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11717": {
+    "station": "BOP",
+    "description": "SINYAL LANGSIR L68 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF007",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11718": {
+    "station": "BOP",
+    "description": "SINYAL LANGSIR L47A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF008",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11719": {
+    "station": "BOP",
+    "description": "SINYAL LANGSIR L47B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF009",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11720": {
+    "station": "BOP",
+    "description": "SINYAL LANGSIR L28 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF010",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11721": {
+    "station": "BOP",
+    "description": "SINYAL MASUK J48 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF011",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11722": {
+    "station": "BOP",
+    "description": "SINYAL MASUK J28 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SBF012",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11723": {
+    "station": "BTT",
+    "description": "SINYAL MUKA MJ28 BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SBF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11724": {
+    "station": "BTT",
+    "description": "SINYAL MUKA MJ48 BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SBF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11725": {
+    "station": "BTT",
+    "description": "SINYAL MASUK J10 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SBF007",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11726": {
+    "station": "BTT",
+    "description": "SINYAL MASUK J20 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SBF008",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11727": {
+    "station": "BTT",
+    "description": "SINYAL MASUK J14 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SBF009",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11728": {
+    "station": "BTT",
+    "description": "SINYAL MASUK J24 BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SBF010",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11729": {
+    "station": "BTT",
+    "description": "SINYAL KELUAR J12A BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SBF011",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11730": {
+    "station": "BTT",
+    "description": "SINYAL KELUAR J22A BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SBF012",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11731": {
+    "station": "BTT",
+    "description": "SINYAL KELUAR J12B BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SBF013",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11732": {
+    "station": "BTT",
+    "description": "SINYAL KELUAR J22B BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BTT-SBF014",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11733": {
+    "station": "BTT",
+    "description": "SINYAL MUKA MJ10 BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SBF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11734": {
+    "station": "BTT",
+    "description": "SINYAL MUKA MJ20 BOP - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BOOBTT-SBF005",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11735": {
+    "station": "BTT",
+    "description": "SINYAL MUKA MJ14 MSG - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SBF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11736": {
+    "station": "BTT",
+    "description": "SINYAL MUKA MJ24 MSG - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SBF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11737": {
+    "station": "MSG",
+    "description": "SINYAL BLOK B101 BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SBF005",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11738": {
+    "station": "BTT",
+    "description": "SINYAL BLOK B201 MSG - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SBF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11739": {
+    "station": "MSG",
+    "description": "SINYAL MUKA BLOK MB101 BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SBF007",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11740": {
+    "station": "BTT",
+    "description": "SINYAL MUKA BLOK MB201 MSG - BTT",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SBF008",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11741": {
+    "station": "MSG",
+    "description": "SINYAL MUKA MJ10 BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SBF009",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11742": {
+    "station": "MSG",
+    "description": "SINYAL MUKA MJ20 BTT - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-BTTMSG-SBF010",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11743": {
+    "station": "MSG",
+    "description": "SINYAL MASUK J10 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11744": {
+    "station": "MSG",
+    "description": "SINYAL MASUK J20 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF007",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11745": {
+    "station": "MSG",
+    "description": "SINYAL KELUAR J22A MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF008",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11746": {
+    "station": "MSG",
+    "description": "SINYAL KELUAR J22B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF009",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11747": {
+    "station": "MSG",
+    "description": "SINYAL KELUAR J12B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF010",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11748": {
+    "station": "MSG",
+    "description": "SINYAL KELUAR J14 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF011",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11749": {
+    "station": "MSG",
+    "description": "SINYAL KELUAR J24 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF012",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11750": {
+    "station": "MSG",
+    "description": "SINYAL ULANG JALAN UJ22B MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF013",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11751": {
+    "station": "MSG",
+    "description": "SINYAL ULANG JALAN UJ12 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF014",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11752": {
+    "station": "MSG",
+    "description": "SINYAL MUKA MJ14 CCR - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SBF015",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11753": {
+    "station": "CCR",
+    "description": "SINYAL MUKA BLOK MB101 MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-MSGCGB-SBF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11754": {
+    "station": "CCR",
+    "description": "SINYAL BLOK B101 MSG - CCR",
+    "sup_funct_loc": "BOOYK_D01-THU1-MSGCGB-SBF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11755": {
+    "station": "MSG",
+    "description": "SINYAL MUKA MJ24 CCR - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-MSGCGB-SBF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11756": {
+    "station": "MSG",
+    "description": "SINYAL BLOK B201 CCR - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-MSGCGB-SBF005",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11757": {
+    "station": "MSG",
+    "description": "SINYAL MUKA BLOK MB201 CCR - MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-MSGCGB-SBF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11781": {
+    "station": "CLT",
+    "description": "SINYAL MASUK J20 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF005",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11782": {
+    "station": "CLT",
+    "description": "SINYAL MUKA  MJ20 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11783": {
+    "station": "CLT",
+    "description": "SINYAL MASUK J14 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF007",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11784": {
+    "station": "CLT",
+    "description": "SINYAL MUKA MJ14 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF008",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11861": {
+    "station": "CLT",
+    "description": "SINYAL MASUK J10 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF010",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11862": {
+    "station": "CLT",
+    "description": "SINYAL KELUAR J12A CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF011",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11863": {
+    "station": "CLT",
+    "description": "SINYAL KELUAR J12B CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF012",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11864": {
+    "station": "CLT",
+    "description": "SINYAL MASUK J24 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF013",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "SIN11865": {
+    "station": "CLT",
+    "description": "SINYAL KELUAR J22 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SBF014",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10668": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 20AT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10669": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 20BT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10670": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 21T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10671": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 22AT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10672": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 22BT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10673": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 42AT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10674": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 42BT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10675": {
+    "station": "CLT",
+    "description": "TRACK CIRCUIT 21T CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10676": {
+    "station": "CLT",
+    "description": "TRACK CIRCUIT 22T CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10677": {
+    "station": "CLT",
+    "description": "TRACK CIRCUIT 23T CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10678": {
+    "station": "CLT",
+    "description": "TRACK CIRCUIT 24T CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10834": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 10AT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10835": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 10BT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10836": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 112T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10837": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 11T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10838": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 12T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10839": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 13AT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10840": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 13BT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10841": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 30T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10842": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 32T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10843": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 52T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10844": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 53T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10845": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 72T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10846": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 92T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10847": {
+    "station": "CLT",
+    "description": "TRACK CIRCUIT 10T CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10848": {
+    "station": "CLT",
+    "description": "TRACK CIRCUIT 11T CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10849": {
+    "station": "CLT",
+    "description": "TRACK CIRCUIT 12T CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT10850": {
+    "station": "CLT",
+    "description": "TRACK CIRCUIT 13T CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT11498": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 31AT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT11499": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 31BT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT11500": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 71T BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT11501": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 14AT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TCT11502": {
+    "station": "BOO",
+    "description": "TRACK CIRCUIT 14BT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10299": {
+    "station": "CLT",
+    "description": "PESAWAT TELP CFT CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10300": {
+    "station": "CLT",
+    "description": "WS DIGITAL S26 CLT",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "SEPURA SRG3900"
+  },
+  "TLK10301": {
+    "station": "CLT",
+    "description": "PEREKAM TELP BLOK CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10302": {
+    "station": "BOO",
+    "description": "VOICE LOGGER 1 BLOK BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10303": {
+    "station": "BOO",
+    "description": "RIG PPKA BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10304": {
+    "station": "BOO",
+    "description": "PESAWAT TELP CFT BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10305": {
+    "station": "BOO",
+    "description": "WS DIGITAL S26 BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "SEPURA SRG3900"
+  },
+  "TLK10306": {
+    "station": "BOO",
+    "description": "TELEPON GSM BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10307": {
+    "station": "BTT",
+    "description": "VOICE LOGGER 1 BLOK BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10308": {
+    "station": "BTT",
+    "description": "RIG PPKA BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10309": {
+    "station": "MSG",
+    "description": "PERALATAN BLOK BTT - MSG",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10310": {
+    "station": "BOP",
+    "description": "PERALATAN BLOK BTT - BOP",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10311": {
+    "station": "CGB",
+    "description": "GENTA PERON CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10312": {
+    "station": "BTT",
+    "description": "TELEPON GSM BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10313": {
+    "station": "MSG",
+    "description": "VOICE LOGGER 1 BLOK MSG",
+    "sup_funct_loc": "ST_CGBD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10314": {
+    "station": "MSG",
+    "description": "RIG PPKA MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10315": {
+    "station": "CGB",
+    "description": "GENTA PERON CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10316": {
+    "station": "MSG",
+    "description": "SENTRAL TELEPON ANTAR STASIUN MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10317": {
+    "station": "MSG",
+    "description": "PESAWAT BLOK MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10318": {
+    "station": "MSG",
+    "description": "TELEPON BLOK MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10319": {
+    "station": "CGB",
+    "description": "GENTA PERON CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10320": {
+    "station": "CGB",
+    "description": "RIG PPKA CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10321": {
+    "station": "CGB",
+    "description": "VOICE LOGGER 1 BLOK CGB",
+    "sup_funct_loc": "ST_CGBD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10324": {
+    "station": "CGB",
+    "description": "TELEPON GSM CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "K",
+    "model_number": null
+  },
+  "TLK10375": {
+    "station": "BTT",
+    "description": "WS S23 BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "ICOM F5023H"
+  },
+  "TLK10376": {
+    "station": "MSG",
+    "description": "WS S23 MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "ICOM F5023H"
+  },
+  "TLK10384": {
+    "station": "BOO",
+    "description": "RIG JPL 2 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10499": {
+    "station": "CGB",
+    "description": "WS S23 CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10663": {
+    "station": "CGB",
+    "description": "PESAWAT TOKA PPKA CGB",
+    "sup_funct_loc": "ST_CGBD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10664": {
+    "station": "CGB",
+    "description": "BASE STATION ANALOG S23 CGB",
+    "sup_funct_loc": "ST_CGBD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "ICOM FR5200H"
+  },
+  "TLK10665": {
+    "station": "CLT",
+    "description": "WS S23 CLT",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "ICOM F5023H"
+  },
+  "TLK10666": {
+    "station": "CLT",
+    "description": "PESAWAT TOKA PPKA CLT",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10667": {
+    "station": "BOO",
+    "description": "WS S23 BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "ICOM F5023H"
+  },
+  "TLK10668": {
+    "station": "BOO",
+    "description": "PESAWAT TOKA PPKA BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10669": {
+    "station": "BOO",
+    "description": "BASE STATION ANALOG S23 BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "ICOM FR5200H"
+  },
+  "TLK10670": {
+    "station": "BTT",
+    "description": "PESAWAT TOKA PPKA BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10671": {
+    "station": "MSG",
+    "description": "PESAWAT TOKA PPKA MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10705": {
+    "station": "BOO",
+    "description": "SENTRAL TOKA LIM 1 BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "MD-110"
+  },
+  "TLK10740": {
+    "station": "BOP",
+    "description": "WS S23 BOP",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10741": {
+    "station": "COS",
+    "description": "REPEATER BASE S23 COS",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10742": {
+    "station": "BOO",
+    "description": "PESAWAT TELEPON PAP BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10743": {
+    "station": "BOO",
+    "description": "PESAWAT TELEPON PPKA BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10744": {
+    "station": "BOP",
+    "description": "PESAWAT TELEPON PPKA BOP",
+    "sup_funct_loc": "ST_BOPD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10745": {
+    "station": "BTT",
+    "description": "PESAWAT TELEPON PPKA BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10746": {
+    "station": "MSG",
+    "description": "PESAWAT TELEPON PPKA MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10747": {
+    "station": "BOO",
+    "description": "PESAWAT TELEPON ER SINYAL BOO",
+    "sup_funct_loc": "ST_BOOD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10748": {
+    "station": "BOP",
+    "description": "PESAWAT TELEPON ER SINYAL BOP",
+    "sup_funct_loc": "ST_BOPD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10749": {
+    "station": "BTT",
+    "description": "PESAWAT TELEPON ER SINYAL BTT",
+    "sup_funct_loc": "ST_BTTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10750": {
+    "station": "COS",
+    "description": "PESAWAT TELEPON ER IB COS",
+    "sup_funct_loc": "ST_CS_D01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10751": {
+    "station": "MSG",
+    "description": "PESAWAT TELEPON ER MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10752": {
+    "station": "CGB",
+    "description": "PESAWAT TELEPON ER IB CGB",
+    "sup_funct_loc": "ST_CGBD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10755": {
+    "station": "MSG",
+    "description": "WS S23 MSG",
+    "sup_funct_loc": "ST_MSGD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "ICOM F5023H"
+  },
+  "TLK10766": {
+    "station": "BOP",
+    "description": "WS S23 BOP",
+    "sup_funct_loc": "ST_BOPD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "ICOM F5023H"
+  },
+  "TLK10767": {
+    "station": "COS",
+    "description": "REPEATER BASE S23 COS",
+    "sup_funct_loc": "ST_CS_D01-RAD",
+    "funct_loc_cat": "L",
+    "model_number": "ICOM FR5200H"
+  },
+  "TLK10771": {
+    "station": "BTT",
+    "description": "PC VDU 1 BTT",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10772": {
+    "station": "BTT",
+    "description": "PC VDU 2 BTT",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10774": {
+    "station": "BOO",
+    "description": "VOICE LOGGER 2 PPKA BOO",
+    "sup_funct_loc": "ST_BOOD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10775": {
+    "station": "BOP",
+    "description": "VOICE LOGGER PPKA BOP",
+    "sup_funct_loc": "ST_BOPD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10776": {
+    "station": "BTT",
+    "description": "VOICE LOGGER 2 PPKA BTT",
+    "sup_funct_loc": "ST_BTTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10777": {
+    "station": "MSG",
+    "description": "VOICE LOGGER 2 PPKA MSG",
+    "sup_funct_loc": "ST_MSGD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10778": {
+    "station": "CLT",
+    "description": "PESAWAT TELEPON IP PHONE ER SINYAL CLT",
+    "sup_funct_loc": "ST_CLTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10779": {
+    "station": "CLT",
+    "description": "VOICE LOGGER PPKA CLT",
+    "sup_funct_loc": "ST_CLTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10780": {
+    "station": "CLT",
+    "description": "PESAWAT TELEPON PPKA CLT",
+    "sup_funct_loc": "ST_CLTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10784": {
+    "station": "BTT",
+    "description": "SENTRAL TELEPON ANTAR STASIUN BTT",
+    "sup_funct_loc": "ST_BTTD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "UCP 100"
+  },
+  "TLK10785": {
+    "station": "BOP",
+    "description": "SENTRAL TELEPON ANTAR STASIUN BOP",
+    "sup_funct_loc": "ST_BOPD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": "UCP 100"
+  },
+  "TLK10918": {
+    "station": "BOO",
+    "description": "PESAWAT TOKA PAP BOO",
+    "sup_funct_loc": "ST_BOOD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10919": {
+    "station": "BOP",
+    "description": "PESAWAT TOKA PPKA BOP",
+    "sup_funct_loc": "ST_BOPD01-BOOA",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TLK10920": {
+    "station": "BTT",
+    "description": "MUX FO BTT",
+    "sup_funct_loc": "ST_BTTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10115": {
+    "station": "BOO",
+    "description": "KABEL TRANSMISI COP PPKA CLT - PPKA BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10117": {
+    "station": "CLT",
+    "description": "KABEL TRANSMISI COP ER CLT - PPKA C",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10118": {
+    "station": "CLT",
+    "description": "KABEL TRANSMISI COP ER CLT - PPKA C",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10119": {
+    "station": "BOO",
+    "description": "CATU DAYA RADIO BOO",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SAF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10121": {
+    "station": "BOO",
+    "description": "TOWER RADIO BOO",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SAF005",
+    "funct_loc_cat": "L",
+    "model_number": "RECTANGULAR"
+  },
+  "TRA10122": {
+    "station": "BOO",
+    "description": "BASE STATION DIGITAL S26 BOO",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SAF002",
+    "funct_loc_cat": "L",
+    "model_number": "ROHILL R8070"
+  },
+  "TRA10124": {
+    "station": "MSG",
+    "description": "TRANSMISI KABEL TWIST ALUMINIUM MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10125": {
+    "station": "CGB",
+    "description": "TRANSMISI KABEL TWIST ALUMINIUM CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10131": {
+    "station": "BOO",
+    "description": "MUX FO BOO",
+    "sup_funct_loc": "BOOYK_DD0-TRN1-BOOBTT-SAF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10132": {
+    "station": "MSG",
+    "description": "MUX FO MSG",
+    "sup_funct_loc": "BOOYK_DD0-TRN1-BTTMSG-SAF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10133": {
+    "station": "CGB",
+    "description": "MUX FO CGB",
+    "sup_funct_loc": "BOOYK_DD0-TRN1-MSGCGB-SAF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10221": {
+    "station": "CLT",
+    "description": "BANGUNAN ER CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10222": {
+    "station": "BOO",
+    "description": "BANGUNAN ER BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10224": {
+    "station": "CGB",
+    "description": "TOWER RADIO CGB",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_CGB-SAF001",
+    "funct_loc_cat": "L",
+    "model_number": "MONOPOLE"
+  },
+  "TRA10226": {
+    "station": "BTT",
+    "description": "BANGUNAN ER TELKOM BTT",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BTT-SAF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10229": {
+    "station": "CGB",
+    "description": "BANGUNAN ER TELKOM CGB",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_CGB-SAF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10232": {
+    "station": "MSG",
+    "description": "BANGUNAN ER TELKOM MSG",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_MSG-SAF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10923": {
+    "station": "CLT",
+    "description": "OTB FO ER SINYAL  CLT",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_CLT-SKF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10924": {
+    "station": "CLT",
+    "description": "OTB FO RUANG PPKA CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10925": {
+    "station": "BOO",
+    "description": "OTB FO ER SINYAL  BOO",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10926": {
+    "station": "BOO",
+    "description": "OTB FO RUANG RADIO  BOO",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10927": {
+    "station": "BTT",
+    "description": "OTB FO ER TELKOM BTT",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10928": {
+    "station": "MSG",
+    "description": "SALURAN KAWAT SINYAL MASUK AI MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10929": {
+    "station": "MSG",
+    "description": "SALURAN KAWAT SINYAL MASUK AII MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10930": {
+    "station": "MSG",
+    "description": "SALURAN KAWAT SINYAL MASUK BI MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10931": {
+    "station": "MSG",
+    "description": "SALURAN KAWAT SINYAL MASUK BII MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10932": {
+    "station": "MSG",
+    "description": "SALURAN KAWAT SINYAL KELUAR C MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10933": {
+    "station": "MSG",
+    "description": "SALURAN KAWAT SINYAL KELUAR D MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10934": {
+    "station": "MSG",
+    "description": "SALURAN KAWAT PENGGERAK WESEL 2 MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10935": {
+    "station": "MSG",
+    "description": "SALURAN KAWAT PENGGERAK WESEL 1 MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10936": {
+    "station": "MSG",
+    "description": "OTB FO ER TELKOM MSG",
+    "sup_funct_loc": "BOOYK_D01-TRN1-BTTMSG-SKF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10937": {
+    "station": "CGB",
+    "description": "OTB FO ER TELKOM CGB",
+    "sup_funct_loc": "BOOYK_D01-TRN1-CGBCCR-SKF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10939": {
+    "station": "CGB",
+    "description": "SALURAN KAWAT SINYAL MASUK AI CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10940": {
+    "station": "CGB",
+    "description": "SALURAN KAWAT SINYAL MASUK AII CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10941": {
+    "station": "CGB",
+    "description": "SALURAN KAWAT SINYAL MASUK BI CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10942": {
+    "station": "CGB",
+    "description": "SALURAN KAWAT SINYAL MASUK BII CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10943": {
+    "station": "CGB",
+    "description": "SALURAN KAWAT SINYAL KELUAR D CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10944": {
+    "station": "CGB",
+    "description": "SALURAN KAWAT SINYAL KELUAR C CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10945": {
+    "station": "CGB",
+    "description": "SALURAN KAWAT PENGGERAK WESEL 1 CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA10946": {
+    "station": "CGB",
+    "description": "SALURAN KAWAT PENGGERAK WESEL 2 CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11227": {
+    "station": "BOO",
+    "description": "BANGUNAN ER SINYAL BOO",
+    "sup_funct_loc": "ST_BOOD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11228": {
+    "station": "BOP",
+    "description": "BANGUNAN ER SINYAL BOP",
+    "sup_funct_loc": "ST_BOPD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11229": {
+    "station": "BTT",
+    "description": "BANGUNAN ER SINYAL BTT",
+    "sup_funct_loc": "ST_BTTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11230": {
+    "station": "COS",
+    "description": "BANGUNAN ER IB SINYAL COS",
+    "sup_funct_loc": "ST_CS_D01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11231": {
+    "station": "COS",
+    "description": "BANGUNAN ER RADIO COS",
+    "sup_funct_loc": "ST_CS_D01-RAD",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11232": {
+    "station": "COS",
+    "description": "BANGUNAN TOWER COS",
+    "sup_funct_loc": "ST_CS_D01-RAD",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11233": {
+    "station": "MSG",
+    "description": "BANGUNAN ER SINYAL MSG",
+    "sup_funct_loc": "ST_MSGD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11234": {
+    "station": "CGB",
+    "description": "BANGUNAN ER IB SINYAL CGB",
+    "sup_funct_loc": "ST_CGBD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11236": {
+    "station": "BTT",
+    "description": "OTB FO ER SINYAL BTT",
+    "sup_funct_loc": "ST_BTTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11237": {
+    "station": "BOO",
+    "description": "OTB FO ER SINYAL BOO",
+    "sup_funct_loc": "ST_BOOD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11238": {
+    "station": "BOP",
+    "description": "OTB FO ER SINYAL BOP",
+    "sup_funct_loc": "ST_BOPD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11239": {
+    "station": "COS",
+    "description": "OTB FO ER SINYAL IB COS",
+    "sup_funct_loc": "ST_CS_D01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11240": {
+    "station": "MSG",
+    "description": "OTB FO ER SINYAL MSG",
+    "sup_funct_loc": "ST_MSGD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11241": {
+    "station": "CGB",
+    "description": "OTB FO ER SINYAL IB CGB",
+    "sup_funct_loc": "ST_CGBD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11256": {
+    "station": "BOO",
+    "description": "MUX.RADIO MICROWAVE BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "AVARA"
+  },
+  "TRA11257": {
+    "station": "CLT",
+    "description": "OTB FO ER SINYAL CLT",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_CLT-SKF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11258": {
+    "station": "CLT",
+    "description": "BANGUNAN ER SINYAL CLT",
+    "sup_funct_loc": "ST_CLTD01-ER",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11344": {
+    "station": "BOO",
+    "description": "OTB FO JPL 01 BOO",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11345": {
+    "station": "BOO",
+    "description": "OTB FO JPL 02 BOO",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF005",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11346": {
+    "station": "BOO",
+    "description": "OTB FO JPL 27 BOO-CLT",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11347": {
+    "station": "BOO",
+    "description": "OTB FO JPL 28 BOO-CLT",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF007",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11348": {
+    "station": "BOO",
+    "description": "OTB FO JPL 04 BOO-BOP",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF008",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11349": {
+    "station": "BOO",
+    "description": "OTB FO JPL 07 BOO-BOP",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF009",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11350": {
+    "station": "BNR",
+    "description": "OTB FO JPL BNR BOO-BOP",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_BOO-SKF010",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11351": {
+    "station": "CLT",
+    "description": "OTB FO JPL 26N CLT-BJD",
+    "sup_funct_loc": "JAKBOOD01-TRN1-ST_CLT-SKF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11352": {
+    "station": "BTT",
+    "description": "OTB FO JPL 10 BTT",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BTT-SKF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11353": {
+    "station": "BTT",
+    "description": "OTB FO JPL 11 BTT",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BTT-SKF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11354": {
+    "station": "MSG",
+    "description": "OTB FO JPL 12FMSG",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_MSG-SKF015",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11355": {
+    "station": "CGB",
+    "description": "OTB FO JPL 15 CGB",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_CGB-SKF015",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11356": {
+    "station": "CGB",
+    "description": "OTB FO JPL 16 CGB",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_CGB-SKF016",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11368": {
+    "station": "BOO",
+    "description": "OTB FO JPL 01 BOO",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BOO-SOF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11369": {
+    "station": "BOO",
+    "description": "OTB FO JPL 02 BOO",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BOO-SOF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11370": {
+    "station": "BOO",
+    "description": "OTB FO JPL 28 BOO -CLT",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BOO-SOF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11371": {
+    "station": "BOO",
+    "description": "OTB FO JPL 27 BOO -CLT",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BOO-SOF004",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11372": {
+    "station": "BOO",
+    "description": "OTB FO JPL 04 BOO-BOP",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BOO-SOF005",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11373": {
+    "station": "BOO",
+    "description": "OTB FO JPL 07 BOO-BOP",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BOO-SOF006",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11374": {
+    "station": "BNR",
+    "description": "OTB FO JPL BNR BOO-BOP",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BOO-SOF007",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11375": {
+    "station": "BTT",
+    "description": "OTB FO JPL 10 BTT",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BTT-SOF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11376": {
+    "station": "BTT",
+    "description": "OTB FO JPL 11 BTT",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_BTT-SOF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11377": {
+    "station": "CGB",
+    "description": "OTB FO JPL 15 CGB",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_CGB-SOF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11378": {
+    "station": "CGB",
+    "description": "OTB FO JPL 16 CGB",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_CGB-SOF002",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TRA11379": {
+    "station": "CGB",
+    "description": "OTB FO JPL 12SF CGB",
+    "sup_funct_loc": "BOOYK_D01-TRN1-ST_CGB-SOF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TWR10023": {
+    "station": "BOO",
+    "description": "BANGUNAN ER RADIO BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-STF001",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TWR10024": {
+    "station": "BOO",
+    "description": "BANGUNAN GENSET RUANG RADIO BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "TWR10025": {
+    "station": "BOO",
+    "description": "BANGUNAN TOWER BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-STF003",
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10110": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W42A1 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10168": {
+    "station": "BTT",
+    "description": "PENGGERAK WESEL 2 BTT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10173": {
+    "station": "CGB",
+    "description": "PENGGERAK WESEL 1 CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10174": {
+    "station": "CGB",
+    "description": "PENGGERAK WESEL 5 CGB",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10177": {
+    "station": "MSG",
+    "description": "PENGGERAK WESEL 1 MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10178": {
+    "station": "MSG",
+    "description": "PENGGERAK WESEL 2 MSG",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10273": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W20B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10274": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W21A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10275": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W21B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10276": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W22A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10277": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W42A1 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10278": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W42A2 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10279": {
+    "station": "CLT",
+    "description": "PENGGERAK WESEL ELEKTRIK 21 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "S 90"
+  },
+  "WSL10280": {
+    "station": "CLT",
+    "description": "PENGGERAK WESEL ELEKTRIK 23 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "S 90"
+  },
+  "WSL10377": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W11 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10378": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W13A1 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10379": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W13A2 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10380": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W13B1 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10381": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W13B2 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10382": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W31A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10383": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W31B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10384": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W53 BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10385": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W71A BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10386": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W71B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL10387": {
+    "station": "CLT",
+    "description": "PENGGERAK WESEL ELEKTRIK 11 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "S 90"
+  },
+  "WSL10388": {
+    "station": "CLT",
+    "description": "PENGGERAK WESEL ELEKTRIK 13 CLT",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": "S 90"
+  },
+  "WSL10745": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W10B BOO",
+    "sup_funct_loc": NaN,
+    "funct_loc_cat": "L",
+    "model_number": null
+  },
+  "WSL11073": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W21A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF012",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11074": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W21B1 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF013",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11075": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W21B2 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF014",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11076": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W61A1 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF015",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11077": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W61A2 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF016",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11078": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W41 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF017",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11079": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W43 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF018",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11080": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W23A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF019",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11081": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W23B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF020",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11082": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W13 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF021",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11083": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W51A2 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF022",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11084": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W51A1 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF023",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11085": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W31E BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF024",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11086": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W31D BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF025",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11087": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W31B BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF026",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11088": {
+    "station": "BOO",
+    "description": "PENGGERAK WESEL W31A BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF027",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11089": {
+    "station": "BOO",
+    "description": "PENGAMAN WESEL SETEMPAT ELEKTRIK W81 BOO",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_BOO-SCF028",
+    "funct_loc_cat": "L",
+    "model_number": "POINT LOCK"
+  },
+  "WSL11090": {
+    "station": "BOP",
+    "description": "PENGGERAK WESEL W25 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SCF001",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11091": {
+    "station": "BOP",
+    "description": "PENGGERAK WESEL W67 BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SCF002",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11092": {
+    "station": "BOP",
+    "description": "PENGGERAK WESEL W47A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SCF003",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11093": {
+    "station": "BOP",
+    "description": "PENGGERAK WESEL W47C BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SCF004",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11094": {
+    "station": "BOP",
+    "description": "PENGGERAK WESEL W27A BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SCF005",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11095": {
+    "station": "BOP",
+    "description": "PENGGERAK WESEL W27B BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SCF006",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11096": {
+    "station": "BOP",
+    "description": "PENGGERAK WESEL W47D BOP",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_BOP-SCF007",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11097": {
+    "station": "MSG",
+    "description": "PENGGERAK WESEL W11 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SCF003",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11098": {
+    "station": "MSG",
+    "description": "PENGGERAK WESEL W21 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SCF004",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11099": {
+    "station": "MSG",
+    "description": "PENGGERAK WESEL W23 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SCF005",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11100": {
+    "station": "MSG",
+    "description": "PENGGERAK WESEL W13 MSG",
+    "sup_funct_loc": "BOOYK_D01-THU1-ST_MSG-SCF006",
+    "funct_loc_cat": "L",
+    "model_number": "NSE 2"
+  },
+  "WSL11111": {
+    "station": "CLT",
+    "description": "PENGGERAK WESEL W21 CLT",
+    "sup_funct_loc": "JAKBOOD01-THI1-ST_CLT-SCF001",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11112": {
+    "station": "CLT",
+    "description": "PENGGERAK WESEL W11 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SCF001",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11113": {
+    "station": "CLT",
+    "description": "PENGGERAK WESEL W13 CLT",
+    "sup_funct_loc": "JAKBOOD01-THU1-ST_CLT-SCF002",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  },
+  "WSL11114": {
+    "station": "CLT",
+    "description": "PENGGERAK WESEL W23 CLT",
+    "sup_funct_loc": "JAKBOOD01-THI1-ST_CLT-SCF002",
+    "funct_loc_cat": "L",
+    "model_number": "BSG 9"
+  }
+}
