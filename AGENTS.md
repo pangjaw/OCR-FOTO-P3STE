@@ -8,7 +8,7 @@
 
 | File | What It Does | Lines |
 |------|-------------|-------|
-| [README.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/README.md) | Tujuan project, batasan, 4-Stage detection guide | 105 |
+| [README.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/README.md) | Tujuan project, batasan, single-stage guide-based detection | 105 |
 | [setup.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/setup.md) | Instalasi, dependensi, cara menjalankan | 303 |
 | [Dashboard.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Dashboard.md) | Status tracker, checklist, daily logs | 117 |
 | [system_architecture_gabung foto ke pdf.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/system_architecture_gabung%20foto%20ke%20pdf.md) | Diagram alur merge_pdf_foto.py | 107 |
@@ -75,7 +75,7 @@ export_pdf_foto.py                    extract_pdf_dates.py
                   │
                   ▼
          edit_timemark_ide1.py
-    (Stage 1→2→3→4 detection + draw)
+     (HSV Orange Isolation + Fixed-offset Guide + Folder Consensus)
                   │
                   ▼
          04_photos_edited/
@@ -192,81 +192,33 @@ python scheduler.py [--pdf-dir 02_pdf_target] [--photos-dir 03_photos_export]
 
 ---
 
-### 4. [edit_timemark_ide1.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/edit_timemark_ide1.py) — Script Utama Edit Watermark (922 lines)
+### 4. [edit_timemark_ide1.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/edit_timemark_ide1.py) — Script Utama Edit Watermark
 **Input:** `03_photos_export/` (atau folder spesifik)  
-**Output:** `04_photos_edited/` (dengan struktur dipertahankan)
+**Output:** `04_photos_edited/`
 
+**Key features:**
+- **HSV Isolation:** Isolasi warna oranye untuk deteksi Red Guide yang akurat.
+- **Fixed-offset Detection:** Penempatan textbox berdasarkan offset tetap dari posisi Red Guide.
+- **Folder Consensus:** Pre-scan folder untuk menentukan posisi Y watermark yang konsisten (median gy1) untuk seluruh aset dalam folder tersebut jika guide individu sulit dideteksi.
+- **Diffuse Fill:** Inpainting (60 iterasi) untuk menghapus watermark tanggal lama dengan mulus.
+
+**CLI Options:**
 ```
-# Opsi A: Manual
-python edit_timemark_ide1.py  # prompt interaktif
-
-# Opsi B: CLI
-python edit_timemark_ide1.py --input 03_photos_export --date "Sabtu, Apr 29 2026"
-
-# Opsi C: Dengan schedule (timestamp per-foto + Tim subfolder)
-python edit_timemark_ide1.py --input 03_photos_export --schedule schedule.json
-
-# Opsi D: Override Y manual
-python edit_timemark_ide1.py --input folder --date "..." --y-override 195
-
-# Opsi E: Folder spesifik
-python edit_timemark_ide1.py --input "03_photos_export/WESEL/ZP 22A CLT"
-```
-
-#### 🔬 Core Detection Functions
-
-| Function | Line | Purpose |
-|----------|------|---------|
-| `find_red_guide(arr)` | 144-181 | Deteksi garis merah vertikal (GPS Map Camera) di kiri bawah. Filter: r>145, r>g×1.3, r>b×1.3. Cari di kolom kiri (x<16%) dan y>54%. Return (x1,y1,x2,y2) atau None. |
-| `determine_template(image_path, arr)` | 184-213 | Tentukan template 1 (WESEL) atau 2 (AXC/SINYAL) berdasarkan path atau Red Guide position. |
-| `detect_date_y_center(arr, h, w)` | 216-326 | **Stage 1 core:** OCR Tesseract `--psm 6` di crop kiri bawah. Cari tahun 20xx, nama bulan, AM/PM/WIB. Multi-threshold binning (180, 160, 200, 215, adaptive). Confidence filter per tipe kata. Return rata-rata Y-center. |
-| `detect_address_y_top(arr, h, w)` | 329-379 | **Stage 2 core:** OCR Tesseract `--psm 4` di crop kiri bawah. Deteksi baris teks alamat, prioritaskan rata-kiri (left<30). Return Y-top baris alamat pertama. |
-| `locate_date_box(arr, image_path, ...)` | 434-532 | **Main router:** Stage 1→1b→2→3→4 decision tree. Menerima folder_address_consensus dan folder_date_consensus. |
-| `diffuse_fill_region(arr, mask, steps)` | 537-552 | Inpainting berbasis difusi 120 iterasi. |
-| `process_image(image_path, output_path, ...)` | 661-727 | **Entry point per gambar:** buka→detect→erase→draw→save. |
-| `iso_to_timemark(iso_str)` | 26-31 | `"2026-07-11T09:30:00"` → `"Rabu, Jul 11 2026 09:30"` |
-
-#### 📊 4-Stage Priority System (locate_date_box)
-
-```
-STAGE 0 (--y-override): Paksa posisi manual
-    │
-    ▼ (tanpa override)
-STAGE 1 (Tanggal Lokal): detect_date_y_center → OCR sukses + validasi Red Guide
-    │ gagal
-    ▼
-STAGE 1b (Konsensus Tanggal Folder): 2+ file di folder sama setuju Y-tanggal
-    │ gagal
-    ▼
-STAGE 2 (Alamat Konsensus): folder_address_consensus → hitung gap → textbox di atas alamat
-    │ gagal
-    ▼
-STAGE 3 (Red Guide Lokal): find_red_guide → sejajarkan textbox dengan guide
-    │ gagal
-    ▼
-STAGE 4 (SKIP): tidak diproses, masuk list warning
+--input PATH        Folder foto input (default: 03_photos_export)
+--output PATH       Folder output (default: 04_photos_edited)
+--date TEXT         Tanggal manual (e.g. 'Sabtu, Apr 29 2026 08:00')
+--schedule PATH     schedule.json untuk per-photo timestamps
+--y-override INT    Paksa posisi Y textbox
+--clear-output      Hapus folder output sebelum mulai
 ```
 
-#### 🗳️ Folder-Level Consensus Voting (main function, lines 764-814)
+**Stage Priority:** `y_override` → `find_red_guide` (original) → folder consensus gy1 → `get_text_box()` (fallback)
 
-Sebelum memproses gambar, script melakukan **pre-scan seluruh folder**:
-- **Alamat consensus:** minimal 2 file punya `detect_address_y_top` yang kluster dalam 10px → rata-rata disimpan
-- **Tanggal consensus:** minimal 2 file punya `detect_date_y_center` yang kluster dalam 10px → rata-rata disimpan
-- Hasil voting dipakai sebagai fallback (Stage 1b & Stage 2) untuk file yang OCR-nya gagal
+**Stage Codes:** `stage_0_override`, `stage_1c_guide_original`, `stage_1c_guide_consensus`, `stage_fallback`
 
-#### 🗓️ Schedule Mode (--schedule)
+**Output Files:** `logs/edit_stages.xlsx` (detail per foto), `logs/edit_failed.xlsx` (foto gagal), JSON `__SUMMARY__` (dibaca app.py)
 
-- Baca `schedule.json` → lookup `(asset_type, detail, photo_name)` → dapat `(iso_timestamp, tim_n)`
-- Output ke `04_photos_edited/Tim_{tim_n}/...` (bukan root `04_photos_edited/`)
-- Tanggal per foto dari schedule (bukan dari `date.txt` atau `global_date_text`)
-
-#### 🎨 Drawing Details
-
-- Font: Arial/Calibri/DejaVu (auto-detect), size = `int(w * 0.038)`
-- Textbox: rounded rectangle hitam transparan (alpha 140), shadow + stroke
-- Erase: `diffuse_fill_region` 60 steps, mask 2px padding, radius rounded
-- Box height: `int(h * 0.053)` (16px untuk h=300)
-- Narrow mask: 5px extra ke atas (bukan 14px)
+**SSE Logging:** Setiap foto emit JSON `{"type":"stage","file":"...","stage":"..."}` → dibaca `app.py` untuk dashboard real-time
 
 ---
 
@@ -289,39 +241,30 @@ python merge_pdf_foto.py [--input 02_pdf_target] [--photos 04_photos_edited]
 | `process_pdf(...)` | 212-316 | **Core:** buka pdfplumber→parse assets→verifikasi 3 foto→buka fitz→hapus halaman terakhir→buat halaman baru dengan 4 aset/halaman |
 | `draw_centered_label(...)` | 201-205 | Label "Foto 0%", "Foto 50%", "Foto 100%" di bawah gambar |
 
-**Layout constants:**
-- Halaman A4: 595×842 pt
-- Gambar: 148.8×148.8 pt, kolom di X=31.5, 210.4, 389.8
-- Maksimal 4 aset per halaman
-- **Proteksi:** jika ada 1 aset yang kekurangan foto → seluruh PDF di-skip
-
-**Schedule mode (--schedule):** Cari foto di `04_photos_edited/Tim_{n}/...` (bukan root `04_photos_edited/`)
-
 ---
 
 ### 6. [app.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/app.py) — Flask Web Dashboard
-**Port:** 5000  
-**Entry:** `python app.py` → auto-buka browser ke `http://localhost:5000`
 
-**5-stage pipeline via Web UI:**
-| Step | Key | Script | Progress |
-|------|-----|--------|----------|
-| Step 1 | `step1` | export_pdf_foto.py | 10-25% |
-| Step 2 | `step2` | extract_pdf_dates.py | 30-45% |
-| Step 3 | `step3` | scheduler.py | 50-60% |
-| Step 4 | `step4` | edit_timemark_ide1.py | 65-80% |
-| Step 5 | `step5` | merge_pdf_foto.py | 85-100% |
-| All | `all` | Semua berurutan | 0-100% |
+**Fungsi Utama:** Menyediakan UI berbasis web untuk menjalankan pipeline 5-tahap dengan monitoring SSE real-time.
 
 **API Endpoints:**
-- `GET /api/config` — folder paths
-- `GET /api/status` — is_running, current_step, progress, status_text
-- `GET /api/files` — daftar PDF di 01, 02, 05
-- `POST /api/run {"step": "all"}` — jalankan pipeline
-- `GET /api/stream-logs` — SSE real-time log
-- `GET /api/open-folder/<key>` — buka folder di Explorer
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/` | GET | Render dashboard HTML |
+| `/api/config` | GET | Folder paths (01-05), schedule path |
+| `/api/status` | GET | `is_running`, `current_step`, `progress`, `status_text` |
+| `/api/files` | GET | Daftar PDF di 01, 02, 05 (limit 100, return `total`+`truncated`) |
+| `/api/run` | POST | Jalankan pipeline. Body: `{"step":"all|step1|...", "overwrite":"1|0"}` |
+| `/api/stop` | POST | Kill proses pipeline (`process.kill()`) |
+| `/api/stream-logs` | GET | SSE real-time stdout log |
+| `/api/stream-stages` | GET | SSE real-time stage events dari edit_timemark |
+| `/api/stage-summary` | GET | `stage_counts` + `stage_details` (setelah step4) |
+| `/api/step-summary` | GET | Summary per step: success/failed/skipped |
+| `/api/open-folder/<key>` | GET | Buka folder di Explorer (`os.startfile`) |
 
-**Global state:** `state` dict + `log_queue` (thread-safe dengan `log_lock`)
+**Global state:** `state` dict + `log_queue`/`stage_queue`/`stage_counts`/`stage_details` (thread-safe dengan `threading.Lock`). `step_summaries` di-populate dari `__SUMMARY__:...` output script. `run_command_stream()` spawn subprocess + stream stdout + parse JSON stage events.
+
+**Overwrite/Skip:** Toggle di frontend (`templates/index.html`) diteruskan sebagai `overwrite` parameter ke `/api/run`. Semua 5 script membaca `os.environ.get("OVERWRITE", "1")`. `"0"` = skip, `"1"` = timpa.
 
 ---
 
@@ -331,19 +274,18 @@ python merge_pdf_foto.py [--input 02_pdf_target] [--photos 04_photos_edited]
 |---------|------|
 | **Timemark** | Watermark GPS Map Camera di foto dokumentasi (pojok kiri bawah) |
 | **Red Guide** | Garis oren/merah vertikal asli dari GPS Map Camera, digunakan sebagai anchor posisi |
-| **Stage 1-4** | Sistem prioritas deteksi posisi textbox (lihat diagram di atas) |
-| **AXC** | Axle Counter — kode aset prefix AXL (e.g. AXL11468) |
-| **WESEL** | Wesel — kode aset prefix WSL (e.g. WSL11080) |
+| **Stage 1c** | Single-stage fixed-offset detection: Red Guide → textbox sejajar guide |
+| **AXC** | Axle Counter — kode aset prefix AXL |
+| **WESEL** | Wesel — kode aset prefix WSL |
 | **SINYAL** | Sinyal — kode aset prefix SIN |
 | **0%, 50%, 100%** | Tiga foto dokumentasi per aset: awal (0%), tengah (50%), akhir (100%) |
 | **PDF 2025 vs 2026** | Format lama (2025) = foto kolase di halaman terakhir. Format baru (2026) = foto hasil edit disusun ulang |
 | **date.txt** | File metadata di folder aset berisi tanggal target dalam format "Rabu, Jul 08 2026" |
 | **schedule.json** | File penjadwalan: mapping aset→Tim→timestamp ISO per foto |
-| **Konsensus Folder** | Pre-scan folder: 2+ file setuju Y dalam 10px → apply ke semua file |
-| **Overflow Rule** | Aset yang mulai < jam_selesai tetap selesai. File berikutnya → Tim berikutnya |
+| **Konsensus Folder** | Pre-scan folder: 2+ file punya Red Guide dengan **gy1** kluster dalam 10px → median gy1 dipakai untuk semua file di folder |
+| **diffuse_fill** | Inpainting berbasis difusi (4-arah neighbor averaging, 60 iterasi) untuk menghapus watermark lama |
 | **Waktu Menit** | Durasi pengerjaan per aset (default: AXC/WESEL=45, SINYAL=30) |
 | **ZP 41B fix** | Typo di PDF 2025: ZP 41B BOO seharusnya ZP 41 BOO |
-| **diffuse_fill_region** | Inpainting berbasis difusi untuk menghapus teks tanggal lama |
 
 ---
 
@@ -359,12 +301,6 @@ python merge_pdf_foto.py [--input 02_pdf_target] [--photos 04_photos_edited]
    - `git add . && git commit -m "<type>: <subject>" && git push`
    - **Conventional Commits format:** `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `style:`
    - Subject ≤ 50 chars, body only when "why" isn't obvious
-5. **Auto-Update Obsidian & GitHub (PERMANENT AGENT INSTRUCTION):** **SETIAP kali ada update kode/script/config, WAJIB otomatis (tanpa perlu diminta user):**
-   - Update `Dashboard.md` (status tracker, checklist, daily logs)
-   - Buat/append `Notes/Daily/YYYY-MM-DD.md` dengan ringkasan perubahan
-   - `git add . && git commit -m "<type>: <subject>" && git push`
-   - **Conventional Commits format:** `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `style:`
-   - Subject ≤ 50 chars, body only when "why" isn't obvious
 
 ---
 
@@ -373,7 +309,13 @@ python merge_pdf_foto.py [--input 02_pdf_target] [--photos 04_photos_edited]
 ### Debug Stage Detection
 ```bash
 python edit_timemark_ide1.py --input "03_photos_export/AXC/ZP 60 BOO"
-# Output akan menunjukkan STAGE 1/2/3/4 per file
+# Output akan menunjukkan stage_1c_guide_original / stage_1c_guide_consensus / stage_fallback per file
+```
+
+### View Stage Summary (via API)
+```bash
+curl http://localhost:5000/api/stage-summary
+# Returns: {"stage_counts": {"stage_1c_guide_original": N, ...}, "stage_details": [...]}
 ```
 
 ### Force Manual Y Position
@@ -391,6 +333,11 @@ python edit_timemark_ide1.py --input "folder" --date "..." --y-override 195
 ```bash
 python scheduler.py --pdf-dir 02_pdf_target --photos-dir 03_photos_export
 ```
+
+### Debug HSV Isolation
+```bash
+python -c "from edit_timemark_ide1 import preprocess_for_guide; from PIL import Image; img=Image.open('test.jpg'); out=preprocess_for_guide(img); Image.fromarray(out).save('debug_hsv.jpg')"
+# Visualisasi: semua warna grayscale, kecuali pure red yang tetap merah"
 
 ---
 
