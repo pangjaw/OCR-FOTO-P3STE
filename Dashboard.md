@@ -314,6 +314,12 @@ Rabu, Jul 08 2026
 - [x] **Update checklist_types.json:** Category split per folder — CATU_DAYA, PINTU_PERLINTASAN, TELEKOM_STASIUN, TELEKOM_LUAR, TELEKOM_PINTU, PERSINYALAN_ELEKTRIK (bukan semua TELEKOM).
 - [x] **Semua 6 script syntax OK**, 3 JSON valid, cross-check detect_asset_type & extract_detail konsisten 100%.
 
+### 🆕 Done (2026-07-13) - Dead Code Cleanup (edit_timemark_ide1.py)
+- [x] **Removed 6 shadowed duplicate function defs**: `locate_date_box`, `load_schedule`, `iso_to_timemark`, `build_schedule_lookup`, `process_image`, `_collect_folder_consensus` — first batch (dead) deleted, second batch (live) untouched.
+- [x] **File size**: 774 → 630 lines. **18 functions, 0 duplicates.**
+- [x] **Syntax OK**: all 6 scripts pass `ast.parse()`. Cross-check: `ast.FunctionDef` walk + `Counter` confirms unique defs.
+
+
 
 ### 🆕 Done (2026-07-13) - 7 Asset Types Full Support
 - [x] **Sync detect_asset_type() di merge_pdf_foto.py ke 7 tipe:** CATU_DAYA, PINTU_PERLINTASAN, TELEKOMUNIKASI, PERSINYALAN_ELEKTRIK (seimbang dengan export_pdf_foto.py). Verified: return values identik.

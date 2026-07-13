@@ -252,7 +252,7 @@ python merge_pdf_foto.py [--input 02_pdf_target] [--photos 04_photos_edited]
 | `extract_date_from_page1(page)` | 161-177 | Cari "Tanggal : YYYY-MM-DD" di halaman 1 |
 | `extract_checklist_title(page, filename)` | 179-191 | Cari baris mengandung "PERAWATAN" |
 | `draw_header(page, location, date_str, checklist_title)` | 207-210 | Gambar header halaman A4 baru |
-| `process_pdf(...)` | 212-316 | **Core:** buka pdfplumber→parse assets→verifikasi 3 foto→buka fitz→hapus halaman terakhir→buat halaman baru dengan 4 aset/halaman. **Navigasi folder pakai station/asset_type/detail sesuai export_pdf_foto** |
+| `process_pdf(...)` | 289-452 | **Core:** buka pdfplumber→parse assets (pakai SAP mapping via `extract_station_from_description`)→verifikasi 3 foto→buka fitz→hapus halaman terakhir→buat halaman baru dengan 4 aset/halaman. **Navigasi folder pakai station/asset_type/detail sesuai export_pdf_foto** |
 | `draw_centered_label(...)` | 201-205 | Label "Foto 0%", "Foto 50%", "Foto 100%" di bawah gambar |
 
 ---

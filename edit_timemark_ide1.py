@@ -245,120 +245,7 @@ def draw_textbox(img: Image.Image, box: tuple[int,int,int,int], text: str) -> Im
     return out
 
 
-# ─── Core: Locate Date Box ───
-def locate_date_box(arr_orig: np.ndarray, arr_hsv: np.ndarray, w: int, h: int,
-                    y_override: int | None = None, consensus_gy1: int | None = None):
-    """
-    Single-stage detection:
-    1. If y_override -> use it
-    2. Original image guide -> fixed offset textbox
-    3. Folder consensus gy1 -> fixed offset textbox
-    4. Fallback -> get_text_box()
-    Returns: (box, stage_name)
-    """
-    if y_override is not None:
-        box_h = int(h * BOX_HEIGHT_RATIO)
-        y1 = max(0, y_override - box_h // 2)
-        y2 = min(h, y1 + box_h)
-        x1 = int(w * 0.047)
-        x2 = int(w * 0.49)
-        return (x1, y1, x2, y2), "stage_0_override"
-
-    # Use original image
-    guide = find_red_guide(arr_orig)
-    if guide is not None:
-        new_box = place_textbox_fixed_offset(guide, w, h)
-        return new_box, "stage_1c_guide_original"
-
-    # Folder consensus gy1 fallback
-    if consensus_gy1 is not None:
-        synthetic_guide = (8, consensus_gy1, 9, consensus_gy1 + 84)
-        new_box = place_textbox_fixed_offset(synthetic_guide, w, h)
-        return new_box, "stage_1c_guide_consensus"
-
-    # No guide at all -> fallback
-    fallback = get_text_box(w, h)
-    return fallback, "stage_fallback"
-
-
-# ─── Schedule Support ───
-def load_schedule(path: Path):
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def iso_to_timemark(iso_str: str) -> str:
-    """2026-07-11T09:30:00 -> Rabu, Jul 11 2026 09:30"""
-    dt = datetime.fromisoformat(iso_str)
-    days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
-    months = ["", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
-    return f"{days[dt.weekday()]}, {months[dt.month]} {dt.day:02d} {dt.year} {dt.hour:02d}:{dt.minute:02d}"
-
-
-def build_schedule_lookup(schedule_data: dict):
-    """Build {(asset_type, detail, photo_name): (timemark_text, tim_n)}"""
-    lookup = {}
-    for sched in schedule_data.get("schedules", []):
-        tim_n = sched.get("tim", 1)
-        for asset in sched.get("assets", []):
-            atype = asset["type"]
-            detail = asset["detail"]
-            for pname, iso_ts in asset.get("photos", {}).items():
-                lookup[(atype, detail, pname)] = (iso_to_timemark(iso_ts), tim_n)
-    return lookup
-
-
-# ─── Process Single Image ───
-def process_image(image_path: Path, output_path: Path, date_text: str,
-                  y_override: int | None = None, schedule_lookup: dict | None = None,
-                  asset_key: tuple | None = None, consensus_gy1: int | None = None):
-    img_orig = Image.open(image_path).convert('RGB')
-    orig_w, orig_h = img_orig.size
-    arr_orig = np.array(img_orig)
-
-    # HSV isolation (kept for compatibility, but locate_date_box uses original)
-    arr_hsv = preprocess_for_guide(img_orig)
-
-    # Determine timemark text
-    timemark_text = date_text
-    if schedule_lookup and asset_key:
-        timemark_text = schedule_lookup.get(asset_key, (date_text, 1))[0]
-
-    # Locate box - returns (box, stage)
-    box, stage = locate_date_box(arr_orig, arr_hsv, orig_w, orig_h, y_override, consensus_gy1)
-    x1, y1, x2, y2 = box
-
-    # Erase: precision mask (rounded rect, 1px pad)
-    pad = 1
-    ex1 = max(0, x1 - pad)
-    ey1 = max(0, y1 - pad)
-    ex2 = min(orig_w, x2 + pad)
-    ey2 = min(orig_h, y2 + pad)
-
-    crop = arr_orig[ey1:ey2, ex1:ex2]
-    box_h_px = y2 - y1
-    radius = max(2, int(box_h_px * 0.25))
-
-    mask_img = Image.new("L", (crop.shape[1], crop.shape[0]), 0)
-    md = ImageDraw.Draw(mask_img)
-    md.rounded_rectangle(
-        (x1 - ex1, y1 - ey1, x2 - ex1, y2 - ey1),
-        radius=radius, fill=255
-    )
-    crop_mask = np.array(mask_img) > 0
-
-    arr_work = arr_orig.copy()
-    arr_work[ey1:ey2, ex1:ex2] = diffuse_fill(crop, crop_mask, steps=60)
-    img_erased = Image.fromarray(arr_work)
-
-    # Draw new textbox
-    img_out = draw_textbox(img_erased, box, timemark_text)
-
-    # Save
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    img_out.save(output_path, quality=95, subsampling=0)
-
-    return stage
+# (duplicate defs removed - see live versions below)
 
 
 # ─── Main ───
@@ -407,55 +294,10 @@ def _folder_key_from_path(rel: Path, input_dir: Path | None = None) -> tuple[str
     return None
 
 
-def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tuple[str, str], int]:
-    """Pre-scan folders: find Red Guide gy1 consensus per folder (asset_type, detail).
-    Returns {folder_key: consensus_gy1} where consensus_gy1 is median gy1 if >=2 photos agree within 10px."""
-    from collections import defaultdict
-    folder_guides = defaultdict(list)
-
-    for src in all_jpgs:
-        rel = src.relative_to(input_dir)
-        fkey = _folder_key_from_path(rel, input_dir)
-        if not fkey:
-            continue
-        try:
-            img = Image.open(src).convert('RGB')
-            arr = np.array(img)
-            guide = find_red_guide(arr)
-            if guide:
-                gx1, gy1, gx2, gy2 = guide
-                folder_guides[fkey].append(gy1)
-        except Exception:
-            pass
-
-    # Compute consensus per folder
-    consensus = {}
-    for fkey, gy1_list in folder_guides.items():
-        if len(gy1_list) >= 2:
-            gy1_list.sort()
-            median_gy1 = gy1_list[len(gy1_list) // 2]
-            # Check if >=2 values within 10px of median
-            close_count = sum(1 for g in gy1_list if abs(g - median_gy1) <= 10)
-            if close_count >= 2:
-                consensus[fkey] = median_gy1
-    return consensus
+# (duplicate def removed - see live version below)
 
 
-# ─── Core: Locate Date Box ───
-    draw = ImageDraw.Draw(out)
 
-    radius = max(2, int(box_h * 0.25))
-    overlay = Image.new("RGBA", out.size, (0,0,0,0))
-    odraw = ImageDraw.Draw(overlay)
-    odraw.rounded_rectangle(shape_box, radius=radius, fill=(0,0,0,140))
-    out = Image.alpha_composite(out.convert("RGBA"), overlay).convert("RGB")
-    draw = ImageDraw.Draw(out)
-
-    so = max(1, int(font_size * 0.02))
-    draw.text((tx+so, ty+so), text, font=font, fill=(35,35,35), stroke_width=fit_stroke, stroke_fill=(35,35,35))
-    draw.text((tx, ty), text, font=font, fill=(248,248,248))
-
-    return out
 
 
 # ─── Core: Locate Date Box ───
@@ -562,6 +404,17 @@ def process_image(image_path: Path, output_path: Path, date_text: str,
 
     arr_work = arr_orig.copy()
     arr_work[ey1:ey2, ex1:ex2] = diffuse_fill(crop, crop_mask, steps=60)
+
+    img_erased = Image.fromarray(arr_work)
+
+    # Draw new textbox
+    img_out = draw_textbox(img_erased, box, timemark_text)
+
+    # Save
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    img_out.save(output_path, quality=95, subsampling=0)
+
+    return stage
 
 
 def _collect_folder_consensus(input_dir: Path, all_jpgs: list[Path]) -> dict[tuple[str, str, str], int]:
@@ -621,7 +474,7 @@ def main():
 
     ok = 0
     failed = 0
-    stage_counts = {"Stage 1c Original": 0, "Stage 1c Consensus": 0, "Fallback": 0}
+    stage_counts = {"stage_0_override": 0, "stage_1c_guide_original": 0, "stage_1c_guide_consensus": 0, "stage_fallback": 0}
     stage_details = []
     failed_files = []
     tim_mapping = {}  # photo_rel_path -> tim_n
@@ -759,16 +612,7 @@ def main():
             ws.column_dimensions[col[0].column_letter].width = max_length + 2
         wb.save(logs_dir / "edit_failed.xlsx")
 
-    # Write tim_mapping.json if schedule was used
-    if args.schedule and tim_mapping:
-        tim_mapping_data = {
-            "version": 1,
-            "generated_at": datetime.now().isoformat(),
-            "mapping": tim_mapping,
-            "tims_used": sorted(set(tim_mapping.values()))
-        }
-        with open(logs_dir / "tim_mapping.json", "w", encoding="utf-8") as f:
-            json.dump(tim_mapping_data, f, indent=2, ensure_ascii=False)
+
 
     summary = {
         "step": "edit",
