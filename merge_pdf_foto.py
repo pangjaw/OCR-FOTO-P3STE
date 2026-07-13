@@ -12,6 +12,7 @@ import openpyxl
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from datetime import datetime
 import argparse
+from export_pdf_foto import extract_station_from_description, load_sap_mapping
 
 DEFAULT_INPUT_DIR = "./02_pdf_target"
 DEFAULT_PHOTOS_DIR = "./04_photos_edited"
@@ -131,15 +132,6 @@ def extract_detail(title: str, asset_type: str) -> str:
         sanitized = re.sub(r'ZP\s*41B', 'ZP 41', sanitized, flags=re.IGNORECASE)
     return sanitized
 
-def extract_station_from_detail(detail: str) -> str:
-    """Extract station code from detail string (e.g., 'ZP 60 BOO' -> 'BOO')."""
-    station_codes = {"BOO", "BOP", "BTT", "CLT", "MSG", "CGB", "BJD", "CCR", "COS", "CS", "BNR"}
-    words = normalize_spaces(detail).split()
-    for word in reversed(words):
-        if word in station_codes:
-            return word
-    return "UNKNOWN"
-
 def is_valid_asset_title(title: str) -> bool:
     words = title.split()
     code_pattern = re.compile(r"^[A-Z]{2,4}\d{4,}$")
@@ -151,7 +143,7 @@ def is_valid_asset_title(title: str) -> bool:
         return True
     return False
 
-def extract_asset_rows(page: pdfplumber.page.Page) -> list[AssetRow]:
+def extract_asset_rows(page: pdfplumber.page.Page, sap_mapping: dict = None) -> list[AssetRow]:
     lines = defaultdict(list)
     for word in page.extract_words(use_text_flow=True):
         lines[round(float(word["top"]), 1)].append(word)
@@ -180,7 +172,7 @@ def extract_asset_rows(page: pdfplumber.page.Page) -> list[AssetRow]:
 
         asset_type = detect_asset_type(code, title)
         detail = extract_detail(title, asset_type)
-        station = extract_station_from_detail(detail)
+        station = extract_station_from_description(title, sap_mapping or {}, code)
         rows.append(
             AssetRow(
                 page_number=page.page_number,
@@ -288,7 +280,8 @@ def draw_header(page, location: str, date_str: str, checklist_title: str):
 
 def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path,
                  input_root: Path | None = None, schedule_lookup: dict | None = None,
-                 asset_tim: dict | None = None, config: dict | None = None) -> str:
+                 asset_tim: dict | None = None, config: dict | None = None,
+                 sap_mapping: dict | None = None) -> str:
     """
     Gabungkan foto-foto baru ke dalam PDF lama.
     Args:
@@ -303,7 +296,7 @@ def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path,
         if len(plumber_pdf.pages) == 0:
             return "failed: PDF has 0 pages"
         page1 = plumber_pdf.pages[0]
-        assets = extract_asset_rows(page1)
+        assets = extract_asset_rows(page1, sap_mapping)
         date_str = extract_date_from_page1(page1)
         checklist_title = extract_checklist_title(page1, pdf_path.name, config)
 
@@ -484,6 +477,8 @@ def aggregate_photo_to_pdf(tim_mapping: dict, photos_dir: Path) -> dict:
 
 
 def main():
+    # Load SAP station mapping
+    sap_mapping = load_sap_mapping("./sap_station_mapping.json")
     args = parse_args()
     input_dir = Path(args.input).resolve()
     photos_dir = Path(args.photos).resolve()
@@ -548,7 +543,7 @@ def main():
     asset_tim_for_fallback = tim_mapping if not args.schedule else None
 
     for pdf_path in pdf_files:
-        status = process_pdf(pdf_path, photos_dir, output_dir, input_dir, schedule_lookup, asset_tim_for_fallback)
+        status = process_pdf(pdf_path, photos_dir, output_dir, input_dir, schedule_lookup, asset_tim_for_fallback, sap_mapping=sap_mapping)
         if status == "ok":
             success += 1
             log(f"[OK] {pdf_path.name}")
