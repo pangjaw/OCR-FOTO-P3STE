@@ -33,28 +33,16 @@ Script references, detection logic, debugging → lihat [AGENTS.md](file:///c:/U
 - [x] **WESEL/SINYAL/AXC → multi-row export** (1 PDF = 4-5 baris foto, funcloc per baris)
 
 ### Batch Results
-- **2026-07-14 16:35 WIB** — WESEL/SINYAL/AXC multi-row support:
-  - `export_multi_row()`: export 3 kategori baru per baris foto (12-15 foto/PDF)
-  - `extract_identifier()`: auto-detect category dari funcloc prefix (WSL/SIN/AXL)
-  - `determine_btp_from_identifier()`: generic BTP extraction (merge + scheduler)
-  - Scheduler: waktu default SINYAL/WESEL=30, AXC=45
-  - Test export: WESEL✅(12 foto→4 folder), SINYAL✅(12 foto→4 folder), AXC✅(12 foto→4 folder)
-- **2026-07-14 15:30 WIB** — Full pipeline clean run (after 3 bug fixes):
-  - Step 1: **516 foto** diekspor (multi-funcloc dedup logic)
-  - Step 2: **69 date.txt** diperbarui
-  - Step 3: **73 jobs** dijadwalkan
-  - Step 4: **240 success, 0 failed** (stage_1c: 202, consensus: 3, fallback: 35)
-  - Step 5: **79 PDF merged, 0 failed, 0 skipped** ⭐
+- **2026-07-14 17:48 WIB** — Full pipeline clean run (BTP cross-search + no-photo fallback):
+  - Step 1: **5,340 foto** diekspor dari semua PDF 2026
+  - Step 2: **852 sukses, 0 gagal** (stage_1c: 820, consensus: 5, fallback: 27)
+  - Step 3: schedule.json dibuat (165 jobs)
+  - Step 4: — (digabung step 2)
+  - Step 5: **165 PDF merged, 0 failed, 0 skipped** ⭐ (02=165, 05=165 — match!)
 - Fix yang diterapkan:
-  - **Multi-funcloc export**: PDF dgn >1 funcloc (JPL15+16, Gentanik, PTPP) sekarang diekspor ke semua folder terkait (deduplicated)
-  - **Tim_n prefix bug**: Path fallback `edit_timemark_ide1.py` L529 lupa `Tim_n/` → foto ke root `04/`
-  - **Merge all-funcloc scan**: Ganti `extract_funcloc_from_text` (first) → iterasi `extract_all_funclocs` (all) untuk handle PDF dgn 3 funcloc seperti PTLS Ciomas
-- **2026-07-14 02:34 WIB** — Full pipeline clean run:
-  - Step 1: **474 foto** diekspor, **0 UNKNOWN**
-  - Step 2: **141 date.txt** diperbarui
-  - Step 3: schedule.json dibuat
-  - Step 4: **156 success, 0 failed** (stage_1c: 133, consensus: 2, fallback: 21)
-  - Step 5: **79 PDF merged, 0 failed, 0 skipped** di `05_pdf_merged/Tim_1/`
+  - **BTP cross-search**: merge sekarang cari foto di semua folder BTP (JAK + BD) kalau tidak ketemu di BTP spesifik
+  - **No-photo fallback**: PDF yang tidak punya foto tetap di-copy ke output, bukan di-skip
+- **2026-07-14 16:35 WIB** — WESEL/SINYAL/AXC multi-row support (sebelumnya)
 
 ---
 
