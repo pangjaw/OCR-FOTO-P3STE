@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""scheduler.py — Generate schedule.json: urutan aset dari PDF → Tim + jam.
+"""scheduler.py — Generate schedule.json: urutan PDF → Tim + jam.
 
 Pipeline: export_pdf_foto → extract_pdf_dates → scheduler.py → edit_timemark → merge_pdf_foto
+
+Schedule key: (btp, category, pdf_stem, photo) — flat structure.
 """
+
 import argparse
 import json
 import os
@@ -13,11 +16,9 @@ from datetime import datetime, date, timedelta
 import pdfplumber
 
 from export_pdf_foto import (
-    extract_asset_rows,
-    sanitize_segment,
-    ensure_dir,
-    load_sap_mapping,
-    SAP_MAPPING_PATH
+    sanitize_segment, ensure_dir, load_sap_mapping, SAP_MAPPING_PATH,
+    detect_category_from_filename, extract_station_from_filename, STATION_TO_BTP,
+    extract_identifier, extract_funcloc_from_text,
 )
 from extract_pdf_dates import extract_date_from_pdf, format_date_target
 
@@ -34,12 +35,25 @@ MONTH_MAP = {
     "november": 11, "nov": 11, "desember": 12, "des": 12,
 }
 
+# Default waktu (minutes) per category
+CATEGORY_DEFAULT_WAKTU = {
+    "AXC": 45,
+    "CATUDAYA": 45,
+    "CTS": 45,
+    "JPL": 45,
+    "PDSE": 420,
+    "PTDS": 45,
+    "PTLS": 45,
+    "PTPP": 45,
+    "SERAT OPTIK": 60,
+    "SINYAL": 30,
+    "WESEL": 30,
+}
+
 
 def _parse_date(text: str) -> date | None:
-    """Parse date string from date.txt format 'Rabu, Jul 08 2026' or ISO."""
-    # Remove day name prefix: "Rabu, Jul 08 2026" -> "Jul 08 2026"
+    """Parse date string from date.txt format 'Senin, Jan 06 2025' or ISO."""
     text = re.sub(r'^[A-Za-z]+,\s*', '', text).strip()
-    # Pattern: Month DD YYYY
     m = re.match(
         r"(jan|feb|mar|apr|mei|jun|jul|agt|aug|sep|okt|nov|des|"
         r"januari|februari|maret|april|mei|juni|juli|agustus|september|oktober|november|desember)"
@@ -85,17 +99,20 @@ def load_data_acuan(path: Path) -> dict[int, dict]:
     return {a["id"]: a for a in data["aset"]}
 
 
-def get_waktu(asset_type: str, detail: str, mapping: dict, acuan: dict) -> int:
-    key = (asset_type, detail)
-    asset_id = mapping.get(key)
-    if asset_id and asset_id in acuan:
-        return acuan[asset_id]["waktu_menit"]
-    defaults = {"AXC": 45, "WESEL": 45, "SINYAL": 30, "PDSE": 420}
-    return defaults.get(asset_type, 45)
+def get_waktu(category: str, mapping: dict, acuan: dict) -> int:
+    """Get waktu in minutes for a category. Try mapping first, then default."""
+    # Try lookup via category in mapping
+    for (asset_type, detail), asset_id in mapping.items():
+        if category in asset_type or category in detail:
+            if asset_id in acuan:
+                return acuan[asset_id]["waktu_menit"]
+    # Default per category
+    return CATEGORY_DEFAULT_WAKTU.get(category, 45)
 
 
-def read_date_from_photos(photos_dir: Path, station: str, asset_type: str, detail: str) -> str | None:
-    fp = photos_dir / sanitize_segment(station) / sanitize_segment(asset_type) / sanitize_segment(detail) / "date.txt"
+def read_date_from_photos(photos_dir: Path, btp: str, category: str, identifier: str) -> str | None:
+    """Read date.txt from flat output structure."""
+    fp = photos_dir / sanitize_segment(btp) / category / sanitize_segment(identifier) / "date.txt"
     if fp.exists():
         return fp.read_text(encoding="utf-8").strip()
     return None
@@ -109,6 +126,20 @@ def m2iso(d: date, m: int) -> str:
     return datetime(d.year, d.month, d.day, m // 60, m % 60).isoformat()
 
 
+def is_serat_optik_pdf(pdf_path: Path) -> bool:
+    return "SERAT OPTIK" in pdf_path.parts or "OPTIK" in pdf_path.parts
+
+
+def extract_core_count(doc) -> int | None:
+    if not doc.pages:
+        return None
+    text = doc.pages[0].extract_text() or ""
+    m = re.search(r'Jumlah Core[^\d]*(\d+)', text, re.IGNORECASE)
+    if m:
+        return int(m.group(1))
+    return None
+
+
 # ---------------------------------------------------------------------------
 # core
 # ---------------------------------------------------------------------------
@@ -116,9 +147,6 @@ def m2iso(d: date, m: int) -> str:
 def build_schedule(pdf_dir: Path, photos_dir: Path,
                    mapping: dict, acuan: dict,
                    jam_mulai: int, jam_selesai: int, tim_max: int) -> dict:
-    # Load SAP mapping for station lookup
-    sap_mapping = load_sap_mapping(SAP_MAPPING_PATH)
-    
     files = sorted(p for p in pdf_dir.rglob("*")
                    if p.is_file() and p.suffix.lower() == ".pdf")
     if not files:
@@ -130,24 +158,68 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
     clock = jam_mulai  # minutes from midnight
 
     for pdf_path in files:
-        with pdfplumber.open(str(pdf_path)) as doc:
-            if not doc.pages:
-                continue
-            page1 = doc.pages[0]
-            assets = extract_asset_rows(page1, sap_mapping)
+        # ── Detect category ──
+        category = detect_category_from_filename(pdf_path.name)
+        
+        # ── Read Funcloc from page 1 to get identifier ──
+        identifier = None
+        btp = "BTP JAK"
+        try:
+            with pdfplumber.open(str(pdf_path)) as pdf:
+                if pdf.pages:
+                    page1_text = pdf.pages[0].extract_text() or ""
+                    funcloc_line = extract_funcloc_from_text(page1_text)
+                    if funcloc_line:
+                        identifier = extract_identifier(funcloc_line, category)
+        except Exception:
+            pass
+        
+        if not identifier:
+            # Fallback: use pdf stem
+            identifier = pdf_path.stem
+        
+        # Determine BTP
+        if identifier.startswith("JPL "):
+            codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
+            if codes:
+                station = codes[0].upper()
+                if station == "CS": station = "COS"
+                btp = STATION_TO_BTP.get(station, "BTP JAK")
+        elif identifier.startswith("ER ") or identifier.startswith("RUANG "):
+            parts = identifier.split()
+            code = None
+            for kw in ["BOO", "BTT", "CLT", "BOP", "CGB", "COS", "MSG"]:
+                if kw in parts:
+                    code = kw
+                    break
+            if not code: code = "BOO"
+            btp = STATION_TO_BTP.get(code, "BTP JAK")
+        else:
+            # Generic: extract station code from identifier
+            codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
+            if codes:
+                station = codes[-1].upper()
+                if station == "CS": station = "COS"
+                btp = STATION_TO_BTP.get(station, "BTP JAK")
+            else:
+                clean = identifier.replace("RADIO_", "")
+                btp = STATION_TO_BTP.get(clean, "BTP JAK")
 
-        if not assets:
-            continue
+        # ── Core count for SERAT OPTIK ──
+        core_count = None
+        if is_serat_optik_pdf(pdf_path):
+            try:
+                with pdfplumber.open(str(pdf_path)) as doc:
+                    core_count = extract_core_count(doc)
+                    if core_count:
+                        print(f"  [SERAT OPTIK] {pdf_path.name}: {core_count} core -> {core_count * 6} min")
+            except Exception:
+                pass
 
-        # --- determine date ---
-        date_str = None
+        # ── Determine date ──
+        date_str = read_date_from_photos(photos_dir, btp, category, identifier)
         pdf_date: date | None = None
 
-        # 1) from date.txt of first asset
-        if assets:
-            date_str = read_date_from_photos(photos_dir, assets[0].station, assets[0].asset_type, assets[0].detail)
-
-        # 2) fallback: scan PDF
         if not date_str:
             d = extract_date_from_pdf(pdf_path)
             if d:
@@ -158,63 +230,61 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
             print(f"  [SKIP] no date found for {pdf_path.name}")
             continue
 
-        # parse date
         if pdf_date is None:
             pdf_date = _parse_date(date_str)
         if pdf_date is None:
             print(f"  [SKIP] cannot parse date '{date_str}' for {pdf_path.name}")
             continue
 
-        # --- date boundary → reset ---
+        # ── Date boundary → reset ──
         if pdf_date != cur_date:
             cur_date = pdf_date
             tim = 1
             clock = jam_mulai
 
-        # --- check if file fits in current Tim ---
-        total_waktu = sum(get_waktu(a.asset_type, a.detail, mapping, acuan)
-                          for a in assets)
+        # ── Waktu per PDF ──
+        if core_count:
+            w = core_count * 6
+        else:
+            w = get_waktu(category, mapping, acuan)
 
-        # Overflow rule: file is the first in its tim, always fits.
-        # Only switch if clock already past end OR file doesn't fit AND not first file.
-        if clock >= jam_selesai or (clock + total_waktu > jam_selesai and clock != jam_mulai):
+        # ── Overflow check ──
+        if clock >= jam_selesai or (clock + w > jam_selesai and clock != jam_mulai):
             tim += 1
             if tim > tim_max:
                 tim = 1
-                # Move to next working day
                 cur_date = pdf_date + timedelta(days=1)
                 date_str = format_date_target(cur_date)
             clock = jam_mulai
 
-        # --- assign times ---
-        entry = {"file": pdf_path.name, "date": date_str, "tim": tim, "assets": []}
+        # ── Assign times ──
+        t0 = clock
+        t50 = round(clock + w / 2)
+        t100 = clock + w
 
-        for a in assets:
-            w = get_waktu(a.asset_type, a.detail, mapping, acuan)
-            t0 = clock
-            t50 = round(clock + w / 2)
-            t100 = clock + w
-
-            entry["assets"].append({
-                "type": a.asset_type,
-                "detail": a.detail,
-                "code": a.code,
-                "waktu_menit": w,
-                "photos": {
-                    "0.jpg":  m2iso(cur_date, t0),
-                    "50.jpg": m2iso(cur_date, t50),
-                    "100.jpg": m2iso(cur_date, t100),
-                },
-            })
-            clock = t100
-
+        entry = {
+            "file": pdf_path.name,
+            "btp": btp,
+            "category": category,
+            "pdf_stem": pdf_path.stem,
+            "identifier": identifier,
+            "date": date_str,
+            "tim": tim,
+            "waktu_menit": w,
+            "photos": {
+                "0.jpg":  m2iso(cur_date, t0),
+                "50.jpg": m2iso(cur_date, t50),
+                "100.jpg": m2iso(cur_date, t100),
+            },
+        }
         schedules.append(entry)
+        clock = t100
 
-    return {"version": 1, "schedules": schedules}
+    return {"version": 3, "schedules": schedules}
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Generate schedule.json for per-asset timing + team.")
+    p = argparse.ArgumentParser(description="Generate schedule.json for flat category structure.")
     p.add_argument("--pdf-dir", default="./02_pdf_target")
     p.add_argument("--photos-dir", default="./03_photos_export")
     p.add_argument("--mapping", default="asset_waktu_mapping.json")
@@ -228,8 +298,19 @@ def main() -> int:
     pdf_dir = Path(args.pdf_dir).resolve()
     photos_dir = Path(args.photos_dir).resolve()
 
-    mapping = load_mapping(Path(args.mapping))
-    acuan = load_data_acuan(Path(args.data_acuan))
+    mapping_path = Path(args.mapping)
+    data_acuan_path = Path(args.data_acuan)
+
+    mapping = {}
+    acuan = {}
+    if mapping_path.exists():
+        mapping = load_mapping(mapping_path)
+    else:
+        print(f"[WARNING] mapping file not found: {mapping_path}")
+    if data_acuan_path.exists():
+        acuan = load_data_acuan(data_acuan_path)
+    else:
+        print(f"[WARNING] data acuan not found: {data_acuan_path}")
 
     jm = max(0, min(23 * 60, args.jam_mulai * 60))
     js = max(0, min(24 * 60, args.jam_selesai * 60))
@@ -238,18 +319,18 @@ def main() -> int:
 
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
-    
+
     if os.environ.get("OVERWRITE", "1") == "0" and out.exists():
         print(f"  [SKIP] {out} sudah ada (overwrite=off)")
         return 0
-    
+
     with open(out, "w", encoding="utf-8") as f:
         json.dump(sched, f, indent=2, ensure_ascii=False)
 
     print(f"\nSchedule saved -> {out}")
     print(f"Files: {len(sched['schedules'])}")
     for s in sched["schedules"]:
-        print(f"  Tim {s['tim']} | {s['date']} | {s['file']} ({len(s['assets'])} aset)")
+        print(f"  Tim {s['tim']} | {s['date']} | {s['btp']}/{s['category']}/{s['identifier']} ({s['waktu_menit']} menit)")
 
     return 0
 

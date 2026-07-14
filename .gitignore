@@ -50,3 +50,15 @@ imo_lain/
 .DS_Store
 Thumbs.db
 ocr-ai.py
+
+# Alternative folder - abaikan isi tapi lacak folder via .gitkeep
+Alternative/01_pdf_source/*
+!Alternative/01_pdf_source/.gitkeep
+Alternative/02_pdf_target/*
+!Alternative/02_pdf_target/.gitkeep
+Alternative/03_photos_export/*
+!Alternative/03_photos_export/.gitkeep
+Alternative/04_photos_edited/*
+!Alternative/04_photos_edited/.gitkeep
+Alternative/05_pdf_merged/*
+!Alternative/05_pdf_merged/.gitkeep

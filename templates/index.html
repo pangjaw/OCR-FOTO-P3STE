@@ -30,7 +30,7 @@
 
     .card{
       background:rgba(255,255,255,.018);border:1px solid rgba(255,255,255,.05);
-      border-radius:10px;padding:.5rem;display:flex;flex-direction:column;min-width:0;overflow:hidden
+      border-radius:10px;padding:.5rem;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden
     }
     .card .lbl{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#64748b;flex-shrink:0;margin-bottom:.3rem}
     .card ul{list-style:none;overflow-y:auto;flex:1;min-height:0;display:flex;flex-direction:column;gap:1px}
@@ -116,7 +116,7 @@
 
     .step-indicator{display:flex;gap:4px;align-items:center}
     .step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.08);transition:all .3s ease;cursor:help}
-    .step-dot.active{background:#6366f1;border-color:#6366f1;box-shadow:0 0 8px rgba(99,102,241,.6);transform:scale(1.2)}
+    .step-dot.active{background:#f59e0b;border-color:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.6);transform:scale(1.2)}
     .step-dot.done{background:#4ade80;border-color:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.4)}
     .step-dot.error{background:#ef4444;border-color:#dc2626;box-shadow:0 0 6px rgba(239,68,68,.4)}
     .step-bar{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px;margin-bottom:.5rem;font-size:.62rem;color:#94a3b8;transition:opacity .3s ease}
@@ -126,7 +126,7 @@
     .log-clear{background:none;border:none;color:#475569;font-size:.55rem;cursor:pointer;text-transform:uppercase;letter-spacing:.03em;font-weight:600}
     .log-clear:hover{color:#ef4444}
     .log-box{
-      overflow-y:auto;flex:1;min-height:0;
+      overflow-y:auto;flex:1;min-height:0;scroll-behavior:smooth;
       font-family:'JetBrains Mono','Fira Code',monospace;font-size:.6rem;line-height:1.4
     }
     .log-box::-webkit-scrollbar{width:3px}
@@ -387,27 +387,27 @@
         const r=await fetch('/api/status'),s=await r.json();
         pb.style.width=s.progress+'%';
         st.textContent=s.status_text||'Idle';
-        const current=s.current_step;
+        const statuses = s.step_statuses || {};
         const dots=document.querySelectorAll('.step-dot');
+        const labels={'step1':'Export Foto','step2':'Ekstrak Tanggal','step3':'Scheduler','step4':'Edit Timemark','step5':'Gabung PDF'};
+        dots.forEach(dot=>{
+          const step=dot.dataset.step;
+          const st = statuses[step] || 'waiting';
+          dot.className = 'step-dot';
+          if(st==='active') dot.classList.add('active');
+          else if(st==='done') dot.classList.add('done');
+          else if(st==='error') dot.classList.add('error');
+          // waiting -> default (black)
+        });
+        const current = s.current_step;
         if(current){
-          dots.forEach(dot=>{
-            const step=dot.dataset.step;
-            dot.classList.remove('active','done','error');
-            if(step===current) dot.classList.add('active');
-            else if(stepOrder.indexOf(step)<stepOrder.indexOf(current)) dot.classList.add('done');
-          });
-          const labels={'step1':'Export Foto','step2':'Ekstrak Tanggal','step3':'Scheduler','step4':'Edit Timemark','step5':'Gabung PDF'};
+          L('step-bar').style.display='flex';
           L('step-bar').querySelector('.step-bar-label').textContent='Proses: '+labels[current];
         } else if (!s.is_running && btn.disabled) {
-          const isError = s.status_text && (s.status_text.includes('gagal') || s.status_text.includes('Error') || s.status_text.includes('kesalahan') || s.status_text.includes('dibatalkan'));
-          dots.forEach(dot=>{
-            dot.classList.remove('active');
-            if(isError) dot.classList.add('error');
-            else dot.classList.add('done');
-          });
+          const isError = Object.values(statuses).includes('error');
           L('step-bar').querySelector('.step-bar-label').textContent = isError ? 'Proses: Gagal' : 'Proses: Selesai';
           rst();
-          loadSummary(); // fetch summary when done
+          loadSummary();
         }
       }catch{}
     },800);
@@ -436,7 +436,7 @@
       };
       es.onerror=()=>{es.close();esConn=null;esReconnectTimer=setTimeout(conn,3000);};
     }
-    function a(l){const em=lb.querySelector('.log-empty');if(em)em.remove();const d=document.createElement('div');d.className='log-entry '+(l.type||'info');d.innerHTML='<span class="ts">'+(l.timestamp||'')+'</span><span class="msg">'+esc(l.message)+'</span>';lb.appendChild(d);lb.scrollTop=lb.scrollHeight}
+    function a(l){const em=lb.querySelector('.log-empty');if(em)em.remove();const d=document.createElement('div');d.className='log-entry '+(l.type||'info');d.innerHTML='<span class="ts">'+(l.timestamp||'')+'</span><span class="msg">'+esc(l.message)+'</span>';lb.appendChild(d);const isNearBottom=lb.scrollTop+lb.clientHeight>=lb.scrollHeight-40;if(isNearBottom)lb.scrollTop=lb.scrollHeight}
     L('btn-clear-log').onclick=()=>{lb.innerHTML='<div class="log-empty">Log dibersihkan</div>'};
     window.addEventListener('beforeunload',()=>{if(esConn){esConn.close();}if(stageEsConn){stageEsConn.close();}});
     loadConfig();loadFiles();conn();connectStages();loadSummary();

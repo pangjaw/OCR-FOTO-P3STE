@@ -1,10 +1,15 @@
-def log(msg):
-    print(msg, flush=True)
+"""merge_pdf_foto.py — Gabung foto hasil edit (format 2026) ke PDF 2025.
+
+Flat structure: photos_dir/Tim_N/{btp}/{category}/{pdf_stem}/{0,50,100}.jpg
+Output: output_dir/Tim_N/{btp}/{category}/{pdf_name}
+
+No funcloc1 logic. Category detected from filename.
+"""
 import json
 import os
 import re
 from pathlib import Path
-from collections import defaultdict
+from collections import defaultdict, Counter
 from dataclasses import dataclass
 import pdfplumber
 import fitz  # PyMuPDF
@@ -12,12 +17,18 @@ import openpyxl
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from datetime import datetime
 import argparse
-from export_pdf_foto import extract_station_from_description, load_sap_mapping
+
+from export_pdf_foto import (
+    extract_station_from_description, load_sap_mapping, SAP_MAPPING_PATH,
+    detect_category_from_filename, extract_station_from_filename, STATION_TO_BTP,
+    extract_identifier, extract_funcloc_from_text, extract_all_funclocs,
+)
 
 DEFAULT_INPUT_DIR = "./02_pdf_target"
 DEFAULT_PHOTOS_DIR = "./04_photos_edited"
 DEFAULT_OUTPUT_DIR = "./05_pdf_merged"
 CHECKLIST_CONFIG_PATH = "./checklist_types.json"
+
 
 @dataclass
 class AssetRow:
@@ -29,56 +40,39 @@ class AssetRow:
     top: float
     station: str = "UNKNOWN"
 
+
+# ── Helpers ─────────────────────────────────────────────────────
+
+def log(msg):
+    print(msg, flush=True)
+
+
+def ensure_dir(path: Path) -> None:
+    path.mkdir(parents=True, exist_ok=True)
+
+
+def normalize_spaces(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def sanitize_segment(text: str) -> str:
+    text = normalize_spaces(text)
+    text = "".join("_" if ord(char) < 32 else char for char in text)
+    text = re.sub(r'[<>:\\\"/\\|?*]', "_", text)
+    text = re.sub(r"\s+", " ", text).strip(" .")
+    return text or "UNKNOWN"
+
+
 def load_checklist_config(path: str = CHECKLIST_CONFIG_PATH) -> dict:
-    """Load checklist types configuration from JSON file."""
     try:
         with open(path, encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         log(f"[WARNING] Checklist config not found at {path}, using defaults")
-        return {
-            "search_keyword": "PERAWATAN",
-            "types": {}
-        }
+        return {"search_keyword": "PERAWATAN", "types": {}}
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Gabungkan foto hasil edit (format 2026) ke dalam PDF format 2025 asli dengan menghapus kolase lama."
-    )
-    parser.add_argument(
-        "--input",
-        default=DEFAULT_INPUT_DIR,
-        help=f"Folder PDF input 2025. Default: {DEFAULT_INPUT_DIR}",
-    )
-    parser.add_argument(
-        "--photos",
-        default=DEFAULT_PHOTOS_DIR,
-        help=f"Folder foto hasil edit (Export_Foto). Default: {DEFAULT_PHOTOS_DIR}",
-    )
-    parser.add_argument(
-        "--output",
-        default=DEFAULT_OUTPUT_DIR,
-        help=f"Folder PDF hasil gabung. Default: {DEFAULT_OUTPUT_DIR}",
-    )
-    parser.add_argument(
-        "--schedule",
-        default=None,
-        help="Path ke schedule.json untuk lookup Tim folder foto.",
-    )
-    return parser.parse_args()
 
-def ensure_dir(path: Path) -> None:
-    path.mkdir(parents=True, exist_ok=True)
-
-def normalize_spaces(text: str) -> str:
-    return re.sub(r"\s+", " ", text).strip()
-
-def sanitize_segment(text: str) -> str:
-    text = normalize_spaces(text)
-    text = "".join("_" if ord(char) < 32 else char for char in text)
-    text = re.sub(r'[<>:\\"/\\|?*]', "_", text)
-    text = re.sub(r"\s+", " ", text).strip(" .")
-    return text or "UNKNOWN"
+# ── Asset parsing ───────────────────────────────────────────────
 
 def detect_asset_type(code: str, title: str) -> str:
     upper = f"{code} {title}".upper()
@@ -92,11 +86,18 @@ def detect_asset_type(code: str, title: str) -> str:
         return "CATU_DAYA"
     if code.startswith("JPL") or "PINTU PERLINTASAN" in upper:
         return "PINTU_PERLINTASAN"
-    if code.startswith("TLK") or code.startswith("TWR") or "TELEKOMUNIKASI" in upper or "RADIO" in upper or "SERAT OPTIK" in upper:
+    if code.startswith("TLK") or code.startswith("TWR") or "TELEKOMUNIKASI" in upper or "RADIO" in upper or "SERAT OPTIK" in upper or "OTB" in upper:
         return "TELEKOMUNIKASI"
-    if code.startswith("INB") or code.startswith("TRA") or "PERSINYALAN ELEKTRIK" in upper:
-        return "PERSINYALAN_ELEKTRIK"
+    if code.startswith("CTC") or "CTC" in upper or "CTS" in upper or "DALWAS" in upper:
+        return "CTS"
+    if code.startswith("INB") or code.startswith("TRA"):
+        return "UNKNOWN"
+    if "BANGUNAN" in upper or "DATA LOGGER" in upper:
+        return "PDSE"
+    if "MULTIPLEX" in upper:
+        return "PTLS"
     return "UNKNOWN"
+
 
 def extract_detail(title: str, asset_type: str) -> str:
     original = normalize_spaces(title)
@@ -105,7 +106,7 @@ def extract_detail(title: str, asset_type: str) -> str:
         match = re.search(re.escape(marker), original, flags=re.IGNORECASE)
         if not match:
             return None
-        return normalize_spaces(original[match.end() :]).lstrip(": -")
+        return normalize_spaces(original[match.end():]).lstrip(": -")
 
     detail = None
     if asset_type == "AXC":
@@ -119,18 +120,18 @@ def extract_detail(title: str, asset_type: str) -> str:
     elif asset_type == "PINTU_PERLINTASAN":
         detail = after("PINTU PERLINTASAN") or after("JPL") or after("JPLE") or after("GENTANIK")
     elif asset_type == "TELEKOMUNIKASI":
-        detail = after("TELEKOMUNIKASI") or after("TELEPON") or after("RADIO") or after("SERAT OPTIK") or after("OTB")
+        detail = after("TELEKOMUNIKASI") or after("RADIO") or after("WAYSTATION") or after("SERAT OPTIK")
+    elif asset_type == "CTS":
+        detail = after("CTC") or after("PERALATAN") or original
     elif asset_type == "PERSINYALAN_ELEKTRIK":
         detail = after("PERSINYALAN ELEKTRIK") or after("DALAM PERSINYALAN") or after("OTB") or after("BANGUNAN")
-
     if not detail:
         detail = original
-
     sanitized = sanitize_segment(detail)
-    # Workaround: ZP 41B -> ZP 41 (karena typo di PDF 2025 asli)
     if "ZP 41B" in sanitized.upper() or "ZP41B" in sanitized.upper():
         sanitized = re.sub(r'ZP\s*41B', 'ZP 41', sanitized, flags=re.IGNORECASE)
     return sanitized
+
 
 def is_valid_asset_title(title: str) -> bool:
     words = title.split()
@@ -138,10 +139,14 @@ def is_valid_asset_title(title: str) -> bool:
     if all(code_pattern.match(w) for w in words):
         return False
     upper = title.upper()
-    valid_keywords = ["AXLE", "COUNTER", "WESEL", "SINYAL", "CATU DAYA", "PINTU PERLINTASAN", "TELEKOMUNIKASI", "PERSINYALAN ELEKTRIK", "JPL", "GENTANIK", "RADIO", "SERAT OPTIK", "OTB", "BANGUNAN", "GENSET", "UPS", "BATTERE", "PANEL", "RECTIFIER", "MESIN", "MOTOR", "TOWER", "ANTENA", "INTERLOCKING", "INPUT"]
-    if any(kw in upper for kw in valid_keywords):
-        return True
-    return False
+    valid_keywords = [
+        "AXLE", "COUNTER", "WESEL", "SINYAL", "CATU DAYA", "PINTU PERLINTASAN",
+        "TELEKOMUNIKASI", "PERSINYALAN ELEKTRIK", "JPL", "GENTANIK", "RADIO",
+        "SERAT OPTIK", "OTB", "BANGUNAN", "GENSET", "UPS", "BATTERE", "PANEL",
+        "RECTIFIER", "MESIN", "MOTOR", "TOWER", "ANTENA", "INTERLOCKING", "INPUT",
+    ]
+    return any(kw in upper for kw in valid_keywords)
+
 
 def extract_asset_rows(page: pdfplumber.page.Page, sap_mapping: dict = None) -> list[AssetRow]:
     lines = defaultdict(list)
@@ -163,68 +168,49 @@ def extract_asset_rows(page: pdfplumber.page.Page, sap_mapping: dict = None) -> 
         if code_index is None or not code:
             continue
 
-        title = normalize_spaces(" ".join(word["text"] for word in words[code_index + 1 :])).lstrip(": -")
-        if not title:
-            continue
-
-        if not is_valid_asset_title(title):
+        title = normalize_spaces(" ".join(word["text"] for word in words[code_index + 1:])).lstrip(": -")
+        if not title or not is_valid_asset_title(title):
             continue
 
         asset_type = detect_asset_type(code, title)
         detail = extract_detail(title, asset_type)
         station = extract_station_from_description(title, sap_mapping or {}, code)
-        rows.append(
-            AssetRow(
-                page_number=page.page_number,
-                code=code,
-                title=title,
-                asset_type=asset_type,
-                detail=detail,
-                top=top,
-                station=station,
-            )
-        )
-
+        rows.append(AssetRow(
+            page_number=page.page_number, code=code, title=title,
+            asset_type=asset_type, detail=detail, top=top, station=station,
+        ))
     return rows
 
+
+# ── PDF helpers ─────────────────────────────────────────────────
+
 def extract_location_from_filename(filename: str) -> str:
-    name_without_ext = filename.rsplit('.', 1)[0]
-    parts = name_without_ext.split('_')
+    name = filename.rsplit('.', 1)[0]
+    parts = name.split('_')
     if len(parts) >= 3:
-        location_part = parts[2].strip()
-        location_part = re.sub(r'\s*\(\d+\)\s*$', '', location_part)
-        return location_part.upper()
+        loc = parts[2].strip()
+        loc = re.sub(r'\s*\(\d+\)\s*$', '', loc)
+        return loc.upper()
     return "BOGOR"
+
 
 def extract_date_from_page1(page: pdfplumber.page.Page) -> str:
     text = page.extract_text() or ""
-    date_pattern = re.compile(r"Tanggal\s*:\s*(\d{4}-\d{2}-\d{2})", re.IGNORECASE)
-    match = date_pattern.search(text)
-
+    m = re.search(r"Tanggal\s*:\s*(\d{4}-\d{2}-\d{2})", text, re.IGNORECASE)
     months_id = {
         1: "Januari", 2: "Februari", 3: "Maret", 4: "April",
         5: "Mei", 6: "Juni", 7: "Juli", 8: "Agustus",
-        9: "September", 10: "Oktober", 11: "November", 12: "Desember"
+        9: "September", 10: "Oktober", 11: "November", 12: "Desember",
     }
+    if m:
+        y, mo, d = map(int, m.group(1).split('-'))
+        return f"{d:02d} {months_id[mo]} {y}"
+    return "06 Januari 2025"
 
-    if match:
-        date_str = match.group(1)
-        y, m, d = map(int, date_str.split('-'))
-        return f"{d:02d} {months_id[m]} {y}"
-
-    return "06 Januari 2025" # default fallback
 
 def extract_checklist_title(page: pdfplumber.page.Page, filename: str, config: dict | None = None) -> str:
-    """
-    Ekstrak judul ceklis dari halaman 1 PDF.
-    Prioritas: 1) OCR halaman 1 dengan keyword dari config
-               2) Validasi hasil terhadap known types di config
-               3) Fallback ke parsing filename
-               4) Default hardcoded
-    """
     if config is None:
         config = load_checklist_config()
-
     search_keyword = config.get("search_keyword", "PERAWATAN")
     known_types = config.get("types", {})
 
@@ -235,37 +221,31 @@ def extract_checklist_title(page: pdfplumber.page.Page, filename: str, config: d
             if line_clean.upper().startswith("STE"):
                 line_clean = line_clean[3:].strip()
             extracted = line_clean.upper()
-
-            # Validasi: cek apakah hasil ekstraksi cocok dengan known type
             for known_type in known_types:
                 if known_type in extracted or extracted in known_type:
                     return known_type
-
-            # Jika tidak cocok tapi mengandung keyword, return hasil OCR
             return extracted
-
-    # Fallback: parse dari filename
-    name_without_ext = filename.rsplit('.', 1)[0]
-    parts = name_without_ext.split('_')
+    # Fallback from filename
+    name = filename.rsplit('.', 1)[0]
+    parts = name.split('_')
     if len(parts) >= 2:
-        filename_type = parts[1].strip().upper()
-
-        # Validasi filename type against known types
+        ft = parts[1].strip().upper()
         for known_type in known_types:
-            if known_type in filename_type or filename_type in known_type:
+            if known_type in ft or ft in known_type:
                 return known_type
-
-        return filename_type
-
+        return ft
     return "PERAWATAN AXLE COUNTER SIEMENS 1 BULANAN"
+
 
 def get_text_width(text: str, fontname: str, fontsize: float) -> float:
     return fitz.get_text_length(text, fontname=fontname, fontsize=fontsize)
+
 
 def draw_centered_text(page, text: str, y_baseline: float, fontname: str, fontsize: float):
     w = get_text_width(text, fontname, fontsize)
     x = (page.rect.width - w) / 2
     page.insert_text((x, y_baseline), text, fontname=fontname, fontsize=fontsize, color=(0, 0, 0))
+
 
 def draw_centered_label(page, text: str, img_x0: float, img_x1: float, y_baseline: float, fontname: str, fontsize: float):
     w = get_text_width(text, fontname, fontsize)
@@ -273,212 +253,260 @@ def draw_centered_label(page, text: str, img_x0: float, img_x1: float, y_baselin
     x = center_img - w / 2
     page.insert_text((x, y_baseline), text, fontname=fontname, fontsize=fontsize, color=(0, 0, 0))
 
+
 def draw_header(page, location: str, date_str: str, checklist_title: str):
     draw_centered_text(page, "FOTO DOKUMENTASI", 38.9, "hebo", 7.2)
     draw_centered_text(page, f"{checklist_title} {location}", 53.3, "hebo", 7.2)
     draw_centered_text(page, date_str, 67.7, "hebo", 7.2)
 
+
+def determine_btp_from_identifier(identifier: str) -> str:
+    """Determine BTP from any identifier format (handles all categories)."""
+    if not identifier:
+        return "BTP JAK"
+
+    if identifier.startswith("JPL "):
+        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
+        if codes:
+            station = codes[0].upper()
+            if station == "CS": station = "COS"
+            return STATION_TO_BTP.get(station, "BTP JAK")
+        return "BTP JAK"
+    elif identifier.startswith("ER ") or identifier.startswith("RUANG ") or identifier.startswith("RADIO_"):
+        parts = identifier.split()
+        code = None
+        for kw in ["BOO", "BTT", "CLT", "BOP", "CGB", "COS", "MSG"]:
+            if kw in parts:
+                code = kw
+                break
+        if not code: code = "BOO"
+        return STATION_TO_BTP.get(code, "BTP JAK")
+    else:
+        # Generic: extract last uppercase word as station code
+        # Works for: "W31D BOO", "J10 BOO", "ZP 201B MSG", "BOO", etc.
+        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
+        if codes:
+            station = codes[-1].upper()
+            if station == "CS": station = "COS"
+            return STATION_TO_BTP.get(station, "BTP JAK")
+        return "BTP JAK"
+
+
+# ── Core Merge ──────────────────────────────────────────────────
+
 def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path,
                  input_root: Path | None = None, schedule_lookup: dict | None = None,
-                 asset_tim: dict | None = None, config: dict | None = None,
                  sap_mapping: dict | None = None) -> str:
+    """Merge edited photos into PDF.
+    
+    Flat structure. Photo lookup via Funcloc identifier from page 1.
+    Photo path: photos_dir/Tim_N/{btp}/{category}/{identifier}/{0,50,100}.jpg
+    Output: output_dir/Tim_N/{btp}/{category}/{pdf_name}
     """
-    Gabungkan foto-foto baru ke dalam PDF lama.
-    Args:
-        schedule_lookup: {pdf_name: tim} from schedule.json (PDF-level Tim)
-        asset_tim: {(asset_type, detail): tim} from tim_mapping.json fallback (asset-level Tim)
-    """
-    if config is None:
-        config = load_checklist_config()
+    if sap_mapping is None:
+        sap_mapping = {}
+    
+    # ── Detect category from filename ──
+    category = detect_category_from_filename(pdf_path.name)
 
-    # 1. Buka dengan pdfplumber untuk mencari daftar aset
+    # ── Load checklist config ──
+    config = load_checklist_config()
+    
+    # ── Read page 1: extract ALL funclocs → identifiers ──
     with pdfplumber.open(str(pdf_path)) as plumber_pdf:
         if len(plumber_pdf.pages) == 0:
             return "failed: PDF has 0 pages"
         page1 = plumber_pdf.pages[0]
-        assets = extract_asset_rows(page1, sap_mapping)
+        page1_text = page1.extract_text() or ""
         date_str = extract_date_from_page1(page1)
         checklist_title = extract_checklist_title(page1, pdf_path.name, config)
-
-    if not assets:
-        return "failed: no assets found on page 1"
-
-    location = extract_location_from_filename(pdf_path.name)
-
-    # 2. Periksa apakah foto lengkap
-    missing_assets = []
-    asset_photo_paths = {}
-
-    # Dukungan subfolder aset
-    subfolder = Path()
-    if input_root and pdf_path.is_relative_to(input_root):
-        subfolder = pdf_path.parent.relative_to(input_root)
-
-    # Determine photo lookup base directory
-    # Priority: schedule_lookup (PDF-level) > asset_tim (asset-level) > default
+        
+        # Scan ALL funclocs on page 1
+        all_funclocs = extract_all_funclocs(page1_text)
+        print(f"  [MERGE] Funclocs on page 1: {len(all_funclocs)}")
+        
+        # Build list of (identifier, btp) pairs
+        # Also auto-detect category from funcloc prefix if filename detection failed
+        asset_entries = []
+        seen = set()
+        for funcloc_line in all_funclocs:
+            identifier = extract_identifier(funcloc_line, category)
+            if identifier and identifier not in seen:
+                seen.add(identifier)
+                btp = determine_btp_from_identifier(identifier)
+                # Auto-detect category from funcloc prefix for photo lookup
+                photo_category = category
+                if category == "UNKNOWN":
+                    txt = funcloc_line.strip().upper()
+                    if txt.startswith("WSL"): photo_category = "WESEL"
+                    elif txt.startswith("SIN"): photo_category = "SINYAL"
+                    elif txt.startswith("AXL"): photo_category = "AXC"
+                asset_entries.append((identifier, btp, photo_category))
+                print(f"  [MERGE] '{funcloc_line.strip()[:80]}' -> '{identifier}' (BTP: {btp}, cat: {photo_category})")
+        
+        if not asset_entries:
+            # Fallback: use pdf stem
+            identifier = sanitize_segment(pdf_path.stem)
+            btp = "BTP JAK"
+            asset_entries.append((identifier, btp, category))
+            print(f"  [MERGE] Fallback identifier from stem: '{identifier}'")
+    
+    # ── Determine Tim ──
     pdf_tim = None
-    use_asset_tim = False
-    if schedule_lookup is not None:
+    if schedule_lookup:
         pdf_tim = schedule_lookup.get(pdf_path.name)
+    
+    location = extract_location_from_filename(pdf_path.name)
+    
+    # ── Find photos for all identifiers ──
+    photo_paths = {}  # identifier -> (0.jpg, 50.jpg, 100.jpg)
+    missing = []
+    
+    for identifier, btp, photo_category in asset_entries:
+        found = False
+        
+        # Search order: Tim from schedule → all Tim_N dirs → root
+        search_dirs = []
         if pdf_tim:
-            log(f"    [SCHEDULE] PDF {pdf_path.name}] Tim {pdf_tim}")
-    if pdf_tim is None and asset_tim is not None:
-        use_asset_tim = True
-        log(f"    [FALLBACK] Using asset-level Tim mapping for {pdf_path.name}")
-
-    for r in assets:
-        asset_key = (r.asset_type, r.detail)
-
-        # Determine Tim for this specific asset
-        if use_asset_tim:
-            # Use asset-level Tim mapping
-            tim = asset_tim.get(asset_key, 1)
-            photo_lookup_dir = photos_dir / f"Tim_{tim}"
-        elif pdf_tim:
-            # Use PDF-level Tim from schedule
-            photo_lookup_dir = photos_dir / f"Tim_{pdf_tim}"
-        else:
-            # Default: no Tim subfolder
-            photo_lookup_dir = photos_dir
-
-        # Build folder path: photos_dir/Tim_N/station/asset_type/detail/ or photos_dir/subfolder/station/asset_type/detail/
-        # New structure: station/asset_type/detail/
-        if pdf_tim or use_asset_tim:
-            folder_detail = photo_lookup_dir / sanitize_segment(r.station) / sanitize_segment(r.asset_type) / r.detail
-        else:
-            folder_detail = photo_lookup_dir / subfolder / sanitize_segment(r.station) / sanitize_segment(r.asset_type) / r.detail
-
-        # Validasi 3 foto
-        f0 = folder_detail / "0.jpg"
-        f50 = folder_detail / "50.jpg"
-        f100 = folder_detail / "100.jpg"
-
-        if not (f0.is_file() and f50.is_file() and f100.is_file()):
-            missing_assets.append(r.detail)
-        else:
-            asset_photo_paths[r.detail] = (f0, f50, f100)
-
-    if missing_assets:
-        return f"skipped: missing photos for assets: {', '.join(missing_assets)}"
-
-    # 3. Lakukan modifikasi menggunakan PyMuPDF
+            search_dirs.append(photos_dir / f"Tim_{pdf_tim}" / btp / photo_category / identifier)
+        
+        # Scan all Tim_N directories
+        if photos_dir.exists():
+            for tim_dir in sorted(photos_dir.iterdir()):
+                if tim_dir.is_dir() and tim_dir.name.startswith("Tim_"):
+                    search_dirs.append(tim_dir / btp / photo_category / identifier)
+        
+        # Also try direct (no Tim_N prefix)
+        search_dirs.append(photos_dir / btp / photo_category / identifier)
+        
+        for search_dir in search_dirs:
+            f0 = search_dir / "0.jpg"
+            f50 = search_dir / "50.jpg"
+            f100 = search_dir / "100.jpg"
+            if f0.is_file() and f50.is_file() and f100.is_file():
+                photo_paths[identifier] = (f0, f50, f100)
+                found = True
+                break
+        
+        if not found:
+            # Second pass: search ALL BTP folders under each Tim_N
+            if photos_dir.exists():
+                for tim_dir in sorted(photos_dir.iterdir()):
+                    if tim_dir.is_dir() and tim_dir.name.startswith("Tim_"):
+                        for btp_dir in sorted(tim_dir.iterdir()):
+                            if btp_dir.is_dir():
+                                search_dir = btp_dir / photo_category / identifier
+                                f0 = search_dir / "0.jpg"
+                                f50 = search_dir / "50.jpg"
+                                f100 = search_dir / "100.jpg"
+                                if f0.is_file() and f50.is_file() and f100.is_file():
+                                    photo_paths[identifier] = (f0, f50, f100)
+                                    found = True
+                                    break
+                        if found:
+                            break
+        
+        if not found:
+            missing.append(f"{identifier} ({btp}/{photo_category})")
+    
+    if not photo_paths:
+        # No photos found — copy PDF to output without photo pages, removing last page
+        doc = fitz.open(str(pdf_path))
+        if len(doc) > 0:
+            doc.delete_page(-1)
+        first_btp = asset_entries[0][1] if asset_entries else "BTP JAK"
+        first_category = asset_entries[0][2] if asset_entries else category
+        out_pdf_path = output_dir / f"Tim_{pdf_tim or 1}" / first_btp / first_category / pdf_path.name
+        ensure_dir(out_pdf_path.parent)
+        doc.save(str(out_pdf_path))
+        doc.close()
+        print(f"  [MERGE] Saved (no photos): {out_pdf_path}")
+        return "ok"
+    
+    if missing:
+        print(f"  [MERGE] Missing photos: {', '.join(missing)}")
+    
+    # ── Build merged PDF ──
     doc = fitz.open(str(pdf_path))
-
-    # Hapus halaman terakhir (halaman kolase lama)
+    
+    # Remove last page (old photo collage)
     if len(doc) > 0:
         doc.delete_page(-1)
-
-    # Buat halaman-halaman foto baru
+    
+    # Create new photo pages
     assets_per_page = 4
-    for i, r in enumerate(assets):
+    entry_list = list(photo_paths.items())
+    page_count_after = 0
+    
+    for i, (identifier, (f0_path, f50_path, f100_path)) in enumerate(entry_list):
         page_idx = i // assets_per_page
         asset_idx_on_page = i % assets_per_page
-
-        # Jika baris pertama pada halaman, buat halaman baru
+        
         if asset_idx_on_page == 0:
             page = doc.new_page(width=595, height=842)
             draw_header(page, location, date_str, checklist_title)
-
-        # Dapatkan referensi halaman aktif
+            page_count_after += 1
+        
         page = doc[-1]
-
-        # Gambar baris aset
+        
+        # Asset title
         y_title_base = 82.1 + asset_idx_on_page * 183
-        title_text = f"{r.code} : {r.title}"
-        page.insert_text((31.5, y_title_base), title_text, fontname="helv", fontsize=7.2, color=(0, 0, 0))
-
-        # Tempel foto
+        page.insert_text((31.5, y_title_base), identifier, fontname="helv", fontsize=7.2, color=(0, 0, 0))
+        
+        # Photos
         y_img_top = 89.1 + asset_idx_on_page * 183
         y_img_bottom = y_img_top + 148.8
-
-        f0_path, f50_path, f100_path = asset_photo_paths[r.detail]
-
-        # Kolom 1 (0%)
+        
         rect_col0 = fitz.Rect(31.5, y_img_top, 180.3, y_img_bottom)
         page.insert_image(rect_col0, filename=str(f0_path))
-
-        # Kolom 2 (50%)
+        
         rect_col1 = fitz.Rect(210.4, y_img_top, 359.2, y_img_bottom)
         page.insert_image(rect_col1, filename=str(f50_path))
-
-        # Kolom 3 (100%)
+        
         rect_col2 = fitz.Rect(389.8, y_img_top, 538.6, y_img_bottom)
         page.insert_image(rect_col2, filename=str(f100_path))
-
-        # Gambar label di bawah foto
+        
+        # Labels
         y_label_base = 251.3 + asset_idx_on_page * 183
         draw_centered_label(page, "Foto 0%", 31.5, 180.3, y_label_base, "helv", 7.2)
         draw_centered_label(page, "Foto 50%", 210.4, 359.2, y_label_base, "helv", 7.2)
         draw_centered_label(page, "Foto 100%", 389.8, 538.6, y_label_base, "helv", 7.2)
-
-    # Simpan berkas hasil gabung
-    # Determine output subfolder: if using Tim mapping, save to Tim_N/
-    if pdf_tim or use_asset_tim:
-        # For fallback with asset_tim, determine the majority Tim for this PDF
-        if use_asset_tim:
-            # Collect tims for all assets in this PDF
-            pdf_tims = []
-            for r in assets:
-                asset_key = (r.asset_type, r.detail)
-                t = asset_tim.get(asset_key, 1)
-                pdf_tims.append(t)
-            if pdf_tims:
-                # Use most common tim
-                out_tim = max(set(pdf_tims), key=pdf_tims.count)
-            else:
-                out_tim = 1
-        else:
-            out_tim = pdf_tim
-        out_pdf_path = output_dir / f"Tim_{out_tim}" / subfolder / pdf_path.name
+    
+    # ── Save output ──
+    first_btp = asset_entries[0][1] if asset_entries else "BTP JAK"
+    first_category = asset_entries[0][2] if asset_entries else category
+    
+    if pdf_tim:
+        out_pdf_path = output_dir / f"Tim_{pdf_tim}" / first_btp / first_category / pdf_path.name
     else:
-        out_pdf_path = output_dir / subfolder / pdf_path.name
-
+        out_pdf_path = output_dir / f"Tim_1" / first_btp / first_category / pdf_path.name
+    
     ensure_dir(out_pdf_path.parent)
-
+    
     if os.environ.get("OVERWRITE", "1") == "0" and out_pdf_path.exists():
         doc.close()
         return f"skipped: {out_pdf_path.name} sudah ada (overwrite=off)"
-
+    
     doc.save(str(out_pdf_path))
     doc.close()
-
+    print(f"  [MERGE] Saved: {out_pdf_path} ({len(entry_list)} assets)")
+    
     return "ok"
 
 
-def aggregate_photo_to_pdf(tim_mapping: dict, photos_dir: Path) -> dict:
-    """
-    Aggregate photo->Tim mapping to PDF->Tim mapping.
+# ── Main ────────────────────────────────────────────────────────
 
-    For each PDF in input_dir, determine which assets it contains,
-    then check the Tim of their photos via tim_mapping.
-    If all photos for a PDF have the same Tim, use that Tim.
-    """
-    from collections import defaultdict
-
-    # Build reverse index: asset_type/detail -> list of photo relative paths
-    asset_photos = defaultdict(list)
-    for rel_path, tim_n in tim_mapping.items():
-        # rel_path format: "station/AXC/ZP 60 BOO/0.jpg"
-        parts = rel_path.split("/")
-        if len(parts) >= 4:
-            station, asset_type, detail, photo_name = parts[0], parts[1], parts[2], parts[3]
-            asset_photos[(asset_type, detail)].append((rel_path, tim_n))
-
-    # Build asset_key -> tim mapping (most common tim for that asset)
-    asset_tim = {}
-    for (asset_type, detail), photos in asset_photos.items():
-        if photos:
-            # Get most common tim for this asset
-            tims = [tim for _, tim in photos]
-            most_common_tim = max(set(tims), key=tims.count)
-            asset_tim[(asset_type, detail)] = most_common_tim
-
-    return asset_tim
+def parse_args():
+    p = argparse.ArgumentParser(description="Gabungkan foto hasil edit ke PDF (flat structure).")
+    p.add_argument("--input", default=DEFAULT_INPUT_DIR)
+    p.add_argument("--photos", default=DEFAULT_PHOTOS_DIR)
+    p.add_argument("--output", default=DEFAULT_OUTPUT_DIR)
+    p.add_argument("--schedule", default=None, help="schedule.json for Tim lookup")
+    return p.parse_args()
 
 
 def main():
-    # Load SAP station mapping
-    sap_mapping = load_sap_mapping("./sap_station_mapping.json")
+    sap_mapping = load_sap_mapping(SAP_MAPPING_PATH)
     args = parse_args()
     input_dir = Path(args.input).resolve()
     photos_dir = Path(args.photos).resolve()
@@ -493,38 +521,21 @@ def main():
 
     ensure_dir(output_dir)
 
-    pdf_files = sorted([p for p in input_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".pdf"])
+    pdf_files = sorted([p for p in input_dir.rglob("*")
+                        if p.is_file() and p.suffix.lower() == ".pdf"])
     if not pdf_files:
         print(f"Tidak ada berkas PDF di: {input_dir}")
         return 0
 
-    # Load schedule if provided
+    # Load schedule
     schedule_lookup = None
-    tim_mapping = None
     if args.schedule:
         sched_path = Path(args.schedule)
-        if not sched_path.exists():
-            print(f"[ERROR] Schedule file not found: {sched_path}")
-            return 1
-        with open(sched_path, encoding="utf-8") as f:
-            sched_data = json.load(f)
-        schedule_lookup = {e["file"]: e["tim"] for e in sched_data.get("schedules", [])}
-        print(f"[SCHEDULE] Loaded {len(schedule_lookup)} file->Tim mappings.")
-    else:
-        # Fallback: try to load tim_mapping.json from logs/
-        tim_mapping_path = Path("logs/tim_mapping.json")
-        if tim_mapping_path.exists():
-            with open(tim_mapping_path, encoding="utf-8") as f:
-                tim_mapping_data = json.load(f)
-            tim_mapping = tim_mapping_data.get("mapping", {})
-            print(f"[FALLBACK] Loaded tim_mapping.json with {len(tim_mapping)} photo->Tim mappings.")
-            # Aggregate photo->Tim to PDF->Tim
-            schedule_lookup = aggregate_photo_to_pdf(tim_mapping, photos_dir)
-            print(f"[FALLBACK] Aggregated to {len(schedule_lookup)} PDF->Tim mappings.")
-        else:
-            print("[ERROR] No --schedule provided and logs/tim_mapping.json not found.")
-            print("         Run edit_timemark with --schedule first, or provide --schedule to merge_pdf_foto.")
-            return 1
+        if sched_path.exists():
+            with open(sched_path, encoding="utf-8") as f:
+                sched_data = json.load(f)
+            schedule_lookup = {e["file"]: e["tim"] for e in sched_data.get("schedules", [])}
+            print(f"[SCHEDULE] Loaded {len(schedule_lookup)} file->Tim mappings.")
 
     log(f"Mulai pemrosesan {len(pdf_files)} berkas PDF...")
     log(f"Input:  {input_dir}")
@@ -537,34 +548,27 @@ def main():
     failed_files = []
     skipped_files = []
 
-    # Determine which mapping to pass to process_pdf
-    # If using schedule directly: schedule_lookup = {pdf: tim}, asset_tim = None
-    # If using fallback: schedule_lookup = {pdf: tim} (aggregated), asset_tim = {asset_key: tim}
-    asset_tim_for_fallback = tim_mapping if not args.schedule else None
-
     for pdf_path in pdf_files:
-        status = process_pdf(pdf_path, photos_dir, output_dir, input_dir, schedule_lookup, asset_tim_for_fallback, sap_mapping=sap_mapping)
+        status = process_pdf(pdf_path, photos_dir, output_dir, input_dir, schedule_lookup, sap_mapping)
         if status == "ok":
             success += 1
             log(f"[OK] {pdf_path.name}")
         elif status.startswith("skipped"):
             skipped += 1
             skipped_files.append({
-                "file": pdf_path.name,
-                "reason": status,
+                "file": pdf_path.name, "reason": status,
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
             log(f"[SKIP] {pdf_path.name} - {status}")
         else:
             failed += 1
             failed_files.append({
-                "file": pdf_path.name,
-                "reason": status,
+                "file": pdf_path.name, "reason": status,
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
             log(f"[FAIL] {pdf_path.name} - {status}")
 
-    # Export Excel files
+    # Export Excel logs
     logs_dir = Path("logs")
     ensure_dir(logs_dir)
 
@@ -572,57 +576,50 @@ def main():
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Failed Files"
-        headers = ["File PDF", "Alasan", "Timestamp"]
-        for col, header in enumerate(headers, 1):
-            cell = ws.cell(row=1, column=col, value=header)
-            cell.font = Font(bold=True)
-            cell.fill = PatternFill(start_color="FF4444", end_color="FF4444", fill_type="solid")
-            cell.font = Font(bold=True, color="FFFFFF")
+        for col, h in enumerate(["File PDF", "Alasan", "Timestamp"], 1):
+            c = ws.cell(row=1, column=col, value=h)
+            c.font = Font(bold=True, color="FFFFFF")
+            c.fill = PatternFill(start_color="FF4444", end_color="FF4444", fill_type="solid")
         for row_idx, item in enumerate(failed_files, 2):
             ws.cell(row=row_idx, column=1, value=item["file"])
             ws.cell(row=row_idx, column=2, value=item["reason"])
             ws.cell(row=row_idx, column=3, value=item["timestamp"])
-        # Auto-fit columns
         for col in ws.columns:
-            max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
-            ws.column_dimensions[col[0].column_letter].width = max_length + 2
+            ml = max(len(str(c.value)) if c.value else 0 for c in col)
+            ws.column_dimensions[col[0].column_letter].width = ml + 2
         wb.save(logs_dir / "merge_failed.xlsx")
-        log(f"[EXPORT] Failed files saved to logs/merge_failed.xlsx ({len(failed_files)} items)")
+        log(f"[EXPORT] Failed files -> logs/merge_failed.xlsx ({len(failed_files)})")
 
     if skipped_files:
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Skipped Files"
-        headers = ["File PDF", "Alasan", "Timestamp"]
-        for col, header in enumerate(headers, 1):
-            cell = ws.cell(row=1, column=col, value=header)
-            cell.font = Font(bold=True)
-            cell.fill = PatternFill(start_color="FFA500", end_color="FFA500", fill_type="solid")
-            cell.font = Font(bold=True, color="FFFFFF")
+        for col, h in enumerate(["File PDF", "Alasan", "Timestamp"], 1):
+            c = ws.cell(row=1, column=col, value=h)
+            c.font = Font(bold=True, color="FFFFFF")
+            c.fill = PatternFill(start_color="FFA500", end_color="FFA500", fill_type="solid")
         for row_idx, item in enumerate(skipped_files, 2):
             ws.cell(row=row_idx, column=1, value=item["file"])
             ws.cell(row=row_idx, column=2, value=item["reason"])
             ws.cell(row=row_idx, column=3, value=item["timestamp"])
         for col in ws.columns:
-            max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
-            ws.column_dimensions[col[0].column_letter].width = max_length + 2
+            ml = max(len(str(c.value)) if c.value else 0 for c in col)
+            ws.column_dimensions[col[0].column_letter].width = ml + 2
         wb.save(logs_dir / "merge_skipped.xlsx")
-        log(f"[EXPORT] Skipped files saved to logs/merge_skipped.xlsx ({len(skipped_files)} items)")
+        log(f"[EXPORT] Skipped files -> logs/merge_skipped.xlsx ({len(skipped_files)})")
 
-    # Print summary JSON for app.py to capture
-    import sys
     summary = {
         "step": "merge",
         "success": success,
         "failed": failed,
         "skipped": skipped,
         "failed_file": "logs/merge_failed.xlsx" if failed_files else None,
-        "skipped_file": "logs/merge_skipped.xlsx" if skipped_files else None
+        "skipped_file": "logs/merge_skipped.xlsx" if skipped_files else None,
     }
     print(f"__SUMMARY__:{json.dumps(summary)}", flush=True)
-
     log(f"\nSelesai. Sukses: {success}, Dilewati: {skipped}, Gagal: {failed}.")
     return 0 if success > 0 or skipped > 0 else 1
+
 
 if __name__ == "__main__":
     import sys

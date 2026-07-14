@@ -26,6 +26,13 @@ state = {
     "progress": 0,
     "status_text": "Idle",
     "process": None,
+    "step_statuses": {
+        "step1": "waiting",
+        "step2": "waiting",
+        "step3": "waiting",
+        "step4": "waiting",
+        "step5": "waiting"
+    },
 }
 
 log_queue = []
@@ -64,6 +71,9 @@ def clear_stage_data():
         }
     with stage_details_lock:
         stage_details.clear()
+    # Reset step statuses too
+    for step in ["step1", "step2", "step3", "step4", "step5"]:
+        state["step_statuses"][step] = "waiting"
 
 
 def add_log(message, type="info"):
@@ -80,10 +90,13 @@ def add_log(message, type="info"):
 
 def run_command_stream(cmd, step_name, overwrite="1"):
     add_log(f"Menjalankan perintah: {' '.join(cmd)}", "command")
+    last_lines = []
     try:
         env = os.environ.copy()
         env["OVERWRITE"] = overwrite
-        # Gunakan shell=True pada Windows agar virtual env terpanggil dengan benar
+        env["PYTHONUNBUFFERED"] = "1"
+        env["PYTHONIOENCODING"] = "utf-8"
+        # Use shell=False — sys.executable already points to correct Python
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
@@ -91,7 +104,7 @@ def run_command_stream(cmd, step_name, overwrite="1"):
             text=True,
             bufsize=1,
             encoding="utf-8",
-            shell=True,
+            shell=False,
             env=env
         )
         
@@ -103,6 +116,9 @@ def run_command_stream(cmd, step_name, overwrite="1"):
                 break
             line_str = line.strip()
             if line_str:
+                last_lines.append(line_str)
+                if len(last_lines) > 10:
+                    last_lines.pop(0)
                 add_log(line_str, "stdout")
                 # Parse JSON stage events from edit_timemark_ide1.py
                 if line_str.startswith('{') and line_str.endswith('}'):
@@ -137,7 +153,12 @@ def run_command_stream(cmd, step_name, overwrite="1"):
                 
         process.wait()
         state["process"] = None
-        return process.returncode == 0
+        ok = process.returncode == 0
+        if not ok:
+            add_log(f"✖ {step_name} keluar dengan kode {process.returncode}", "error")
+            for l in last_lines[-5:]:
+                add_log(f"  ⚠ {l}", "error")
+        return ok
     except Exception as e:
         add_log(f"Gagal menjalankan skrip {step_name}: {str(e)}", "error")
         state["process"] = None
@@ -154,6 +175,7 @@ def pipeline_thread(step_id, overwrite="1"):
     try:
         if step_id == "step1" or step_id == "all":
             state["current_step"] = "step1"
+            state["step_statuses"]["step1"] = "active"
             state["status_text"] = "Mengekstrak foto asli dari PDF 2026..."
             state["progress"] = 10
 
@@ -166,13 +188,16 @@ def pipeline_thread(step_id, overwrite="1"):
             ok = run_command_stream(cmd, "Export PDF Foto", overwrite)
             if not ok:
                 success = False
+                state["step_statuses"]["step1"] = "error"
                 add_log("Tahap 1 (Export PDF Foto) gagal.", "error")
             else:
+                state["step_statuses"]["step1"] = "done"
                 state["progress"] = 25
                 add_log("Tahap 1 (Export PDF Foto) selesai.", "success")
 
         if (step_id == "step2" or step_id == "all") and success:
             state["current_step"] = "step2"
+            state["step_statuses"]["step2"] = "active"
             state["status_text"] = "Mengekstrak tanggal target dari PDF 2025..."
             state["progress"] = 30
 
@@ -185,13 +210,16 @@ def pipeline_thread(step_id, overwrite="1"):
             ok = run_command_stream(cmd_dates, "Extract PDF Dates", overwrite)
             if not ok:
                 success = False
+                state["step_statuses"]["step2"] = "error"
                 add_log("Ekstraksi tanggal target gagal.", "error")
             else:
+                state["step_statuses"]["step2"] = "done"
                 state["progress"] = 45
                 add_log("Tahap 2 (Extract PDF Dates) selesai.", "success")
 
         if (step_id == "step3" or step_id == "all") and success:
             state["current_step"] = "step3"
+            state["step_statuses"]["step3"] = "active"
             state["status_text"] = "Menjadwalkan Tim & waktu pengerjaan..."
             state["progress"] = 50
 
@@ -206,13 +234,16 @@ def pipeline_thread(step_id, overwrite="1"):
             ok = run_command_stream(cmd_sched, "Scheduler", overwrite)
             if not ok:
                 success = False
+                state["step_statuses"]["step3"] = "error"
                 add_log("Tahap 3 (Scheduler) gagal.", "error")
             else:
+                state["step_statuses"]["step3"] = "done"
                 state["progress"] = 60
                 add_log("Tahap 3 (Scheduler) selesai.", "success")
 
         if (step_id == "step4" or step_id == "all") and success:
             state["current_step"] = "step4"
+            state["step_statuses"]["step4"] = "active"
             state["status_text"] = "Merevisi watermark Timemark per Tim..."
             state["progress"] = 65
 
@@ -226,8 +257,10 @@ def pipeline_thread(step_id, overwrite="1"):
             ok = run_command_stream(cmd_edit, "Edit Timemark", overwrite)
             if not ok:
                 success = False
+                state["step_statuses"]["step4"] = "error"
                 add_log("Tahap 4 (Edit Timemark) gagal.", "error")
             else:
+                state["step_statuses"]["step4"] = "done"
                 state["progress"] = 80
                 add_log("Tahap 4 (Edit Timemark) selesai.", "success")
 
@@ -249,8 +282,10 @@ def pipeline_thread(step_id, overwrite="1"):
             ok = run_command_stream(cmd, "Merge PDF Foto", overwrite)
             if not ok:
                 success = False
+                state["step_statuses"]["step5"] = "error"
                 add_log("Tahap 5 (Merge PDF Foto) gagal.", "error")
             else:
+                state["step_statuses"]["step5"] = "done"
                 state["progress"] = 100
                 add_log("Tahap 5 (Merge PDF Foto) selesai.", "success")
 
@@ -270,6 +305,7 @@ def pipeline_thread(step_id, overwrite="1"):
         state["is_running"] = False
         state["current_step"] = None
         state["process"] = None
+        # Steps that never ran -> stay waiting
 
 
 def get_pdf_list(directory, limit=100):

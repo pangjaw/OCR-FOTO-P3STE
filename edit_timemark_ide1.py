@@ -12,7 +12,7 @@ import os
 import re
 import shutil
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -22,7 +22,6 @@ import pytesseract
 
 import openpyxl
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
-from datetime import datetime
 TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
@@ -36,6 +35,44 @@ BOX_WIDTH_RATIO = 0.42       # 42% of image width
 DEFAULT_INPUT = Path("03_photos_export")
 DEFAULT_OUTPUT = Path("04_photos_edited")
 DEFAULT_SCHEDULE = Path("schedule.json")
+
+# ── Fallback durations (minutes) when schedule.json is not available ──
+CATEGORY_DURATIONS = {
+    "SINYAL": 30,
+    "PERSINYALAN_ELEKTRIK": 420,
+    "TELEKOMUNIKASI": 60,
+    "SERAT OPTIK": 60,
+    "PDSE": 420,
+}
+DEFAULT_DURATION = 45  # AXC, WESEL, CATU_DAYA, PINTU_PERLINTASAN, CTS, PTDS, PTLS, PTPP, JPL
+
+MONTHS_ABBR = ["", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+DAYS_ID = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
+
+
+def parse_date_text(text: str) -> datetime:
+    """Parse Indonesian date text like 'Kamis, Jan 09 2025' or 'Kamis, Jan 09 2025 07:00'."""
+    m = re.match(r'\w+, (\w+) (\d{2}) (\d{4})(?: (\d{2}):(\d{2}))?', text)
+    if m:
+        month = {"Jan":1,"Feb":2,"Mar":3,"Apr":4,"Mei":5,"Jun":6,
+                  "Jul":7,"Agu":8,"Sep":9,"Okt":10,"Nov":11,"Des":12}.get(m.group(1), 1)
+        return datetime(int(m.group(3)), month, int(m.group(2)),
+                        int(m.group(4)) if m.group(4) else 7,
+                        int(m.group(5)) if m.group(5) else 0)
+    return datetime.now()
+
+
+def format_timemark(dt: datetime) -> str:
+    return f"{DAYS_ID[dt.weekday()]}, {MONTHS_ABBR[dt.month]} {dt.day:02d} {dt.year} {dt.hour:02d}:{dt.minute:02d}"
+
+# Station → BTP mapping (must match export_pdf_foto.py)
+STATION_TO_BTP = {
+    "BOO": "BTP JAK", "CLT": "BTP JAK",
+    "BJD": "BTP JAK",
+    "BNR": "BOP-BTT",
+    "BOP": "BTP BD", "BTT": "BTP BD", "CGB": "BTP BD",
+    "COS": "BTP BD", "MSG": "BTP BD",
+}
 
 
 # ─── HSV Orange Isolation ───
@@ -253,48 +290,23 @@ def sanitize_segment(text: str) -> str:
     return re.sub(r'[\\/:*?"<>|]', '_', text).strip()
 
 
-def asset_output_dir(root: Path, station: str, asset_type: str, detail: str) -> Path:
-    return root / sanitize_segment(station) / asset_type / sanitize_segment(detail)
+def asset_output_dir(root: Path, btp: str, category: str, identifier: str) -> Path:
+    return root / sanitize_segment(btp) / category / sanitize_segment(identifier)
 
 
 def _folder_key_from_path(rel: Path, input_dir: Path | None = None) -> tuple[str, str, str] | None:
-    """Extract (station, asset_type, detail) from relative path.
-    
-    Handles:
-    1. Full tree input (e.g. 03_photos_export): rel = 'BOO/AXC/ZP 42B BOO/0.jpg' -> ('BOO', 'AXC', 'ZP 42B BOO')
-    2. Single station folder input (e.g. 03_photos_export/BOO): rel = 'AXC/ZP 42B BOO/0.jpg' -> ('BOO', 'AXC', 'ZP 42B BOO')
-    3. Single asset folder input (e.g. 03_photos_export/BOO/AXC/ZP 42B BOO): rel = 'ZP 42B BOO/0.jpg' -> ('BOO', 'AXC', 'ZP 42B BOO')
+    """Extract (btp, category, identifier) from relative path for flat structure.
+
+    Structure: [BTP/]category/identifier/photo.jpg
+    Returns: (btp, category, identifier) or None
     """
     parts = rel.parts
-    if len(parts) >= 4:
-        # Full tree: station/asset_type/detail/photo
-        return parts[0], parts[1], parts[2]
-    elif len(parts) == 3 and input_dir:
-        # Single station folder: asset_type/detail/photo
-        # input_dir = 03_photos_export/BOO -> station = input_dir.name
-        station = input_dir.name
-        asset_type = parts[0]
-        detail = parts[1]
-        return station, asset_type, detail
-    elif len(parts) == 2 and input_dir:
-        # Single asset folder: detail/photo
-        # input_dir = 03_photos_export/BOO/AXC/ZP 42B BOO
-        # input_dir.parent = 03_photos_export/BOO/AXC -> asset_type
-        # input_dir.parent.parent = 03_photos_export/BOO -> station
-        station = input_dir.parent.parent.name
-        asset_type = input_dir.parent.name
-        detail = parts[0]
-        return station, asset_type, detail
-    elif len(parts) == 1 and input_dir:
-        # Single asset folder direct input: photo only (e.g. '0.jpg')
-        station = input_dir.parent.parent.name
-        asset_type = input_dir.parent.name
-        detail = input_dir.name
-        return station, asset_type, detail
+    btp_shift = 1 if parts and parts[0].startswith("BTP") else 0
+    if len(parts) >= 3 + btp_shift:
+        btp = parts[0] if btp_shift else "BTP JAK"
+        return btp, parts[0 + btp_shift], parts[1 + btp_shift]
     return None
 
-
-# (duplicate def removed - see live version below)
 
 
 
@@ -351,15 +363,19 @@ def iso_to_timemark(iso_str: str) -> str:
 
 
 def build_schedule_lookup(schedule_data: dict):
-    """Build {(asset_type, detail, photo_name): (timemark_text, tim_n)}"""
+    """Build {(btp, category, pdf_stem_or_identifier, photo_name): (timemark_text, tim_n)}
+
+    Schedule v3 format: btp/category/[identifier]/photos
+    Falls back to pdf_stem for v2.
+    """
     lookup = {}
     for sched in schedule_data.get("schedules", []):
         tim_n = sched.get("tim", 1)
-        for asset in sched.get("assets", []):
-            atype = asset["type"]
-            detail = asset["detail"]
-            for pname, iso_ts in asset.get("photos", {}).items():
-                lookup[(atype, detail, pname)] = (iso_to_timemark(iso_ts), tim_n)
+        btp = sched.get("btp", "BTP JAK")
+        category = sched.get("category", "UNKNOWN")
+        identifier = sched.get("identifier") or sched.get("pdf_stem", "")
+        for pname, iso_ts in sched.get("photos", {}).items():
+            lookup[(btp, category, identifier, pname)] = (iso_to_timemark(iso_ts), tim_n)
     return lookup
 
 
@@ -482,77 +498,74 @@ def main():
     for src in all_jpgs:
         rel = src.relative_to(input_dir)
         parts = rel.parts
-        if len(parts) >= 4:
-            # Full tree: station/asset_type/detail/photo
-            station, asset_type, detail, photo_name = parts[0], parts[1], parts[2], parts[3]
-            asset_key = (asset_type, detail, photo_name)
-        elif len(parts) == 3:
-            # Single station folder: asset_type/detail/photo
-            asset_type, detail, photo_name = parts[0], parts[1], parts[2]
-            station = None  # Will be determined from input_dir
-            asset_key = (asset_type, detail, photo_name)
-        elif len(parts) == 2:
-            # Single asset folder: detail/photo
-            detail, photo_name = parts[0], parts[1]
-            asset_type = None
-            station = None
-            asset_key = None
+        # Flat structure: [BTP/]category/identifier/photo.jpg
+        btp_shift = 1 if parts and parts[0].startswith("BTP") else 0
+        if len(parts) >= 3 + btp_shift:
+            btp = parts[0] if btp_shift else "BTP JAK"
+            category = parts[0 + btp_shift]
+            identifier = parts[1 + btp_shift]
+            photo_name = parts[2 + btp_shift]
+            asset_key = (btp, category, identifier, photo_name)
         else:
-            asset_type, detail, photo_name, asset_key, station = None, None, None, None, None
+            btp, category, identifier, photo_name, asset_key = "BTP JAK", "UNKNOWN", "", "", None
 
+        tim_n = 1
         if schedule_lookup and asset_key:
             timemark_text, tim_n = schedule_lookup.get(asset_key, (date_text, 1))
-            # Need to determine station for output path
-            fkey = _folder_key_from_path(rel, input_dir)
-            if fkey:
-                station = fkey[0]
-            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), station or "UNKNOWN", asset_type or "Misc", detail or "Misc")
-            # Collect tim_mapping for fallback (key: relative path without Tim_N prefix)
-            tim_mapping[str(rel)] = tim_n
+            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), btp, category, identifier)
         else:
-            # Collect tim_mapping for fallback (key: relative path without Tim_N prefix)
-            tim_mapping[str(rel)] = 1
-            fkey = _folder_key_from_path(rel, input_dir)
-            if fkey:
-                station = fkey[0]
-            dst_dir = output_dir / asset_output_dir(Path(""), station or "UNKNOWN", asset_type or "Misc", detail or "Misc") if asset_type and detail else output_dir
+            # Fallback: compute time offset from photo name (0/50/100) * category duration
+            pct = 0
+            name_stem = Path(photo_name).stem
+            if name_stem == "50":
+                pct = 50
+            elif name_stem == "100":
+                pct = 100
+            duration = CATEGORY_DURATIONS.get(category.upper(), DEFAULT_DURATION)
+            offset_minutes = int(pct * duration / 100)
+            base_dt = parse_date_text(date_text)
+            photo_dt = base_dt + timedelta(minutes=offset_minutes)
+            timemark_text = format_timemark(photo_dt)
+            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), btp, category, identifier)
+        tim_mapping[str(rel)] = tim_n
         dst = dst_dir / src.name
 
         fkey = _folder_key_from_path(rel, input_dir)
         consensus_gy1 = folder_consensus.get(fkey) if fkey else None
 
         try:
-            stage = process_image(src, dst, date_text, args.y_override, schedule_lookup, asset_key, consensus_gy1)
+            stage = process_image(src, dst, timemark_text, args.y_override, schedule_lookup, asset_key, consensus_gy1)
             ok += 1
             if stage in stage_counts:
                 stage_counts[stage] += 1
             stage_details.append({
-                "file": str(rel), 
-                "stage": stage, 
-                "asset_type": asset_type, 
-                "detail": detail, 
-                "photo": photo_name, 
+                "file": str(rel),
+                "stage": stage,
+                "asset_type": category,
+                "detail": identifier,
+                "photo": photo_name,
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
-            # Emit JSON for SSE real-time dashboard
             print(json.dumps({
                 "type": "stage",
                 "file": str(rel),
                 "stage": stage,
-                "asset_type": asset_type,
-                "detail": detail,
+                "asset_type": category,
+                "detail": identifier,
                 "photo": photo_name
             }), flush=True)
         except Exception as e:
             failed += 1
             failed_files.append({
-                "file": str(rel), 
-                "asset_type": asset_type, 
-                "detail": detail, 
-                "photo": photo_name, 
-                "reason": str(e), 
+                "file": str(rel),
+                "asset_type": category,
+                "detail": identifier,
+                "photo": photo_name,
+                "reason": str(e),
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
+
+
 
     logs_dir = Path("logs")
     logs_dir.mkdir(parents=True, exist_ok=True)
