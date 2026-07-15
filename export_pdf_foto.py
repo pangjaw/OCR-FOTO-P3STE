@@ -170,7 +170,7 @@ def detect_category_from_filename(pdf_name: str) -> str:
         return "CATUDAYA"
 
     # ── WESEL ── (before PDSE: WESEL filenames may contain "elektrik" but are not PDSE)
-    if "WESEL" in name and "PERSINYALAN" not in name:
+    if ("WESEL" in name or "POINT LOCK" in name or "PERINTANG" in name or "PELALAU" in name) and "PERSINYALAN" not in name:
         return "WESEL"
 
     # ── SINYAL / PERAGA SINYAL ── (before PDSE to avoid "elektrik" clash)
@@ -284,6 +284,8 @@ def detect_asset_type(code: str, title: str) -> str:
     if code.startswith("JPL"):
         return "PINTU_PERLINTASAN"
     if code.startswith("TLK") or code.startswith("TWR") or code.startswith("OTB"):
+        if "BANGUNAN" in upper or "DATA LOGGER" in upper:
+            return "PDSE"
         return "TELEKOMUNIKASI"
     if code.startswith("CTC") or "CTC" in upper or "CTS" in upper or "DALWAS" in upper:
         return "CTS"
