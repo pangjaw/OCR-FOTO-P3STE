@@ -1,6 +1,6 @@
 # 🧪 Catatan Hasil Uji Coba (Test Results)
 
-Catatan hasil pengetesan script `edit_timemark.py` dan `export_pdf_foto.py` dari waktu ke waktu.
+> Kembali ke [[Dashboard]]
 
 ---
 

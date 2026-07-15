@@ -38,7 +38,11 @@ Koreksi tanggal watermark GPS Map Camera pada foto dokumentasi kerja secara batc
 ## Dokumentasi
 | File | Untuk | Isi |
 |------|-------|-----|
-| [setup.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/setup.md) | Manusia | Instalasi, dependensi, cara menjalankan |
-| [Dashboard.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Dashboard.md) | Agent + Manusia | Status tracker, daily logs, quick commands |
-| [AGENTS.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/AGENTS.md) | Agent | Function reference, detection logic, debugging patterns |
+| [[setup.md]] | Manusia | Instalasi, dependensi, cara menjalankan |
+| [[Dashboard.md]] | Agent + Manusia | Status tracker, daily logs, quick commands |
+| [[AGENTS.md]] | Agent | Function reference, detection logic, debugging patterns |
 | [[Notes/Daily/\|Daily Logs]] | Catatan | Perubahan harian detail |
+| [[system_architecture_gabung foto ke pdf\|Arsitektur Merge PDF]] | Manusia | Flowchart & komponen merge_pdf_foto.py |
+| [[Notes/Test Results\|Hasil Test]] | Catatan | Riwayat pengujian batch & unit |
+| [[Data Acuan Tenaga Perawatan Gabungan\|Data Acuan]] | Referensi | Standar waktu perawatan per aset |
+

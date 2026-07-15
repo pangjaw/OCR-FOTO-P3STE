@@ -1,6 +1,7 @@
 # ADR-008: Fix 36 Missing Funcloc Photos
 
 > **Status:** Pending | **Date:** 2026-07-14
+> ← [[Notes/Decisions/ADR-003 - PDF Layout Parsing and Output Structure|ADR-003]] | [[Dashboard]]
 
 ## Problem
 
@@ -41,8 +42,8 @@
 
 ## Files to Modify
 
-- [export_pdf_foto.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/export_pdf_foto.py) — fix export logic
-- [merge_pdf_foto.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/merge_pdf_foto.py) — sudah ok (BTP cross-search), tapi judul foto masih pendek
+- `export_pdf_foto.py` — fix export logic
+- `merge_pdf_foto.py` — sudah ok (BTP cross-search), tapi judul foto masih pendek
 
 ## Estimated Impact
 

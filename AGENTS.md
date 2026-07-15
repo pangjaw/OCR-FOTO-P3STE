@@ -5,11 +5,11 @@
 ## Quick References
 | File | What It Does |
 |------|-------------|
-| [README.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/README.md) | Tujuan project, batasan |
-| [setup.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/setup.md) | Instalasi, cara menjalankan |
-| [Dashboard.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Dashboard.md) | Status tracker, daily logs |
-| [Notes/Decisions/](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Notes/Decisions/) | ADR |
-| [Notes/Test Results.md](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/Notes/Test%20Results.md) | Riwayat pengujian |
+| [[README.md]] | Tujuan project, batasan |
+| [[setup.md]] | Instalasi, cara menjalankan |
+| [[Dashboard.md]] | Status tracker, daily logs |
+| [[Notes/Decisions/\|Notes/Decisions/]] | ADR |
+| [[Notes/Test Results\|Test Results]] | Riwayat pengujian |
 
 ## Folder Structure
 ```
@@ -50,7 +50,7 @@ export_pdf_foto.py     extract_pdf_dates.py
 
 ## Python Script Reference
 
-### 1. [export_pdf_foto.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/export_pdf_foto.py) — Ekstraksi Foto
+### 1. `export_pdf_foto.py` — Ekstraksi Foto
 **Input:** `01_pdf_source/*.pdf` → **Output:** `03_photos_export/{station}/{asset_type}/{detail}/`
 
 | Function | Line | Purpose |
@@ -74,15 +74,16 @@ export_pdf_foto.py     extract_pdf_dates.py
 
 ---
 
-### 2. [extract_pdf_dates.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/extract_pdf_dates.py) — Ekstraksi Tanggal
-**Input:** `02_pdf_target/*.pdf` → **Output:** `date.txt` per folder aset
+### 2. `extract_pdf_dates.py` — Ekstraksi Tanggal
+**Input:** `02_pdf_target/*.pdf` + scan `03_photos_export/` → **Output:** `date.txt` per folder aset
 
 | Function | Line | Purpose |
 |----------|------|---------|
 | `parse_date_indonesian(text)` | 38-80 | Regex 3 pola: DD Bulan YYYY, YYYY-MM-DD, DD-MM-YYYY |
 | `format_date_target(dt)` | 83-86 | `"Senin, Jan 06 2025"` (format singkat untuk watermark) |
 | `extract_date_from_pdf(pdf_path)` | 89-112 | Baca halaman 1 pdfplumber → parse date |
-| `main()` | 115-274 | Loop PDF → extract date → tulis `date.txt` per folder |
+| `build_folder_lookup(output_root)` | 170-200 | **NEW**: Pre-scan `03_photos_export/{btp}/{category}/{identifier}/` → build `{(category, identifier): [path1, ...]}` dict. Only folders with .jpg files. |
+| `main()` | 203- | Core: pre-scan lookup→loop PDF→extract date+funclocs→match via lookup→write `date.txt` |
 
 **KEL1 vs KEL2 date writing:**
 - **KEL1** (WESEL, SINYAL, AXC): Uses `extract_all_funclocs()` → writes `date.txt` per funcloc folder
@@ -92,7 +93,7 @@ export_pdf_foto.py     extract_pdf_dates.py
 
 ---
 
-### 3. [scheduler.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/scheduler.py) — Penjadwalan Tim
+### 3. `scheduler.py` — Penjadwalan Tim
 **Input:** `02_pdf_target/*.pdf` + 3 JSON mapping → **Output:** `schedule.json`
 
 | Function | Line | Purpose |
@@ -112,7 +113,7 @@ export_pdf_foto.py     extract_pdf_dates.py
 
 ---
 
-### 4. [edit_timemark_ide1.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/edit_timemark_ide1.py) — Edit Watermark (Core)
+### 4. `edit_timemark_ide1.py` — Edit Watermark (Core)
 **Input:** `03_photos_export/...` → **Output:** `04_photos_edited/...`
 
 | Feature | Detail |
@@ -133,7 +134,9 @@ export_pdf_foto.py     extract_pdf_dates.py
 
 ---
 
-### 5. [merge_pdf_foto.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/merge_pdf_foto.py) — Gabung PDF
+### 5. `merge_pdf_foto.py` — Gabung PDF
+
+> Lihat juga: [[system_architecture_gabung foto ke pdf\|Arsitektur Merge PDF]]
 **Input:** `02_pdf_target/*.pdf` + `04_photos_edited/` → **Output:** `05_pdf_merged/*.pdf`
 
 | Function | Line | Purpose |
@@ -148,7 +151,7 @@ export_pdf_foto.py     extract_pdf_dates.py
 
 ---
 
-### 6. [app.py](file:///c:/Users/LAPTOPBOO/Documents/Server/OCR-FOTO-P3STE/app.py) — Flask Web Dashboard
+### 6. `app.py` — Flask Web Dashboard
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
@@ -169,7 +172,7 @@ export_pdf_foto.py     extract_pdf_dates.py
 ---
 
 ## Critical Rules
-1. **Read Before Working:** Baca AGENTS.md + Dashboard.md sebelum edit/propose.
+1. **Read Before Working:** Baca [[AGENTS.md]] + [[Dashboard.md]] sebelum edit/propose.
 2. **Update After Working:** Update Dashboard.md + daily log jika status task berubah. **WAJIB setiap perbaikan**.
 3. **Daily Logs:** Hari baru → buat `Notes/Daily/YYYY-MM-DD.md`.
 4. **Debug & Fix Rule (CRITICAL):** Jika user minta "debug ocr dan stage nya" — **HANYA** tampilkan hasil pembacaan + jelaskan stage terpilih. JANGAN fix kode sebelum konfirmasi user.
@@ -177,9 +180,16 @@ export_pdf_foto.py     extract_pdf_dates.py
 6. **Git:** Hanya push kalau diperintah user (`git add . && git commit -m "<type>: <subject>"`).
 
 ## ⚠️ Known Issues (2026-07-15)
-- **17/291 folders missing date.txt**: Edge cases — BTP mismatch (W27A BOO→W27A BOP) atau identifier di PDF tidak match folder. **Mitigasi**: `edit_timemark_ide1.py` fallback ke tanggal hari ini. Tidak kritis selama 274/291 (94%) terisi.
-
-
+- **13/291 folders missing date.txt**: Orphaned folders — identifier "CLT" collision across CATUDAYA/CTS/PDSE/PTDS/PTLS, plus 8 SERAT OPTIK/SINYAL/WESEL edge cases. No matching PDF in `02_pdf_target` → structural gap (2026 vs 2025 docs). `edit_timemark_ide1.py` fallback → watermark pakai tanggal hari ini. Tidak kritis.
+- **FIXED**: `extract_pdf_dates.py` rewrite pakai pre-scan `(category, identifier)` lookup. Result: **278/291 (95.5%)**.
+- **13 Orphan Root Causes** (user verified 2026-07-15):
+  - #1-2: KEL2 multi-funcloc di 1 PDF → funcloc baris kedua tidak terbaca. **User akan rename file `01_pdf_source`**.
+  - #3: ZP 41B typo fix di export → `ZP 41 BOO`, tapi extract_identifier produce "ZP 41B". Perlu exception.
+  - #4-8: "CLT" collision — 5 folder beda category, identifier sama. Perlu investigasi.
+  - #9: `JPL 105` salah penamaan → seharusnya `JPL 07 BOP-BTT`. Bug di `extract_identifier` JPL numbered.
+  - #10: `ER SINYAL CLT` seharusnya match → perlu debug.
+  - #11-12: JPL 07/JPL BNR menyatu di 1 file → pending user decision.
+  - #13: `J12 MSG` → perlu debug.
 
 ## Debugging Patterns
 ```bash
@@ -200,8 +210,12 @@ python -c "from edit_timemark_ide1 import preprocess_for_guide; from PIL import 
 ```
 
 ## Key ADR & Failed Experiments
-- **ADR-001:** Pillow + Numpy, bukan OpenCV
-- **ADR-002:** Ekstraksi gambar PDF via pypdf (original images)
-- **ADR-003:** Aturan parsing layout PDF & struktur output
+- **[[Notes/Decisions/ADR-001 - Pillow and Numpy instead of OpenCV\|ADR-001]]:** Pillow + Numpy, bukan OpenCV
+- **[[Notes/Decisions/ADR-002 - PDF Image Export via pypdf and pdfplumber\|ADR-002]]:** Ekstraksi gambar PDF via pypdf (original images)
+- **[[Notes/Decisions/ADR-003 - PDF Layout Parsing and Output Structure\|ADR-003]]:** Aturan parsing layout PDF & struktur output
 - **Gagal:** PaddleOCR (oneDNN bug Windows), EasyOCR preprocessing
 - **Terbaik:** Tesseract `--psm 7`
+
+---
+
+> Kembali ke [[Dashboard.md]]

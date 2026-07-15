@@ -13,6 +13,8 @@ aliases:
 
 # Data Acuan Tenaga Perawatan Fasilitas Operasi Kereta Api
 
+> Kembali ke [[Dashboard]] | Lihat juga: [[AGENTS.md]] (`scheduler.py` → `get_waktu()`)
+
 > [!abstract] **Sumber**
 > - **Sinyal:** `1.a. Pedoman Perawatan Persinyalan.pdf` (STE-PR-01, Rev.5, Mei 2019)
 > - **Telekomunikasi:** `2.a. Pedoman Perawatan Telekomunikasi.pdf` (STE-PR-02, Rev.3, Juli 2023)

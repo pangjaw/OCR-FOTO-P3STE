@@ -4,6 +4,8 @@
 - **Tanggal:** 2026-07-08
 - **Pembuat:** Antigravity / User
 
+> ← [[Notes/Decisions/ADR-001 - Pillow and Numpy instead of OpenCV|ADR-001]] | [[Dashboard]] | [[Notes/Decisions/ADR-003 - PDF Layout Parsing and Output Structure|ADR-003 →]]
+
 ## Konteks & Latar Belakang
 Program perlu mengekstrak foto dokumentasi yang tertanam di halaman PDF. Jika menggunakan library rendering halaman penuh, resolusi gambar hasil ekstraksi berpotensi terkompresi atau terpotong kasar, yang merusak orisinalitas foto dokumentasi kerja.
 

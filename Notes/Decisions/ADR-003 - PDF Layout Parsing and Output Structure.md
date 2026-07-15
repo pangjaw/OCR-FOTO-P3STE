@@ -4,6 +4,8 @@
 - **Tanggal:** 2026-07-07
 - **Pembuat:** Antigravity / User
 
+> ← [[Notes/Decisions/ADR-002 - PDF Image Export via pypdf and pdfplumber|ADR-002]] | [[Dashboard]] | [[Notes/Decisions/ADR-008-fix-36-missing-funcloc|ADR-008 →]]
+
 ## Konteks & Latar Belakang
 Program `export_pdf_foto.py` perlu memilah halaman PDF, mengenali judul aset, mengekstrak foto yang sesuai dengan label persentase (Foto 0%, 50%, 100%), dan menyimpannya secara otomatis ke folder yang terstruktur dengan nama lokasi yang bersih dari karakter ilegal Windows.
 

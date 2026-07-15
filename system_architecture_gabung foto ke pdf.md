@@ -1,6 +1,8 @@
 # 🏛️ Arsitektur & Diagram Sistem Kerja `merge_pdf_foto.py`
 
-Dokumen ini menjelaskan alur kerja dan arsitektur pemrosesan dari skrip [merge_pdf_foto.py](file:///c:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/merge_pdf_foto.py) yang digunakan untuk menggabungkan foto-foto dokumentasi baru (format 2026) ke dalam berkas laporan PDF lama (format 2025).
+> Kembali ke [[Dashboard]] | Lihat juga: [[AGENTS.md]]
+
+Dokumen ini menjelaskan alur kerja dan arsitektur pemrosesan dari skrip `merge_pdf_foto.py` yang digunakan untuk menggabungkan foto-foto dokumentasi baru (format 2026) ke dalam berkas laporan PDF lama (format 2025).
 
 ---
 
