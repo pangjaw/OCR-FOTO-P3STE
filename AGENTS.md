@@ -56,12 +56,12 @@ export_pdf_foto.py     extract_pdf_dates.py
 | Function | Line | Purpose |
 |----------|------|---------|
 | `AssetRow` dataclass | 19-27 | Struct: page_number, code, title, asset_type, detail, top, station |
-| `detect_asset_type(code, title)` | 92-100 | AXL→AXC, WSL→WESEL, SIN→SINYAL, CDA→CATU_DAYA, JPL→PINTU_PERLINTASAN, TLK/TWR→TELEKOMUNIKASI, TRA/INB→PERSINYALAN_ELEKTRIK |
-| `detect_category_from_filename(name)` | 159-200 | Detect WESEL/SINYAL/AXC/PDSE/CTS/PTLS/CATUDAYA/SERAT OPTIK/PTPP/JPL. "SINYAL" but NOT "PERSINYALAN" |
+| `detect_asset_type(code, title)` | 92-100 | AXL→AXC, WSL→WESEL, SIN→SINYAL, CDA→CATU_DAYA, JPL→PINTU_PERLINTASAN, TLK/TWR/OTB→TELEKOMUNIKASI, **INB→PDSE, TRA→PDSE/SERAT OPTIK/PTLS** |
+| `detect_category_from_filename(name)` | 159-210 | Detect WESEL/SINYAL/AXC/PDSE/CTS/PTLS/CATUDAYA/SERAT OPTIK/PTPP/JPL. "SINYAL" but NOT "PERSINYALAN". **RADIO BASESTATION/WAYSTATION/SISTEM WAYSTATION→PTLS** |
 | `extract_detail(title, asset_type)` | 103-126 | Parse nama detail aset (e.g. "ZP 22A CLT") |
 | `extract_asset_rows(page, sap_mapping)` | 129-166 | Cari baris aset di halaman PDF via pdfplumber word extraction |
 | `extract_all_funclocs(page_text)` | ~550 | Ekstrak SEMUA funcloc dari halaman (regex: (SIN|WSL|AXL|OTB|OTG|TEK|TRA|TLK|TWR|PDSE|PTDS|PTLS|JPL|PTPP|CTS|CATUDAYA)\\d+...) |
-| `extract_identifier(funcloc_text, category)` | 503-600 | Extract folder identifier. Auto-detect category from funcloc prefix (WSL→WESEL, SIN→SINYAL, AXL→AXC). WESEL: "W23A BOO", AXC: "ZP 201B MSG", SINYAL: "J10 BOO"/"JL42A BOO"/"B101 CLT-BOO" |
+| `extract_identifier(funcloc_text, category)` | 503-610 | Extract folder identifier. Auto-detect category from funcloc prefix. WESEL: "W23A BOO", AXC: "ZP 201B MSG", SINYAL: "J10 BOO"/"JL42A BOO", **JPL: named JPL ("JPL BNR BOP-BTT") + numbered ("JPL 28 BOO-CLT")** |
 | `extract_station_from_description(desc, sap_mapping, funcloc)` | 189-228 | Extrak station code dari desc/FLoc. Priority: SAP mapping → exact code → dash-split → name map. `CODE_ALIASES = {"CS": "COS"}` |
 | `original_images_by_name(reader, page_index)` | 179-184 | Ambil image object asli dari pypdf |
 | `export_multi_row(pdf, reader, ...)` | **644-790** | **NEW**: Multi-row export (WESEL/SINYAL/AXC). Ekstrak words→cari funcloc positions→group images by top clustering→map ke funcloc terdekat→export 3 foto per row |
@@ -97,8 +97,12 @@ export_pdf_foto.py     extract_pdf_dates.py
 | `load_data_acuan(path)` | 75-78 | `data_acuan_tenaga_gabungan.json` → dict |
 | `load_sap_mapping(path)` | 80-85 | `sap_station_mapping.json` → dict `{funcloc: station}` |
 | `get_waktu(asset_type, detail, mapping, acuan)` | 81-87 | Lookup waktu. Default: AXC/WESEL=45, SINYAL=30, CATU_DAYA=45, PINTU_PERLINTASAN=45, TELEKOM=60-120, PERSINYALAN=420 |
-| `build_schedule(...)` | 109-203 | Core: urut PDF → hitung jam → rotasi Tim 1/2 |
+| `build_schedule(...)` | 109-203 | Core: KEL1/KEL2 grouping + multi-funcloc scheduling |
 | `_parse_date(text)` | 31-58 | Parse "Rabu, Jul 08 2026" → date object |
+
+**KEL1 vs KEL2:**
+- **KEL1** (WESEL, SINYAL, AXC): 1 schedule entry per funcloc. Foto per funcloc = 3 (0/50/100). Uses `extract_all_funclocs()`.
+- **KEL2** (lainnya): 1 schedule entry per identifier. 3 foto regardless of funcloc count.
 
 **Overflow rule:** Aset mulai < 18:00 tetap selesai. File berikutnya pindah Tim/reset jam. Tim > max → reset ke Tim 1, geser hari.
 
@@ -162,11 +166,15 @@ export_pdf_foto.py     extract_pdf_dates.py
 
 ## Critical Rules
 1. **Read Before Working:** Baca AGENTS.md + Dashboard.md sebelum edit/propose.
-2. **Update After Working:** Update Dashboard.md jika status task berubah.
+2. **Update After Working:** Update Dashboard.md + daily log jika status task berubah. **WAJIB setiap perbaikan**.
 3. **Daily Logs:** Hari baru → buat `Notes/Daily/YYYY-MM-DD.md`.
 4. **Debug & Fix Rule (CRITICAL):** Jika user minta "debug ocr dan stage nya" — **HANYA** tampilkan hasil pembacaan + jelaskan stage terpilih. JANGAN fix kode sebelum konfirmasi user.
 5. **Auto-Update Obsidian:** Setiap update kode/script/config, update Dashboard.md + daily log.
 6. **Git:** Hanya push kalau diperintah user (`git add . && git commit -m "<type>: <subject>"`).
+
+## ⚠️ Known Issues (2026-07-15)
+- **date.txt belum lengkap untuk folder KEL1 baru**: `extract_pdf_dates.py` pakai `extract_funcloc_from_text` (return first match only). Folder KEL1 baru (WESEL/SINYAL/AXC per-funcloc) tidak punya `date.txt` → watermark fallback ke tanggal hari ini. **Fix**: update ke `extract_all_funclocs` untuk multi-funcloc date writing.
+
 
 ## Debugging Patterns
 ```bash

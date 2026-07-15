@@ -33,15 +33,22 @@ Script references, detection logic, debugging → lihat [AGENTS.md](file:///c:/U
 - [x] **WESEL/SINYAL/AXC → multi-row export** (1 PDF = 4-5 baris foto, funcloc per baris)
 
 ### Batch Results
-- **2026-07-14 17:48 WIB** — Full pipeline clean run (BTP cross-search + no-photo fallback):
-  - Step 1: **5,340 foto** diekspor dari semua PDF 2026
-  - Step 2: **852 sukses, 0 gagal** (stage_1c: 820, consensus: 5, fallback: 27)
-  - Step 3: schedule.json dibuat (165 jobs)
-  - Step 4: — (digabung step 2)
-  - Step 5: **165 PDF merged, 0 failed, 0 skipped** ⭐ (02=165, 05=165 — match!)
+- **2026-07-15 08:50 WIB** — Full pipeline re-run (KEL1/KEL2 multi-funcloc + UNKNOWN elimination):
+  - Step 1: **1,095 foto** diekspor, **UNKNOWN = 0** ⭐
+  - Step 2: **133 date.txt** updated
+  - Step 3: **351 schedule entries** (was 159, +120%) — KEL1 multi-funcloc
+  - Step 4: **873/873 sukses, 0 gagal** (stage_1c: 833, consensus: 5, fallback: 35)
+  - Step 5: **165 PDF merged, 0 failed** ⭐
 - Fix yang diterapkan:
-  - **BTP cross-search**: merge sekarang cari foto di semua folder BTP (JAK + BD) kalau tidak ketemu di BTP spesifik
-  - **No-photo fallback**: PDF yang tidak punya foto tetap di-copy ke output, bukan di-skip
+  - **UNKNOWN elimination**: INB→PDSE, TRA→PDSE/SERAT OPTIK/PTLS, RADIO/WAYSTATION→PTLS
+  - **KEL1 multi-funcloc**: WESEL/SINYAL/AXC = 1 entry per funcloc (timestamp unik)
+  - **KEL2 single identifier**: lainnya = 1 entry per folder
+  - **JPL BNR parsing**: named JPL ("BNR BOP - BTT") properly extracted
+  - **normalize_jpl_identifier**: spaced dash handling ("BOP - BTT" → "BOP-BTT")
+- ⚠️ **Known issue**: `date.txt` belum lengkap untuk folder KEL1 baru → watermark fallback ke tanggal hari ini. Perlu update `extract_pdf_dates.py` pakai `extract_all_funclocs`.
+- **2026-07-14 17:48 WIB** — Full pipeline clean run (BTP cross-search + no-photo fallback):
+  - Step 1: 5,340 foto, Step 2: 852 sukses, Step 5: 165 PDF merged
+  - BTP cross-search + no-photo fallback
 - **2026-07-14 16:35 WIB** — WESEL/SINYAL/AXC multi-row support (sebelumnya)
 
 ---
@@ -68,6 +75,7 @@ python merge_pdf_foto.py --schedule schedule.json       # Step 5
 
 | Tanggal | Ringkasan Update | File Terkait |
 |---------|------------------|--------------|
+| **2026-07-15** | KEL1/KEL2 multi-funcloc scheduler (159→351 entries). UNKNOWN elimination (INB/TRA/RADIO/WAYSTATION→proper types). JPL BNR parsing. Full clean run: 1095 foto, 873 edit, 165 PDF. | `scheduler.py`, `export_pdf_foto.py` |
 | **2026-07-14** | Full pipeline fix: OTB→TELEKOM, BANGUNAN→PDSE, MULTIPLEX→PTLS, BOP-BTT split. Clean run: 474 foto, 156 edit, 79 PDF. | `export_pdf_foto.py`, `merge_pdf_foto.py` |
 | **2026-07-13** | Station-based folder hierarchy (BREAKING CHANGE). 7 asset types full support. Dead code cleanup. | Semua 6 script + 3 JSON |
 | **2026-07-12** | Browser freeze fix (limit 100 files). EventSource reconnect fix. | `app.py`, `index.html` |
