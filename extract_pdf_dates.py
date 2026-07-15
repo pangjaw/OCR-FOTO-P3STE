@@ -14,7 +14,7 @@ import pdfplumber
 from export_pdf_foto import (
     ensure_dir, sanitize_segment,
     detect_category_from_filename,
-    extract_identifier, extract_funcloc_from_text,
+    extract_identifier, extract_funcloc_from_text, extract_all_funclocs,
     STATION_TO_BTP, STATION_NAME_TO_CODE,
 )
 
@@ -210,57 +210,79 @@ def main() -> int:
         category = detect_category_from_filename(pdf_path.name)
         print(f"  [INFO] Category={category}")
 
-        # ── Read Funcloc from page 1 → extract identifier ──
-        identifier = None
+        # ── Read ALL funclocs from page 1 ──
+        MULTI_ROW_CATEGORIES = {"SINYAL", "WESEL", "AXC"}
+        identifiers = []
         btp = "BTP JAK"
         with pdfplumber.open(str(pdf_path)) as pdf:
             page1_text = pdf.pages[0].extract_text() or ""
-            funcloc_line = extract_funcloc_from_text(page1_text)
-            if funcloc_line:
-                identifier = extract_identifier(funcloc_line, category)
-                if identifier:
-                    print(f"  [INFO] Funcloc: '{funcloc_line.strip()}' -> identifier: '{identifier}'")
+            all_funclocs = extract_all_funclocs(page1_text)
+            
+            if category in MULTI_ROW_CATEGORIES and all_funclocs:
+                # KEL1: extract identifier per funcloc
+                for fl in all_funclocs:
+                    ident = extract_identifier(fl, category)
+                    if ident:
+                        identifiers.append(ident)
+                        print(f"  [INFO] Funcloc: '{fl.strip()}' -> identifier: '{ident}'")
+            elif all_funclocs:
+                # KEL2: use first funcloc only
+                ident = extract_identifier(all_funclocs[0], category)
+                if ident:
+                    identifiers.append(ident)
+                    print(f"  [INFO] Funcloc: '{all_funclocs[0].strip()}' -> identifier: '{ident}'")
         
-        if not identifier:
+        if not identifiers:
             print(f"  [SKIP] Tidak dapat mengekstrak identifier dari Funcloc di: {pdf_path.name}")
             skipped_no_match += 1
             continue
 
-        # ── Determine BTP ──
-        if identifier.startswith("JPL "):
-            codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
-            if codes:
-                station = codes[0].upper()
-                if station == "CS": station = "COS"
-                btp = STATION_TO_BTP.get(station, "BTP JAK")
-        elif identifier.startswith("ER ") or identifier.startswith("RUANG "):
-            parts = identifier.split()
-            code = STATION_NAME_TO_CODE.get(parts[-1]) if parts else None
-            if not code: code = "BOO"
-            if code == "CS": code = "COS"
-            btp = STATION_TO_BTP.get(code, "BTP JAK")
-        else:
-            clean = identifier.replace("RADIO_", "")
-            btp = STATION_TO_BTP.get(clean, "BTP JAK")
+        for identifier in identifiers:
+            # ── Determine BTP ──
+            if identifier.startswith("JPL "):
+                codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
+                if codes:
+                    station = codes[0].upper()
+                    if station == "CS": station = "COS"
+                    btp = STATION_TO_BTP.get(station, "BTP JAK")
+            elif identifier.startswith("ER ") or identifier.startswith("RUANG "):
+                parts = identifier.split()
+                code = STATION_NAME_TO_CODE.get(parts[-1]) if parts else None
+                if not code: code = "BOO"
+                if code == "CS": code = "COS"
+                btp = STATION_TO_BTP.get(code, "BTP JAK")
+            else:
+                clean = identifier.replace("RADIO_", "")
+                btp = STATION_TO_BTP.get(clean, "BTP JAK")
 
-        # ── Find exact output folder ──
-        target_dir = output_root / sanitize_segment(btp) / category / sanitize_segment(identifier)
-        if not target_dir.exists():
-            print(f"  [SKIP] Folder target tidak ditemukan: {target_dir}")
-            skipped_no_match += 1
-            continue
+            # ── Find exact output folder (with BTP cross-search) ──
+            target_dir = output_root / sanitize_segment(btp) / category / sanitize_segment(identifier)
+            if not target_dir.exists():
+                # Cross-search: try all BTP folders
+                all_btps = sorted(set(STATION_TO_BTP.values()))
+                found = False
+                for try_btp in all_btps:
+                    candidate = output_root / sanitize_segment(try_btp) / category / sanitize_segment(identifier)
+                    if candidate.exists():
+                        target_dir = candidate
+                        found = True
+                        break
+                if not found:
+                    print(f"  [SKIP] Folder target tidak ditemukan: {target_dir}")
+                    skipped_no_match += 1
+                    continue
 
-        # Write date.txt
-        date_file = target_dir / "date.txt"
-        try:
-            if os.environ.get("OVERWRITE", "1") == "0" and date_file.exists():
-                print(f"  [SKIP] {target_dir.relative_to(output_root)}/date.txt sudah ada (overwrite=off)")
-                continue
-            date_file.write_text(formatted_date, encoding="utf-8")
-            print(f"  [UPDATE] {target_dir.relative_to(output_root)}/date.txt -> '{formatted_date}'")
-            updated_folders += 1
-        except Exception as e:
-            print(f"  [ERROR] Gagal menulis ke {date_file}: {e}")
+            # Write date.txt
+            date_file = target_dir / "date.txt"
+            try:
+                if os.environ.get("OVERWRITE", "1") == "0" and date_file.exists():
+                    print(f"  [SKIP] {target_dir.relative_to(output_root)}/date.txt sudah ada (overwrite=off)")
+                    continue
+                date_file.write_text(formatted_date, encoding="utf-8")
+                print(f"  [UPDATE] {target_dir.relative_to(output_root)}/date.txt -> '{formatted_date}'")
+                updated_folders += 1
+            except Exception as e:
+                print(f"  [ERROR] Gagal menulis ke {date_file}: {e}")
 
     print(f"\nSelesai. Berhasil memperbarui {updated_folders} file date.txt.")
     if skipped_no_match:
