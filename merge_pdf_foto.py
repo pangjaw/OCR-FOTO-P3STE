@@ -294,6 +294,18 @@ def determine_btp_from_identifier(identifier: str) -> str:
 
 # ── Core Merge ──────────────────────────────────────────────────
 
+def _iter_tim_dirs(photos_dir: Path, pdf_tim: int | None):
+    """Yield Tim_N directories to search, prioritizing schedule tim."""
+    if pdf_tim:
+        d = photos_dir / f"Tim_{pdf_tim}"
+        if d.is_dir():
+            yield d
+    if photos_dir.exists():
+        for d in sorted(photos_dir.iterdir()):
+            if d.is_dir() and d.name.startswith("Tim_") and (not pdf_tim or d.name != f"Tim_{pdf_tim}"):
+                yield d
+
+
 def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path,
                  input_root: Path | None = None, schedule_lookup: dict | None = None,
                  sap_mapping: dict | None = None) -> str:
@@ -365,7 +377,35 @@ def process_pdf(pdf_path: Path, photos_dir: Path, output_dir: Path,
     for identifier, btp, photo_category in asset_entries:
         found = False
         
-        # Search order: Tim from schedule → all Tim_N dirs → root
+        # WESEL: use glob to find base + date-suffixed folders
+        if photo_category == "WESEL":
+            for tim_dir in _iter_tim_dirs(photos_dir, pdf_tim):
+                base_dir = tim_dir / btp / "WESEL"
+                if not base_dir.is_dir():
+                    continue
+                # Glob: matches "W11 CLT", "W11 CLT_05-01", "W11 CLT_17-01"
+                matching = sorted(d for d in base_dir.glob(f"{identifier}*") if d.is_dir())
+                for d in matching:
+                    f0 = d / "0.jpg"
+                    f50 = d / "50.jpg"
+                    f100 = d / "100.jpg"
+                    if f0.is_file() and f50.is_file() and f100.is_file():
+                        photo_paths[d.name] = (f0, f50, f100)
+                        found = True
+            # Also try direct (no Tim_N prefix)
+            direct = photos_dir / btp / "WESEL"
+            if direct.is_dir():
+                for d in sorted(direct.glob(f"{identifier}*")):
+                    if d.is_dir():
+                        f0, f50, f100 = d/"0.jpg", d/"50.jpg", d/"100.jpg"
+                        if all(f.is_file() for f in [f0, f50, f100]):
+                            photo_paths[d.name] = (f0, f50, f100)
+                            found = True
+            if not found:
+                missing.append(f"{identifier} ({btp}/{photo_category})")
+            continue
+
+        # Non-WESEL: original logic
         search_dirs = []
         if pdf_tim:
             search_dirs.append(photos_dir / f"Tim_{pdf_tim}" / btp / photo_category / identifier)

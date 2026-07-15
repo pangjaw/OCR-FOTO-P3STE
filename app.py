@@ -43,10 +43,12 @@ log_generation_lock = threading.Lock()
 
 stage_queue = []
 stage_lock = threading.Lock()
+MAX_STAGE_QUEUE = 500
 
 stage_counts_lock = threading.Lock()
 stage_details_lock = threading.Lock()
 stage_details = []
+MAX_STAGE_ITEMS = 500
 
 stage_counts = {
     "stage_0_override": 0,
@@ -71,6 +73,8 @@ def clear_stage_data():
         }
     with stage_details_lock:
         stage_details.clear()
+    with stage_lock:
+        stage_queue.clear()
     # Reset step statuses too
     for step in ["step1", "step2", "step3", "step4", "step5"]:
         state["step_statuses"][step] = "waiting"
@@ -137,8 +141,12 @@ def run_command_stream(cmd, step_name, overwrite="1"):
                                     "detail": data.get("detail"),
                                     "photo": data.get("photo")
                                 })
+                                if len(stage_details) > MAX_STAGE_ITEMS:
+                                    stage_details.pop(0)
                             with stage_lock:
                                 stage_queue.append(data)
+                                if len(stage_queue) > MAX_STAGE_QUEUE:
+                                    stage_queue.pop(0)
                     except json.JSONDecodeError:
                         pass
                 # Capture __SUMMARY__ from scripts

@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pdfplumber
 from pypdf import PdfReader
+from openpyxl import Workbook, load_workbook
 
 
 # ── Constants ───────────────────────────────────────────────────
@@ -26,7 +27,7 @@ STATION_TO_BTP = {
 STATION_SKIP_WORDS = {
     'CDA', 'PDSE', 'OTB', 'PTLS', 'PTDS', 'PTPP', 'TLKM', 'GENTANIK',
     'CATU', 'DAYA', 'SERAT', 'OPTIK', 'RADIO', 'JPL', 'BNR', 'TLK',
-    'PERAWATAN', 'BULANAN',
+    'PERAWATAN', 'BULANAN', 'CTS', 'CTC',
     'ELEKTRIK', 'TELEKOM', 'TELEKOMUNIKASI', 'PERSINYALAN', 'MULTIPLEX',
     'DATA', 'LOGGER', 'BANGUNAN', 'PANEL', 'DISPLAY', 'DALWAS', 'PERKA',
     'PESAWAT', 'TELEPON', 'SENTRAL', 'ANTAR', 'STASIUN', 'WARTA',
@@ -34,6 +35,31 @@ STATION_SKIP_WORDS = {
 
 DEFAULT_INPUT_DIR = "./01_pdf_source"
 DEFAULT_OUTPUT_DIR = "./03_photos_export"
+ERROR_LOG_PATH = Path("logs/export_errors.xlsx")
+
+def _log_error(pdf_name: str, category: str, funcloc_text: str, reason: str):
+    """Append error row to logs/export_errors.xlsx."""
+    ERROR_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if ERROR_LOG_PATH.exists():
+        wb = load_workbook(ERROR_LOG_PATH)
+        ws = wb.active
+    else:
+        wb = Workbook()
+        ws = wb.active
+        ws.append(["pdf_name", "category", "funcloc_text", "reason", "timestamp"])
+    from datetime import datetime
+    ws.append([pdf_name, category, funcloc_text, reason, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+    wb.save(ERROR_LOG_PATH)
+
+
+def _extract_date_suffix(pdf_name: str) -> str | None:
+    """Extract DD-MM from filename like 'PERAWATAN WESEL W13 BOO 02-01-2026.pdf'.
+    Returns '_02-01' or None if not found."""
+    m = re.search(r'(\d{2})-(\d{2})-\d{4}', pdf_name)
+    if m:
+        return f"_{m.group(1)}-{m.group(2)}"
+    return None
+
 
 def original_images_by_name(reader: PdfReader, page_index: int) -> dict[str, tuple[str, bytes]]:
     """Return mapping of image name stem -> (suffix, raw_bytes) from pypdf XObjects."""
@@ -187,8 +213,8 @@ def detect_category_from_filename(pdf_name: str) -> str:
     if "PDSE" in name or "PERSINYALAN ELEKTRIK" in name:
         return "PDSE"
 
-    # ── CTC-CTS ──
-    if "CTC-CTS" in name or ("CTC" in name and "CTS" in name):
+    # ── CTC-CTS / CTS ──
+    if "CTC-CTS" in name or ("CTC" in name and "CTS" in name) or re.search(r'(?<![A-Z])CTS(?![A-Z])', name):
         return "CTS"
 
     # ── Serat Optik / OTB ──
@@ -563,8 +589,9 @@ def extract_identifier(funcloc_text: str, category: str) -> str | None:
         if m:
             raw = f"JPL {m.group(1).strip()}"
             return normalize_jpl_identifier(raw)
-        # Fallback: look for standalone JPL number in code field
-        m2 = re.search(r'JPL\s*(\d{1,3}[A-Z]?)', funcloc_text, re.I)
+        # Fallback: strip funcloc prefix, then look for JPL number in description
+        desc_clean = re.sub(r'^JPL\d+\s*:\s*', '', funcloc_text).strip()
+        m2 = re.search(r'\bJPL\s+(\d{1,3}[A-Z]?)\b', desc_clean, re.I)
         if m2:
             return f"JPL {m2.group(1)}"
         return None
@@ -583,8 +610,10 @@ def extract_identifier(funcloc_text: str, category: str) -> str | None:
         if m:
             w_code = m.group(1)
             codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', desc, re.I)
-            station = codes[-1].upper() if codes else "UNKNOWN"
-            if station == "CS": station = "COS"
+            if codes:
+                station = "-".join(c.upper() for c in codes).replace("CS", "COS")
+            else:
+                station = "UNKNOWN"
             return f"{w_code} {station}"
         return None
 
@@ -595,24 +624,29 @@ def extract_identifier(funcloc_text: str, category: str) -> str | None:
         if m:
             zp = f"ZP {m.group(1)}"
             codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', desc, re.I)
-            station = codes[-1].upper() if codes else "UNKNOWN"
-            if station == "CS": station = "COS"
+            if codes:
+                station = "-".join(c.upper() for c in codes).replace("CS", "COS")
+            else:
+                station = "UNKNOWN"
             return f"{zp} {station}"
         return None
 
     if category == "SINYAL":
-        # "SIN11704 : SINYAL MASUK J10 BOO" → "J10 BOO"
+        # "SIN11704 : SINYAL MASUK J10 BOO" -> "J10 BOO"
+        # "SIN11775 : SINYAL ULANG BLOK UB.101 BJD-CLT" -> "UB101 CLT"
         desc = re.sub(r'^SIN\d+\s*:\s*', '', funcloc_text).strip()
         m = re.search(
-            r'\b(JL\s*\d+[A-Z]?|J\d+[A-Z]?|L\d+[A-Z]?|MJ\d+[A-Z]?|'
-            r'B\d+[A-Z]?|UB\d+[A-Z]?|MB\d+[A-Z]?|UJ\d+[A-Z]?)\b',
+            r'\b(JL\.?\s*\d+[A-Z]?|J\.?\d+[A-Z]?|L\.?\d+[A-Z]?|MJ\.?\d+[A-Z]?|'
+            r'B\.?\d+[A-Z]?|UB\.?\d+[A-Z]?|MB\.?\d+[A-Z]?|UJ\.?\d+[A-Z]?)\b',
             desc, re.I
         )
         if m:
-            sig_code = m.group(1).replace(' ', '')
+            sig_code = m.group(1).replace('.', '').replace(' ', '')
             codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', desc, re.I)
-            station = codes[-1].upper() if codes else "UNKNOWN"
-            if station == "CS": station = "COS"
+            if codes:
+                station = "-".join(c.upper() for c in codes).replace("CS", "COS")
+            else:
+                station = "UNKNOWN"
             return f"{sig_code} {station}"
         return None
 
@@ -677,6 +711,12 @@ def determine_btp(identifier: str) -> str:
     else:
         clean = identifier.replace("RADIO_", "")
         if clean == "CS": clean = "COS"
+        # Extract station codes from compound identifiers like "W21B2 BOO", "ZP 201B MSG"
+        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', clean, re.I)
+        if codes:
+            station = codes[-1].upper()  # last code is primary station
+            if station == "CS": station = "COS"
+            return STATION_TO_BTP.get(station, "BTP JAK")
         return STATION_TO_BTP.get(clean, "BTP JAK")
     return "BTP JAK"
 
@@ -686,7 +726,7 @@ def determine_btp(identifier: str) -> str:
 def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
                      all_funclocs: list[str], output_root: Path,
                      log_path: Path, log_exists: bool,
-                     pdf_name: str) -> int:
+                     pdf_name: str, funcloc_offset: int = 0) -> int:
     """Export photos from multi-row photo page: 3 photos per asset row.
 
     WESEL/SINYAL/AXC PDFs have a single photo page with multiple rows.
@@ -750,8 +790,9 @@ def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
             if not best_fc:
                 # Fallback: match funclocs by order if positions don't align
                 row_idx = rows.index(row_imgs)
-                if row_idx < len(all_funclocs):
-                    best_fc = all_funclocs[row_idx]
+                fc_idx = funcloc_offset + row_idx
+                if fc_idx < len(all_funclocs):
+                    best_fc = all_funclocs[fc_idx]
                 else:
                     writer.writerow({
                         "pdf": pdf_name, "page": page.page_number,
@@ -772,6 +813,12 @@ def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
                     "status": "skipped: could not extract identifier",
                 })
                 continue
+
+            # WESEL: append date suffix for 2x monthly folders
+            if category == "WESEL":
+                date_suffix = _extract_date_suffix(pdf_name)
+                if date_suffix:
+                    identifier = f"{identifier}{date_suffix}"
 
             btp = determine_btp(identifier)
             out_dir = identifier_output_dir(output_root, btp, category, identifier)
@@ -892,26 +939,43 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
                 identifier = "RADIO_BOO"
         else:
             identifier = pdf_path.stem
+        # Log only if truly failed (identifier == filename stem = no meaningful extraction)
+        if identifier == pdf_path.stem:
+            funcloc_text = all_funclocs[0] if all_funclocs else ""
+            _log_error(pdf_path.name, category, funcloc_text, "Identifier extraction failed")
     btp = determine_btp(identifier)
+
+    # ── WESEL: append date suffix for 2x monthly folders ──
+    if category == "WESEL":
+        date_suffix = _extract_date_suffix(pdf_path.name)
+        if date_suffix:
+            identifier = f"{identifier}{date_suffix}"
 
     # ── Build primary output directory ──
     out_dir = identifier_output_dir(output_root, btp, category, identifier)
     ensure_dir(out_dir)
 
-    # ── Find photo page ──
-    photo_page_idx = None
+    # ── Find photo pages ──
+    photo_pages: list[int] = []
     with pdfplumber.open(str(pdf_path)) as _detect_pdf:
         for i in range(start_page - 1, len(_detect_pdf.pages)):
             if len(_detect_pdf.pages[i].images) >= 3:
-                photo_page_idx = i
-                break
+                photo_pages.append(i)
 
-    # ── Multi-row export (WESEL / SINYAL / AXC): delegate ──
-    if category in MULTI_ROW_CATEGORIES and photo_page_idx is not None:
+    # ── Multi-row export (WESEL / SINYAL / AXC): delegate per page ──
+    if category in MULTI_ROW_CATEGORIES and photo_pages:
+        total = 0
+        funcloc_offset = 0
         with pdfplumber.open(str(pdf_path)) as _multi_pdf:
-            return export_multi_row(_multi_pdf, reader, photo_page_idx,
-                                    category, all_funclocs, output_root,
-                                    log_path, log_exists, pdf_path.name)
+            for page_idx in photo_pages:
+                count = export_multi_row(_multi_pdf, reader, page_idx,
+                                          category, all_funclocs, output_root,
+                                          log_path, log_exists, pdf_path.name,
+                                          funcloc_offset=funcloc_offset)
+                total += count
+                # Advance offset by number of rows on this page
+                funcloc_offset += len(_multi_pdf.pages[page_idx].images) // 3
+        return total
 
     with pdfplumber.open(str(pdf_path)) as pdf, \
          log_path.open("a", newline="", encoding="utf-8") as log_file:
@@ -922,6 +986,7 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
         if not log_exists:
             writer.writeheader()
 
+        photo_page_idx = photo_pages[0] if photo_pages else None
         if photo_page_idx is not None:
             # ── Single photo page found ──
             if not force_per_row:

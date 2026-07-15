@@ -50,6 +50,14 @@ MONTHS_ABBR = ["", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep"
 DAYS_ID = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
 
 
+def _read_date_txt(input_dir: Path, btp: str, category: str, identifier: str) -> str | None:
+    """Read date.txt from 03_photos_export for the given asset."""
+    date_path = input_dir / btp / category / identifier / "date.txt"
+    if date_path.exists():
+        return date_path.read_text(encoding="utf-8").strip()
+    return None
+
+
 def parse_date_text(text: str) -> datetime:
     """Parse Indonesian date text like 'Kamis, Jan 09 2025' or 'Kamis, Jan 09 2025 07:00'."""
     m = re.match(r'\w+, (\w+) (\d{2}) (\d{4})(?: (\d{2}):(\d{2}))?', text)
@@ -59,7 +67,7 @@ def parse_date_text(text: str) -> datetime:
         return datetime(int(m.group(3)), month, int(m.group(2)),
                         int(m.group(4)) if m.group(4) else 7,
                         int(m.group(5)) if m.group(5) else 0)
-    return datetime.now()
+    return None
 
 
 def format_timemark(dt: datetime) -> str:
@@ -183,7 +191,7 @@ def place_textbox_fixed_offset(guide: tuple[int,int,int,int], w: int, h: int) ->
     box_w = int(w * BOX_WIDTH_RATIO)
     
     new_x1 = gx2 + X_OFFSET_FROM_GUIDE
-    new_y1 = gy1 + Y_CENTER_OFFSET - box_h // 2
+    new_y1 = gy1 + Y_CENTER_OFFSET - box_h // 2 + int(h * 0.018)  # shifted down
     new_x2 = min(w, new_x1 + box_w)
     new_y2 = new_y1 + box_h
     
@@ -257,12 +265,10 @@ def draw_textbox(img: Image.Image, box: tuple[int,int,int,int], text: str) -> Im
     tx = x1 + pad_x
     ty = y1 + ((box_h - th) // 2) - bbox[1]
 
-    shape_pad_x = max(3, int(font_size * 0.28))
-    shape_pad_y = max(1, int(font_size * 0.12))
-    sx1 = max(0, tx + bbox[0] - shape_pad_x)
-    sy1 = max(0, ty + bbox[1] - shape_pad_y)
-    sx2 = min(w, tx + bbox[2] + shape_pad_x)
-    sy2 = min(h, ty + bbox[3] + shape_pad_y)
+    sx1 = max(0, x1)
+    sy1 = max(0, y1)
+    sx2 = min(w, x2)
+    sy2 = min(h, y2)
     shape_box = (sx1, sy1, sx2, sy2)
 
     out = img.copy()
@@ -399,31 +405,19 @@ def process_image(image_path: Path, output_path: Path, date_text: str,
     box, stage = locate_date_box(arr_orig, arr_hsv, orig_w, orig_h, y_override, consensus_gy1)
     x1, y1, x2, y2 = box
 
-    # Erase: precision mask (rounded rect, 1px pad)
-    pad = 1
-    ex1 = max(0, x1 - pad)
-    ey1 = max(0, y1 - pad)
-    ex2 = min(orig_w, x2 + pad)
-    ey2 = min(orig_h, y2 + pad)
-
-    crop = arr_orig[ey1:ey2, ex1:ex2]
+    # Blur: fill box area with diffuse inpainting (full rectangle, matches textbox)
+    crop = arr_orig[y1:y2, x1:x2]
     box_h_px = y2 - y1
     radius = max(2, int(box_h_px * 0.25))
 
-    mask_img = Image.new("L", (crop.shape[1], crop.shape[0]), 0)
-    md = ImageDraw.Draw(mask_img)
-    md.rounded_rectangle(
-        (x1 - ex1, y1 - ey1, x2 - ex1, y2 - ey1),
-        radius=radius, fill=255
-    )
-    crop_mask = np.array(mask_img) > 0
+    mask_img = Image.new("L", (x2 - x1, y2 - y1), 255)  # full mask = entire box blurred
 
     arr_work = arr_orig.copy()
-    arr_work[ey1:ey2, ex1:ex2] = diffuse_fill(crop, crop_mask, steps=60)
+    arr_work[y1:y2, x1:x2] = diffuse_fill(crop, np.array(mask_img) > 0, steps=60)
 
     img_erased = Image.fromarray(arr_work)
 
-    # Draw new textbox
+    # Draw textbox
     img_out = draw_textbox(img_erased, box, timemark_text)
 
     # Save
@@ -483,16 +477,18 @@ def main():
         schedule_data = load_schedule(args.schedule)
         schedule_lookup = build_schedule_lookup(schedule_data)
 
-    date_text = args.date or datetime.now().strftime("%A, %b %d %Y %H:%M").replace("Monday", "Senin").replace("Tuesday", "Selasa").replace("Wednesday", "Rabu").replace("Thursday", "Kamis").replace("Friday", "Jumat").replace("Saturday", "Sabtu").replace("Sunday", "Minggu")
+    date_text = args.date or ""  # empty if not provided; schedule_lookup handles dates
 
     all_jpgs = list(input_dir.rglob("*.jpg"))
     folder_consensus = _collect_folder_consensus(input_dir, all_jpgs)
 
     ok = 0
     failed = 0
+    skipped = 0
     stage_counts = {"stage_0_override": 0, "stage_1c_guide_original": 0, "stage_1c_guide_consensus": 0, "stage_fallback": 0}
     stage_details = []
     failed_files = []
+    missing_dates = []
     tim_mapping = {}  # photo_rel_path -> tim_n
 
     for src in all_jpgs:
@@ -511,22 +507,56 @@ def main():
 
         tim_n = 1
         if schedule_lookup and asset_key:
-            timemark_text, tim_n = schedule_lookup.get(asset_key, (date_text, 1))
-            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), btp, category, identifier)
+            result = schedule_lookup.get(asset_key)
+            if result:
+                timemark_text, tim_n = result
+                dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), btp, category, identifier)
+            else:
+                # Schedule exists but this photo not in it — try date.txt fallback
+                folder_date = _read_date_txt(input_dir, btp, category, identifier)
+                if folder_date:
+                    dt = parse_date_text(folder_date)
+                    if dt:
+                        pct = 0
+                        name_stem = Path(photo_name).stem
+                        if name_stem == "50": pct = 50
+                        elif name_stem == "100": pct = 100
+                        duration = CATEGORY_DURATIONS.get(category.upper(), DEFAULT_DURATION)
+                        offset_minutes = int(pct * duration / 100)
+                        photo_dt = dt + timedelta(minutes=offset_minutes)
+                        timemark_text = format_timemark(photo_dt)
+                        dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), btp, category, identifier)
+                    else:
+                        missing_dates.append({"folder": str(rel.parent), "btp": btp, "category": category, "identifier": identifier, "reason": "date.txt unreadable"})
+                        skipped += 1
+                        continue
+                else:
+                    missing_dates.append({"folder": str(rel.parent), "btp": btp, "category": category, "identifier": identifier, "reason": "not in schedule + no date.txt"})
+                    skipped += 1
+                    continue
         else:
-            # Fallback: compute time offset from photo name (0/50/100) * category duration
-            pct = 0
-            name_stem = Path(photo_name).stem
-            if name_stem == "50":
-                pct = 50
-            elif name_stem == "100":
-                pct = 100
-            duration = CATEGORY_DURATIONS.get(category.upper(), DEFAULT_DURATION)
-            offset_minutes = int(pct * duration / 100)
-            base_dt = parse_date_text(date_text)
-            photo_dt = base_dt + timedelta(minutes=offset_minutes)
-            timemark_text = format_timemark(photo_dt)
-            dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), btp, category, identifier)
+            # No schedule — try date.txt
+            folder_date = _read_date_txt(input_dir, btp, category, identifier)
+            if folder_date:
+                dt = parse_date_text(folder_date)
+                if dt:
+                    pct = 0
+                    name_stem = Path(photo_name).stem
+                    if name_stem == "50": pct = 50
+                    elif name_stem == "100": pct = 100
+                    duration = CATEGORY_DURATIONS.get(category.upper(), DEFAULT_DURATION)
+                    offset_minutes = int(pct * duration / 100)
+                    photo_dt = dt + timedelta(minutes=offset_minutes)
+                    timemark_text = format_timemark(photo_dt)
+                    dst_dir = output_dir / f"Tim_{tim_n}" / asset_output_dir(Path(""), btp, category, identifier)
+                else:
+                    missing_dates.append({"folder": str(rel.parent), "btp": btp, "category": category, "identifier": identifier, "reason": "date.txt unreadable"})
+                    skipped += 1
+                    continue
+            else:
+                missing_dates.append({"folder": str(rel.parent), "btp": btp, "category": category, "identifier": identifier, "reason": "no schedule + no date.txt"})
+                skipped += 1
+                continue
         tim_mapping[str(rel)] = tim_n
         dst = dst_dir / src.name
 
@@ -625,15 +655,44 @@ def main():
             ws.column_dimensions[col[0].column_letter].width = max_length + 2
         wb.save(logs_dir / "edit_failed.xlsx")
 
-
+    if missing_dates:
+        # Deduplicate by folder
+        seen_folders = set()
+        unique_missing = []
+        for item in missing_dates:
+            if item["folder"] not in seen_folders:
+                seen_folders.add(item["folder"])
+                unique_missing.append(item)
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Missing Dates"
+        headers = ["Folder", "BTP", "Category", "Identifier", "Alasan"]
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = Font(bold=True)
+            cell.fill = PatternFill(start_color="FF8800", end_color="FF8800", fill_type="solid")
+            cell.font = Font(bold=True, color="FFFFFF")
+        for row_idx, item in enumerate(unique_missing, 2):
+            ws.cell(row=row_idx, column=1, value=item["folder"])
+            ws.cell(row=row_idx, column=2, value=item["btp"])
+            ws.cell(row=row_idx, column=3, value=item["category"])
+            ws.cell(row=row_idx, column=4, value=item["identifier"])
+            ws.cell(row=row_idx, column=5, value=item["reason"])
+        for col in ws.columns:
+            max_length = max(len(str(cell.value)) if cell.value else 0 for cell in col)
+            ws.column_dimensions[col[0].column_letter].width = max_length + 2
+        wb.save(logs_dir / "missing_dates.xlsx")
 
     summary = {
         "step": "edit",
         "success": ok,
         "failed": failed,
+        "skipped": skipped,
+        "missing_dates": len(unique_missing) if missing_dates else 0,
         "stage_counts": stage_counts,
         "failed_file": "logs/edit_failed.xlsx" if failed_files else None,
-        "stages_file": "logs/edit_stages.xlsx" if stage_details else None
+        "stages_file": "logs/edit_stages.xlsx" if stage_details else None,
+        "missing_dates_file": "logs/missing_dates.xlsx" if missing_dates else None
     }
     print(f"__SUMMARY__:{json.dumps(summary)}", flush=True)
 

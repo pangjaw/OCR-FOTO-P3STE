@@ -34,20 +34,23 @@ Script references, detection logic, debugging → lihat [[AGENTS.md]].
 - [x] **WESEL/SINYAL/AXC → multi-row export** (1 PDF = 4-5 baris foto, funcloc per baris)
 
 ### Batch Results
-- **2026-07-15 08:50 WIB** — Full pipeline re-run (KEL1/KEL2 multi-funcloc + UNKNOWN elimination):
-  - Step 1: **1,095 foto** diekspor, **UNKNOWN = 0** ⭐
-  - Step 2: **133 date.txt** updated
-  - Step 3: **351 schedule entries** (was 159, +120%) — KEL1 multi-funcloc
-  - Step 4: **873/873 sukses, 0 gagal** (stage_1c: 833, consensus: 5, fallback: 35)
-  - Step 5: **165 PDF merged, 0 failed** ⭐
+- **2026-07-15 15:55 WIB** — Full pipeline re-run (BTP routing + WESEL suffix + SINYAL multi-page):
+  - Step 1: **4,521 foto** diekspor, **470 folder** (was 3594, +927)
+  - Step 2: **278 date.txt** updated
+  - Step 3: **schedule.json** updated (all 470 assets)
+  - Step 4: **1,290/1,290 sukses, 0 gagal** (stage_1c: 1242, consensus: 6, fallback: 42)
+  - BTP split: **311 BTP JAK + 159 BTP BD**
 - Fix yang diterapkan:
-  - **UNKNOWN elimination**: INB→PDSE, TRA→PDSE/SERAT OPTIK/PTLS, RADIO/WAYSTATION→PTLS
-  - **KEL1 multi-funcloc**: WESEL/SINYAL/AXC = 1 entry per funcloc (timestamp unik)
-  - **KEL2 single identifier**: lainnya = 1 entry per folder
-  - **JPL BNR parsing**: named JPL ("BNR BOP - BTT") properly extracted
-  - **normalize_jpl_identifier**: spaced dash handling ("BOP - BTT" → "BOP-BTT")
-- ⚠️ **Known issue (FIXED 2026-07-15 09:30)**: `extract_pdf_dates.py` rewrite pakai pre-scan folder lookup. Result: **278/291 (95.5%)** folder punya date.txt. 13 orphan folders tanpa matching PDF di `02_pdf_target`.
-  - Root cause 13 missing: identifier "CLT" (generic station) produce collision across CATUDAYA/CTS/PDSE/PTDS/PTLS → folder created tapi no matching source PDF. Bukan bug logic, tapi structural gap antara 01_pdf_source (2026) dan 02_pdf_target (2025).
+  - **JPL fallback fix**: strip `JPL\d+ :` prefix before regex, handle `JPL 07 BOP-BTT` correctly
+  - **Error logging**: `_log_error()` → `logs/export_errors.xlsx` (only for true failures)
+  - **Multi-page export**: scan ALL pages with ≥3 images for SINYAL/WESEL/AXC
+  - **WESEL date suffix**: `_extract_date_suffix()` → `W21B2 BOO_02-01/` folders
+  - **SINYAL dotted codes**: regex `\.?` for B, J, JL, L prefixes (B.108, J.10)
+  - **BTP routing**: `determine_btp()` now uses `re.findall` for compound identifiers (W23 MSG → BTP BD)
+  - **BTP reorg**: 107+15 assets moved from BTP JAK to BTP BD
+  - **Edit timemark date.txt**: `_read_date_txt()` reads from `03_photos_export/` folder
+  - **Edit timemark blur/textbox sync**: same `(x1,y1,x2,y2)` dimensions
+  - **BOX_HEIGHT_RATIO**: reverted to 0.053 (original size)
 - **2026-07-14 17:48 WIB** — Full pipeline clean run (BTP cross-search + no-photo fallback):
   - Step 1: 5,340 foto, Step 2: 852 sukses, Step 5: 165 PDF merged
   - BTP cross-search + no-photo fallback
@@ -77,7 +80,7 @@ python merge_pdf_foto.py --schedule schedule.json       # Step 5
 
 | Tanggal | Ringkasan Update | File Terkait |
 |---------|------------------|--------------|
-| [[Notes/Daily/2026-07-15\|**15 Jul**]] | KEL1/KEL2 multi-funcloc scheduler (159→351 entries). UNKNOWN elimination. JPL BNR parsing. Full clean run: 1095 foto, 873 edit, 165 PDF. | `scheduler.py`, `export_pdf_foto.py` |
+| [[Notes/Daily/2026-07-15\|**15 Jul**]] | BTP routing fix (re.findall compound ID). WESEL suffix folders. SINYAL multi-page. Edit timemark: date.txt reading, blur/textbox sync. BTP reorg 122 assets. 4521 foto, 1290 edit, 278 dates. | `export_pdf_foto.py`, `edit_timemark_ide1.py` |
 | [[Notes/Daily/2026-07-14\|**14 Jul**]] | Full pipeline fix: OTB→TELEKOM, BANGUNAN→PDSE, MULTIPLEX→PTLS, BOP-BTT split. Clean run: 474 foto, 156 edit, 79 PDF. | `export_pdf_foto.py`, `merge_pdf_foto.py` |
 | [[Notes/Daily/2026-07-13\|**13 Jul**]] | Station-based folder hierarchy (BREAKING CHANGE). 7 asset types full support. Dead code cleanup. | Semua 6 script + 3 JSON |
 | [[Notes/Daily/2026-07-12\|**12 Jul**]] | Browser freeze fix (limit 100 files). EventSource reconnect fix. | `app.py`, `index.html` |
@@ -126,3 +129,4 @@ python merge_pdf_foto.py --schedule schedule.json       # Step 5
 | [[Notes/Decisions/ADR-002 - PDF Image Export via pypdf and pdfplumber\|ADR-002]] | Ekstraksi gambar via pypdf (original images) |
 | [[Notes/Decisions/ADR-003 - PDF Layout Parsing and Output Structure\|ADR-003]] | Aturan parsing layout PDF & struktur output |
 | [[Notes/Decisions/ADR-008-fix-36-missing-funcloc\|ADR-008]] | Fix 36 missing funcloc photos (pending) |
+
