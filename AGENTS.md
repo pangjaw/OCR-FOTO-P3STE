@@ -82,7 +82,11 @@ export_pdf_foto.py     extract_pdf_dates.py
 | `parse_date_indonesian(text)` | 38-80 | Regex 3 pola: DD Bulan YYYY, YYYY-MM-DD, DD-MM-YYYY |
 | `format_date_target(dt)` | 83-86 | `"Senin, Jan 06 2025"` (format singkat untuk watermark) |
 | `extract_date_from_pdf(pdf_path)` | 89-112 | Baca halaman 1 pdfplumber → parse date |
-| `main()` | 115-194 | Loop PDF → extract date → tulis `date.txt` per folder |
+| `main()` | 115-274 | Loop PDF → extract date → tulis `date.txt` per folder |
+
+**KEL1 vs KEL2 date writing:**
+- **KEL1** (WESEL, SINYAL, AXC): Uses `extract_all_funclocs()` → writes `date.txt` per funcloc folder
+- **KEL2** (lainnya): Uses first funcloc → writes 1 `date.txt` per folder
 
 **Catatan:** `format_date_target` pakai bulan **singkat** (Jan, Feb). `merge_pdf_foto.py` pakai bulan **panjang** (Januari) — disengaja.
 
@@ -173,7 +177,8 @@ export_pdf_foto.py     extract_pdf_dates.py
 6. **Git:** Hanya push kalau diperintah user (`git add . && git commit -m "<type>: <subject>"`).
 
 ## ⚠️ Known Issues (2026-07-15)
-- **date.txt belum lengkap untuk folder KEL1 baru**: `extract_pdf_dates.py` pakai `extract_funcloc_from_text` (return first match only). Folder KEL1 baru (WESEL/SINYAL/AXC per-funcloc) tidak punya `date.txt` → watermark fallback ke tanggal hari ini. **Fix**: update ke `extract_all_funclocs` untuk multi-funcloc date writing.
+- **17/291 folders missing date.txt**: Edge cases — BTP mismatch (W27A BOO→W27A BOP) atau identifier di PDF tidak match folder. **Mitigasi**: `edit_timemark_ide1.py` fallback ke tanggal hari ini. Tidak kritis selama 274/291 (94%) terisi.
+
 
 
 ## Debugging Patterns
