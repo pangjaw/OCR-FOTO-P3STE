@@ -203,6 +203,10 @@ def detect_category_from_filename(pdf_name: str) -> str:
     if "BANGUNAN" in name or "DATA LOGGER" in name:
         return "PDSE"
 
+    # ── PTLS extra: RADIO BASESTATION / WAYSTATION ──
+    if "RADIO" in name and ("BASESTATION" in name or "WAY" in name or "WAYSTATION" in name):
+        return "PTLS"
+
     return "UNKNOWN"
 
 
