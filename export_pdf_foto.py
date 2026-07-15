@@ -289,7 +289,15 @@ def detect_asset_type(code: str, title: str) -> str:
         return "TELEKOMUNIKASI"
     if code.startswith("CTC") or "CTC" in upper or "CTS" in upper or "DALWAS" in upper:
         return "CTS"
-    if code.startswith("INB") or code.startswith("TRA"):
+    if code.startswith("INB"):
+        return "PDSE"  # INB = interlocking/blok equipment → PDSE
+    if code.startswith("TRA"):
+        if "BANGUNAN" in upper or "DATA LOGGER" in upper:
+            return "PDSE"
+        if "MULTIPLEX" in upper or "MUX" in upper:
+            return "PTLS"
+        if "OTB" in upper:
+            return "SERAT OPTIK"
         return "UNKNOWN"
     if "AXLE COUNTER" in upper:
         return "AXC"
@@ -469,11 +477,10 @@ def normalize_jpl_identifier(ident: str) -> str:
     Examples:
         'JPL 15 MASENG' -> 'JPL 15 MSG'
         'JPL 28 CLT-BOO' -> 'JPL 28 BOO-CLT'  (alphabetical sort)
+        'JPL BNR BOP - BTT' -> 'JPL BNR BOP-BTT'  (joined + sorted)
         'JPL 27 BOO-CLT' -> 'JPL 27 BOO-CLT'  (already sorted)
     """
-    # Station name -> code (inverse of STATION_NAME_TO_CODE, but keep all)
     NAME_TO_CODE = {k: v for k, v in STATION_NAME_TO_CODE.items()}
-    # Also map the codes to themselves for passthrough
     for code in STATION_TO_BTP:
         if '-' not in code:
             NAME_TO_CODE[code] = code
@@ -482,23 +489,24 @@ def normalize_jpl_identifier(ident: str) -> str:
     if len(parts) < 3:
         return ident
     
-    prefix = ' '.join(parts[:2])  # "JPL NN"
-    station_part = parts[2]  # e.g. "CLT-BOO" or "MASENG" or "BOO-CLT"
+    # Second part may be a number (JPL 28) or a name (JPL BNR)
+    prefix = ' '.join(parts[:2])  # "JPL NN" or "JPL BNR"
+    station_raw = ' '.join(parts[2:])  # "BOP - BTT" or "CLT-BOO" or "MASENG"
+    
+    # Normalize spaced dashes: "BOP - BTT" -> "BOP-BTT"
+    station_raw = re.sub(r'\s*-\s*', '-', station_raw)
     
     # Split multi-station
-    stations = station_part.split('-')
+    stations = station_raw.split('-')
     normalized = []
     for s in stations:
-        upper = s.upper()
+        upper = s.upper().strip()
         mapped = NAME_TO_CODE.get(upper, upper)
-        # Normalize CS -> COS
         if mapped == 'CS':
             mapped = 'COS'
         normalized.append(mapped)
     
-    # Sort for consistent ordering
     normalized.sort()
-    
     return f"{prefix} {'-'.join(normalized)}"
 
 
@@ -532,6 +540,20 @@ def extract_identifier(funcloc_text: str, category: str) -> str | None:
     }
     
     if category in ("JPL", "PTPP"):
+        # First try: named JPL (e.g. "JPL BNR BOP - BTT" from "JPL10489 : PESAWAT TELEPON JPL BNR BOP - BTT")
+        desc_part = funcloc_text.split(":", 1)[1].strip() if ":" in funcloc_text else funcloc_text
+        STATION_RE = r'(?:BOO|CLT|BJD|BOP|BTT|CGB|COS|CS|MSG|CCR)'
+        STATIONS_RE = STATION_RE + r'(?:\s*-\s*' + STATION_RE + r')*'
+        # Match: JPL <2-3 letter name> <station codes>
+        m = re.search(r'\bJPL\s+([A-Z]{2,3})\s+(' + STATIONS_RE + r')\b', desc_part, re.I)
+        if m:
+            jpl_name = m.group(1).upper()
+            stations_raw = m.group(2).strip()
+            if jpl_name not in ("NO", "ELE", "OPT", "FO", "IB"):
+                # Named JPL: "BNR BOP - BTT" → normalize to "JPL BNR BOP-BTT"
+                raw = f"JPL {jpl_name} {stations_raw}"
+                return normalize_jpl_identifier(raw)
+        # Second try: "NO 28 CLT-BOO" pattern
         m = re.search(r'(?:NO|JPL)\s*(\d{1,3}[A-Z]?\s+[A-Za-z]{2,3}(?:-[A-Za-z]{2,3})?)', funcloc_text, re.I)
         if m:
             raw = f"JPL {m.group(1).strip()}"

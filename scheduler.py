@@ -18,7 +18,7 @@ import pdfplumber
 from export_pdf_foto import (
     sanitize_segment, ensure_dir, load_sap_mapping, SAP_MAPPING_PATH,
     detect_category_from_filename, extract_station_from_filename, STATION_TO_BTP,
-    extract_identifier, extract_funcloc_from_text,
+    extract_identifier, extract_funcloc_from_text, extract_all_funclocs,
 )
 from extract_pdf_dates import extract_date_from_pdf, format_date_target
 
@@ -140,9 +140,37 @@ def extract_core_count(doc) -> int | None:
     return None
 
 
-# ---------------------------------------------------------------------------
-# core
-# ---------------------------------------------------------------------------
+def _determine_btp(identifier: str, pdf_path: Path) -> str:
+    """Determine BTP from identifier or pdf path."""
+    if identifier.startswith("JPL "):
+        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
+        if codes:
+            station = codes[0].upper()
+            if station == "CS": station = "COS"
+            return STATION_TO_BTP.get(station, "BTP JAK")
+    elif identifier.startswith("ER ") or identifier.startswith("RUANG "):
+        parts = identifier.split()
+        code = None
+        for kw in ["BOO", "BTT", "CLT", "BOP", "CGB", "COS", "MSG"]:
+            if kw in parts:
+                code = kw
+                break
+        if not code: code = "BOO"
+        return STATION_TO_BTP.get(code, "BTP JAK")
+    else:
+        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
+        if codes:
+            station = codes[-1].upper()
+            if station == "CS": station = "COS"
+            return STATION_TO_BTP.get(station, "BTP JAK")
+        clean = identifier.replace("RADIO_", "")
+        return STATION_TO_BTP.get(clean, "BTP JAK")
+    return "BTP JAK"
+
+
+# Categories where each funcloc = separate folder with own 3 photos
+MULTI_ROW_CATEGORIES = {"SINYAL", "WESEL", "AXC"}
+
 
 def build_schedule(pdf_dir: Path, photos_dir: Path,
                    mapping: dict, acuan: dict,
@@ -161,49 +189,16 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
         # ── Detect category ──
         category = detect_category_from_filename(pdf_path.name)
         
-        # ── Read Funcloc from page 1 to get identifier ──
-        identifier = None
-        btp = "BTP JAK"
+        # ── Read ALL funclocs from page 1 ──
+        all_funclocs: list[str] = []
+        page1_text = ""
         try:
             with pdfplumber.open(str(pdf_path)) as pdf:
                 if pdf.pages:
                     page1_text = pdf.pages[0].extract_text() or ""
-                    funcloc_line = extract_funcloc_from_text(page1_text)
-                    if funcloc_line:
-                        identifier = extract_identifier(funcloc_line, category)
+                    all_funclocs = extract_all_funclocs(page1_text)
         except Exception:
             pass
-        
-        if not identifier:
-            # Fallback: use pdf stem
-            identifier = pdf_path.stem
-        
-        # Determine BTP
-        if identifier.startswith("JPL "):
-            codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
-            if codes:
-                station = codes[0].upper()
-                if station == "CS": station = "COS"
-                btp = STATION_TO_BTP.get(station, "BTP JAK")
-        elif identifier.startswith("ER ") or identifier.startswith("RUANG "):
-            parts = identifier.split()
-            code = None
-            for kw in ["BOO", "BTT", "CLT", "BOP", "CGB", "COS", "MSG"]:
-                if kw in parts:
-                    code = kw
-                    break
-            if not code: code = "BOO"
-            btp = STATION_TO_BTP.get(code, "BTP JAK")
-        else:
-            # Generic: extract station code from identifier
-            codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
-            if codes:
-                station = codes[-1].upper()
-                if station == "CS": station = "COS"
-                btp = STATION_TO_BTP.get(station, "BTP JAK")
-            else:
-                clean = identifier.replace("RADIO_", "")
-                btp = STATION_TO_BTP.get(clean, "BTP JAK")
 
         # ── Core count for SERAT OPTIK ──
         core_count = None
@@ -216,69 +211,105 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
             except Exception:
                 pass
 
-        # ── Determine date ──
-        date_str = read_date_from_photos(photos_dir, btp, category, identifier)
-        pdf_date: date | None = None
-
-        if not date_str:
-            d = extract_date_from_pdf(pdf_path)
-            if d:
-                pdf_date = d
-                date_str = format_date_target(d)
-
-        if not date_str:
-            print(f"  [SKIP] no date found for {pdf_path.name}")
-            continue
-
-        if pdf_date is None:
-            pdf_date = _parse_date(date_str)
-        if pdf_date is None:
-            print(f"  [SKIP] cannot parse date '{date_str}' for {pdf_path.name}")
-            continue
-
-        # ── Date boundary → reset ──
-        if pdf_date != cur_date:
-            cur_date = pdf_date
-            tim = 1
-            clock = jam_mulai
-
-        # ── Waktu per PDF ──
-        if core_count:
-            w = core_count * 6
+        # ── Build identifier list per category ──
+        # KEL1: multi-funcloc → one entry per funcloc
+        # KEL2: single identifier → one entry per PDF
+        if category in MULTI_ROW_CATEGORIES and len(all_funclocs) > 1:
+            identifiers = []
+            for fl in all_funclocs:
+                ident = extract_identifier(fl, category)
+                if ident:
+                    identifiers.append(ident)
+            # Deduplicate preserving order
+            seen = set()
+            unique = []
+            for ident in identifiers:
+                if ident not in seen:
+                    seen.add(ident)
+                    unique.append(ident)
+            identifiers = unique
         else:
-            w = get_waktu(category, mapping, acuan)
+            # KEL2: single identifier
+            ident = None
+            if all_funclocs:
+                ident = extract_identifier(all_funclocs[0], category)
+            if not ident:
+                station = extract_station_from_filename(pdf_path.name)
+                if station:
+                    ident = station
+                    if "RADIO" in page1_text.upper() and ident == "BOO":
+                        ident = "RADIO_BOO"
+                else:
+                    ident = pdf_path.stem
+            identifiers = [ident]
 
-        # ── Overflow check ──
-        if clock >= jam_selesai or (clock + w > jam_selesai and clock != jam_mulai):
-            tim += 1
-            if tim > tim_max:
+        # ── Per-identifier scheduling ──
+        for identifier in identifiers:
+            btp = _determine_btp(identifier, pdf_path)
+
+            # ── Determine date ──
+            date_str = read_date_from_photos(photos_dir, btp, category, identifier)
+            pdf_date: date | None = None
+
+            if not date_str:
+                d = extract_date_from_pdf(pdf_path)
+                if d:
+                    pdf_date = d
+                    date_str = format_date_target(d)
+
+            if not date_str:
+                print(f"  [SKIP] no date found for {pdf_path.name} / {identifier}")
+                continue
+
+            if pdf_date is None:
+                pdf_date = _parse_date(date_str)
+            if pdf_date is None:
+                print(f"  [SKIP] cannot parse date '{date_str}' for {pdf_path.name}")
+                continue
+
+            # ── Date boundary → reset ──
+            if pdf_date != cur_date:
+                cur_date = pdf_date
                 tim = 1
-                cur_date = pdf_date + timedelta(days=1)
-                date_str = format_date_target(cur_date)
-            clock = jam_mulai
+                clock = jam_mulai
 
-        # ── Assign times ──
-        t0 = clock
-        t50 = round(clock + w / 2)
-        t100 = clock + w
+            # ── Waktu per entry ──
+            if core_count:
+                w = core_count * 6
+            else:
+                w = get_waktu(category, mapping, acuan)
 
-        entry = {
-            "file": pdf_path.name,
-            "btp": btp,
-            "category": category,
-            "pdf_stem": pdf_path.stem,
-            "identifier": identifier,
-            "date": date_str,
-            "tim": tim,
-            "waktu_menit": w,
-            "photos": {
-                "0.jpg":  m2iso(cur_date, t0),
-                "50.jpg": m2iso(cur_date, t50),
-                "100.jpg": m2iso(cur_date, t100),
-            },
-        }
-        schedules.append(entry)
-        clock = t100
+            # ── Overflow check ──
+            if clock >= jam_selesai or (clock + w > jam_selesai and clock != jam_mulai):
+                tim += 1
+                if tim > tim_max:
+                    tim = 1
+                    cur_date = pdf_date + timedelta(days=1)
+                    date_str = format_date_target(cur_date)
+                clock = jam_mulai
+
+            # ── Assign times ──
+            t0 = clock
+            t50 = round(clock + w / 2)
+            t100 = clock + w
+
+            entry = {
+                "file": pdf_path.name,
+                "btp": btp,
+                "category": category,
+                "pdf_stem": pdf_path.stem,
+                "identifier": identifier,
+                "date": date_str,
+                "tim": tim,
+                "waktu_menit": w,
+                "photos": {
+                    "0.jpg":  m2iso(cur_date, t0),
+                    "50.jpg": m2iso(cur_date, t50),
+                    "100.jpg": m2iso(cur_date, t100),
+                },
+            }
+            schedules.append(entry)
+            clock = t100
 
     return {"version": 3, "schedules": schedules}
 
