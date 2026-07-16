@@ -538,7 +538,32 @@ def normalize_jpl_identifier(ident: str) -> str:
         normalized.append(mapped)
     
     normalized.sort()
-    return f"{prefix} {'-'.join(normalized)}"
+    result = f"{prefix} {'-'.join(normalized)}"
+    # Apply overrides after normalization
+    JPL_IDENTIFIER_OVERRIDES = {
+        "JPL 26N BJD-CLT": "JPL 26N CLT",
+    }
+    return JPL_IDENTIFIER_OVERRIDES.get(result, result)
+
+
+def extract_jpl_from_filename(pdf_name: str, category: str) -> str | None:
+    """Extract JPL identifier from PDF filename for PTPP/JPL category.
+
+    Handles filenames like:
+      'PERAWATAN PTPP JPL 27 BOO-CLT 26-01-2026.pdf' -> 'JPL 27 BOO-CLT'
+      'PERAWATAN JPL 28 BOO-CLT 01-01-2026.pdf'      -> 'JPL 28 BOO-CLT'
+      'PERAWATAN JPL 26N BJD-CLT 17-01-2026.pdf'     -> 'JPL 26N BJD-CLT' (then normalized)
+      'PERAWATAN PTPP JPL 25 MSG 25-01-2026.pdf'     -> 'JPL 25 MSG'
+    """
+    # JPL number (optional letter suffix) followed by station codes
+    m = re.search(r'(?:PTPP\s+)?(JPL\s+\d{1,3}[A-Z]?\s+[A-Za-z]{2,}(?:[\s-][A-Za-z]{2,})*)', pdf_name, re.IGNORECASE)
+    if m:
+        raw = m.group(0)
+        # Strip leading "PTPP " if present
+        raw = re.sub(r'^PTPP\s+', '', raw, flags=re.IGNORECASE)
+        # Normalize station order/codes
+        return normalize_jpl_identifier(raw)
+    return None
 
 
 def extract_identifier(funcloc_text: str, category: str) -> str | None:
@@ -648,6 +673,15 @@ def extract_identifier(funcloc_text: str, category: str) -> str | None:
             else:
                 station = "UNKNOWN"
             return f"{sig_code} {station}"
+        return None
+
+    if category == "CATUDAYA":
+        # "CDA10001 : CATU DAYA ER SINYAL BOO" → "ER SINYAL BOO"
+        desc = re.sub(r'^CDA\d+\s*:\s*', '', funcloc_text).strip()
+        m = re.search(r'CATU\s+DAYA\s+(.+)$', desc, re.I)
+        if m:
+            detail = m.group(1).strip()
+            return detail
         return None
 
     # All others: extract station code + RADIO prefix
@@ -939,6 +973,11 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
                 identifier = "RADIO_BOO"
         else:
             identifier = pdf_path.stem
+            # For PTPP/JPL category, try extracting JPL identifier from filename
+            if category in ("JPL", "PTPP"):
+                jpl_id = extract_jpl_from_filename(pdf_path.name, category)
+                if jpl_id:
+                    identifier = jpl_id
         # Log only if truly failed (identifier == filename stem = no meaningful extraction)
         if identifier == pdf_path.stem:
             funcloc_text = all_funclocs[0] if all_funclocs else ""

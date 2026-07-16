@@ -58,10 +58,12 @@ export_pdf_foto.py     extract_pdf_dates.py
 | `AssetRow` dataclass | 19-27 | Struct: page_number, code, title, asset_type, detail, top, station |
 | `detect_asset_type(code, title)` | 92-100 | AXL→AXC, WSL→WESEL, SIN→SINYAL, CDA→CATU_DAYA, JPL→PINTU_PERLINTASAN, TLK/TWR/OTB→TELEKOMUNIKASI, **INB→PDSE, TRA→PDSE/SERAT OPTIK/PTLS** |
 | `detect_category_from_filename(name)` | 159-210 | Detect WESEL/SINYAL/AXC/PDSE/CTS/PTLS/CATUDAYA/SERAT OPTIK/PTPP/JPL. "SINYAL" but NOT "PERSINYALAN". **RADIO BASESTATION/WAYSTATION/SISTEM WAYSTATION→PTLS** |
+| `extract_jpl_from_filename(pdf_name, category)` | 549-566 | **NEW**: Parse JPL identifier from PTPP/JPL filename fallback. `PERAWATAN PTPP JPL 27 BOO-CLT 26-01-2026.pdf` → `JPL 27 BOO-CLT` |
 | `extract_detail(title, asset_type)` | 103-126 | Parse nama detail aset (e.g. "ZP 22A CLT") |
 | `extract_asset_rows(page, sap_mapping)` | 129-166 | Cari baris aset di halaman PDF via pdfplumber word extraction |
 | `extract_all_funclocs(page_text)` | ~550 | Ekstrak SEMUA funcloc dari halaman (regex: (SIN|WSL|AXL|OTB|OTG|TEK|TRA|TLK|TWR|PDSE|PTDS|PTLS|JPL|PTPP|CTS|CATUDAYA)\\d+...) |
-| `extract_identifier(funcloc_text, category)` | 503-610 | Extract folder identifier. Auto-detect category from funcloc prefix. WESEL: "W23A BOO", AXC: "ZP 201B MSG", SINYAL: "J10 BOO"/"JL42A BOO", **JPL: named JPL ("JPL BNR BOP-BTT") + numbered ("JPL 28 BOO-CLT")** |
+| `extract_identifier(funcloc_text, category)` | 569-610 | Extract folder identifier. Auto-detect category from funcloc prefix. WESEL: "W23A BOO", AXC: "ZP 201B MSG", SINYAL: "J10 BOO"/"JL42A BOO", **JPL: named JPL ("JPL BNR BOP-BTT") + numbered ("JPL 28 BOO-CLT")** |
+| `normalize_jpl_identifier(ident)` | 505-546 | Normalize JPL station order + codes. Has **JPL_IDENTIFIER_OVERRIDES** table: `JPL 26N BJD-CLT` → `JPL 26N CLT` |
 | `extract_station_from_description(desc, sap_mapping, funcloc)` | 189-228 | Extrak station code dari desc/FLoc. Priority: SAP mapping → exact code → dash-split → name map. `CODE_ALIASES = {"CS": "COS"}` |
 | `original_images_by_name(reader, page_index)` | 179-184 | Ambil image object asli dari pypdf |
 | `export_multi_row(pdf, reader, ...)` | **644-790** | **NEW**: Multi-row export (WESEL/SINYAL/AXC). Ekstrak words→cari funcloc positions→group images by top clustering→map ke funcloc terdekat→export 3 foto per row |

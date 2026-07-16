@@ -34,6 +34,10 @@ Script references, detection logic, debugging → lihat [[AGENTS.md]].
 - [x] **WESEL/SINYAL/AXC → multi-row export** (1 PDF = 4-5 baris foto, funcloc per baris)
 
 ### Batch Results
+- **2026-07-16 09:30 WIB** — PTPP/JPL folder naming fix:
+  - `extract_jpl_from_filename()`: parse `PERAWATAN PTPP JPL 27 BOO-CLT 26-01-2026.pdf` → `JPL 27 BOO-CLT`
+  - `JPL_IDENTIFIER_OVERRIDES`: `JPL 26N BJD-CLT` → `JPL 26N CLT`
+  - Verifikasi: 3 PTPP PDF test export → folder bener (`JPL 27 BOO-CLT`, `JPL 28 BOO-CLT`, `JPL 26N CLT`)
 - **2026-07-15 15:55 WIB** — Full pipeline re-run (BTP routing + WESEL suffix + SINYAL multi-page):
   - Step 1: **4,521 foto** diekspor, **470 folder** (was 3594, +927)
   - Step 2: **278 date.txt** updated
@@ -80,6 +84,7 @@ python merge_pdf_foto.py --schedule schedule.json       # Step 5
 
 | Tanggal | Ringkasan Update | File Terkait |
 |---------|------------------|--------------|
+| [[Notes/Daily/2026-07-16\|**16 Jul**]] | Investigasi JPL naming inconsistency. Root cause: KEL2 pakai funcloc (salah), harusnya filename. Buat ADR-009, plan skrip `export_kel2_from_filename.py`. | `export_pdf_foto.py`, `Notes/Decisions/ADR-009-kel2-filename-export.md` |
 | [[Notes/Daily/2026-07-15\|**15 Jul**]] | BTP routing fix (re.findall compound ID). WESEL suffix folders. SINYAL multi-page. Edit timemark: date.txt reading, blur/textbox sync. BTP reorg 122 assets. 4521 foto, 1290 edit, 278 dates. | `export_pdf_foto.py`, `edit_timemark_ide1.py` |
 | [[Notes/Daily/2026-07-14\|**14 Jul**]] | Full pipeline fix: OTB→TELEKOM, BANGUNAN→PDSE, MULTIPLEX→PTLS, BOP-BTT split. Clean run: 474 foto, 156 edit, 79 PDF. | `export_pdf_foto.py`, `merge_pdf_foto.py` |
 | [[Notes/Daily/2026-07-13\|**13 Jul**]] | Station-based folder hierarchy (BREAKING CHANGE). 7 asset types full support. Dead code cleanup. | Semua 6 script + 3 JSON |
@@ -129,4 +134,5 @@ python merge_pdf_foto.py --schedule schedule.json       # Step 5
 | [[Notes/Decisions/ADR-002 - PDF Image Export via pypdf and pdfplumber\|ADR-002]] | Ekstraksi gambar via pypdf (original images) |
 | [[Notes/Decisions/ADR-003 - PDF Layout Parsing and Output Structure\|ADR-003]] | Aturan parsing layout PDF & struktur output |
 | [[Notes/Decisions/ADR-008-fix-36-missing-funcloc\|ADR-008]] | Fix 36 missing funcloc photos (pending) |
+| [[Notes/Decisions/ADR-009-kel2-filename-export\|ADR-009]] | KEL2 folder dari filename, bukan funcloc (planning) |
 
