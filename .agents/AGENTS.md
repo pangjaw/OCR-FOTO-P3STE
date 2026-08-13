@@ -1,19 +1,49 @@
 # Project Rules & Agent Instructions
 
-If you are an AI assistant working on this repository, please follow these guidelines to keep the project context organized.
+Repository ini adalah project OCR-FOTO-P3STE sekaligus Obsidian vault dokumentasi.
 
-## 🗂️ Knowledge Vault (Obsidian)
-This repository is configured as an **Obsidian Vault**. The workspace metadata and notes are stored at the root and in the `Notes/` directory:
-- [[Dashboard.md]] - Main entry point linking to all logs, code files, and decisions (patokan utama).
-- [[README.md]] - Contains the project goals and constraints.
-- [[setup.md]] - Contains environment setup and usage commands.
-- [[Notes/Daily/|Notes/Daily/]] - Holds daily update logs.
-- [[Notes/Decisions/|Notes/Decisions/]] - Architectural Decision Records (ADRs).
-- [[Notes/Templates/|Notes/Templates/]] - Reusable note templates.
+## Documentation entry point
 
-## 🤖 Instructions for AI Assistants
-1. **Read AGENTS.md First:** Always read the root [[AGENTS.md]] **before making ANY edits or proposing plans.** It contains the complete code map, function reference, data flow pipeline, and domain glossary.
-2. **Read Dashboard.md Second:** After AGENTS.md, read [[Dashboard.md]] for current task statuses.
-3. **Update After Working:** When you finish a task, update [[Dashboard.md]] if task statuses change.
-4. **Daily Logs:** If a new day starts, feel free to create a new log in `Notes/Daily/YYYY-MM-DD.md` using the [[Notes/Templates/Template - Daily Note|Template - Daily Note.md]] format.
-5. **Debug & Fix Rule (CRITICAL):** Jika user meminta "debug ocr dan stage nya" (atau perintah investigasi serupa), AI assistant **CUKUP** menampilkan hasil pembacaan OCR / data deteksi internal serta menjelaskan mengapa stage tersebut terpilih. **JANGAN langsung melakukan perbaikan/modifikasi kode (fix/edit file program) sebelum ada perintah atau konfirmasi persetujuan tertulis dari user!**
+- [[PROJECT_INDEX]] — indeks utama project dan peta file.
+- [[README]] — ringkasan untuk developer.
+- [[PRD]] — requirements dan acceptance criteria.
+- [[ARCHITECTURE]] — data flow, detector, dan positioning contract.
+- [[OPERATIONS]] — command, log, batch, dan troubleshooting.
+- [[CONTRIBUTING]] — aturan perubahan dan validasi.
+- [[setup]] — setup environment.
+- [[Notes/Decisions Index]] — keputusan teknis.
+- [[Notes/Experiments Index]] — eksperimen.
+- [[Notes/Daily Index]] — catatan kronologis.
+- [[Notes/Templates Index]] — template.
+
+## Agent workflow
+
+1. Baca file ini sebelum mengedit atau membuat rencana.
+2. Baca [[PROJECT_INDEX]] untuk menemukan file yang terkait dengan tugas.
+3. Baca [[PRD]] dan [[ARCHITECTURE]] jika tugas menyentuh behavior pipeline.
+4. Baca [[OPERATIONS]] sebelum menjalankan batch atau validasi operasional.
+5. Setelah bekerja, perbarui dokumentasi yang relevan jika status/behavior berubah.
+6. Jangan membuat atau merujuk path dokumentasi yang tidak ada.
+
+## Project map
+
+- `scripts/` — source pipeline Python/JavaScript.
+- `config/` — konfigurasi aplikasi.
+- `01_pdf_source/` sampai `05_pdf_merged/` — data flow input/output.
+- `logs/` — evidence, audit, report, dan preview.
+- `Notes/` — keputusan, eksperimen, daily log, dan template.
+
+## Communication preference
+
+- Gunakan bahasa Indonesia sederhana, seperti menjelaskan kepada pengguna aplikasi yang tidak memahami program.
+- Sampaikan kesimpulan utama terlebih dahulu.
+- Jelaskan istilah teknis dengan contoh sederhana.
+- Bedakan dengan jelas: sudah diperbaiki, belum dilakukan, dan langkah berikutnya.
+- Sebelum menangani bug lama, baca [[Notes/Decisions/Bug Fix History]] dan [[Notes/Decisions/Active Pipeline Rules]].
+
+## Safety rules
+
+- Jika user meminta debug OCR/stage, tampilkan data internal dan alasan stage; jangan langsung memperbaiki kode sebelum ada persetujuan tertulis.
+- Posisi tanggal harus ditentukan dari guide pada foto yang sedang diproses; posisi foto lain bukan ground truth.
+- Jika user meminta menampilkan gambar, salin hasil ke `logs/` terlebih dahulu lalu tampilkan path `logs/`.
+- Pertahankan comments/docstrings yang tidak terkait dengan perubahan.
