@@ -3,9 +3,15 @@ import csv
 import json
 import os
 import re
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 import pdfplumber
 from pypdf import PdfReader
@@ -1246,17 +1252,20 @@ def resolve_inputs(args: argparse.Namespace) -> list[Path]:
 
 
 def main() -> int:
+    import json
+    import traceback
+
     args = parse_args()
     pdf_paths = resolve_inputs(args)
     if not pdf_paths:
-        print("Tidak ada file PDF untuk diproses.")
-        return 1
+        print("[WARNING] Tidak ada file PDF untuk diproses di folder input.")
+        return 0
 
     sap_mapping = load_sap_mapping(args.sap_mapping)
     if sap_mapping:
-        print(f"[INFO] Loaded SAP mapping: {len(sap_mapping)} Functional Locations")
+        print(f"[INFO] Loaded SAP mapping: {len(sap_mapping)} Functional Locations", flush=True)
     else:
-        print("[WARNING] No SAP mapping loaded")
+        print("[WARNING] No SAP mapping loaded", flush=True)
 
     input_root = Path(args.input)
     output_root = Path(args.output)
@@ -1264,18 +1273,79 @@ def main() -> int:
     ensure_dir(output_root)
     ensure_dir(log_dir)
 
-    total = 0
-    for pdf_path in pdf_paths:
-        if not pdf_path.exists():
-            print(f"[SKIP] Tidak ditemukan: {pdf_path}")
-            continue
-        exported = export_pdf(pdf_path, output_root, log_dir,
-                              args.start_page, args.resolution, input_root, sap_mapping)
-        total += exported
-        print(f"[OK] {pdf_path.name}: {exported} foto diekspor")
+    total_exported = 0
+    success_files = []
+    failed_files = []
+    skipped_files = []
 
-    print(f"Selesai. Total foto diekspor: {total}")
-    return 0 if total > 0 else 1
+    print(f"\n[START] Memulai ekstraksi foto dari {len(pdf_paths)} file PDF...\n", flush=True)
+
+    for idx, pdf_path in enumerate(pdf_paths, 1):
+        if not pdf_path.exists():
+            print(f"[{idx}/{len(pdf_paths)}] ⏩ [SKIP] File tidak ditemukan: {pdf_path.name}", flush=True)
+            skipped_files.append(pdf_path.name)
+            continue
+
+        print(f"[{idx}/{len(pdf_paths)}] 📄 {pdf_path.name}", flush=True)
+        try:
+            exported = export_pdf(pdf_path, output_root, log_dir,
+                                  args.start_page, args.resolution, input_root, sap_mapping)
+            total_exported += exported
+            success_files.append(pdf_path.name)
+            if exported > 0:
+                print(f"  └── [OK] {exported} foto berhasil diekspor\n", flush=True)
+            else:
+                print(f"  └── [SKIP] Foto sudah ada / dilewati (0 foto baru)\n", flush=True)
+        except Exception as exc:
+            tb = traceback.format_exc()
+            err_type = type(exc).__name__
+            err_msg = str(exc)
+            failed_files.append({
+                "file": pdf_path.name,
+                "error_type": err_type,
+                "error_msg": err_msg,
+                "traceback": tb
+            })
+            print(f"  ├── Jenis Kesalahan : {err_type}", flush=True)
+            print(f"  ├── Keterangan      : {err_msg}", flush=True)
+            tb_lines = [line.strip() for line in tb.strip().split("\n") if line.strip()]
+            loc = tb_lines[-2] if len(tb_lines) >= 2 else str(exc)
+            print(f"  └── ❌ [ERROR] Gagal pada baris: {loc}\n", flush=True)
+
+    # ── Print Comprehensive Summary ──
+    print("\n" + "=" * 65, flush=True)
+    print("📊 RINGKASAN PROSES EKSPOR FOTO (Step 1):", flush=True)
+    print(f"  • Total File PDF Discan   : {len(pdf_paths)} file", flush=True)
+    print(f"  • Berhasil Diproses       : {len(success_files)} file", flush=True)
+    print(f"  • Total Foto Diekspor     : {total_exported} foto", flush=True)
+    print(f"  • File Dilewati (Skip)    : {len(skipped_files)} file", flush=True)
+    print(f"  • File Mengalami Error    : {len(failed_files)} file", flush=True)
+    print("=" * 65, flush=True)
+
+    if failed_files:
+        print("\n⚠️ DAFTAR LENGKAP FILE YANG GAGAL DIPROSES:", flush=True)
+        for num, item in enumerate(failed_files, 1):
+            print(f"  {num}. {item['file']}", flush=True)
+            print(f"     └─ [{item['error_type']}]: {item['error_msg']}", flush=True)
+
+        # Save structured error report to logs
+        err_json_path = log_dir / "export_errors.json"
+        try:
+            with open(err_json_path, "w", encoding="utf-8") as ef:
+                json.dump({
+                    "total_pdf": len(pdf_paths),
+                    "failed_count": len(failed_files),
+                    "errors": failed_files
+                }, ef, indent=2, ensure_ascii=False)
+            print(f"\n📄 Detail error lengkap tersimpan di: {err_json_path}", flush=True)
+        except Exception as log_err:
+            print(f"[WARN] Gagal menyimpan log error ke JSON: {log_err}", flush=True)
+
+        print("\n❌ Pipeline dihentikan karena terdapat file yang gagal diproses.", flush=True)
+        return 1
+
+    print("\n✅ SELURUH FILE PDF BERHASIL DIPROSES TANPA ERROR!\n", flush=True)
+    return 0
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@
 - **Tanggal:** 2026-07-07
 - **Pembuat:** Antigravity / User
 
-> [[Dashboard]] | [[Notes/Decisions/ADR-002 - PDF Image Export via pypdf and pdfplumber|ADR-002 →]]
+> [[PROJECT_INDEX]] | [[Notes/Decisions/ADR-002 - PDF Image Export via pypdf and pdfplumber|ADR-002 →]]
 
 ## Konteks & Latar Belakang
 Proyek ini membutuhkan kemampuan untuk mendeteksi warna anchor (garis merah/oranye) pada watermark foto Timemark, menghapus tanggal lama, lalu menimpa dengan tanggal baru. 

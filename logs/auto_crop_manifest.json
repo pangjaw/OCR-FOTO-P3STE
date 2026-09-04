@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-02T00:45:36",
+  "method": "white_seam_isolation",
+  "total_scanned": 1158,
+  "total_collages_cropped": 2,
+  "collages": [
+    {
+      "rel_path": "BTP BD/PTDS/COS/0.jpg",
+      "layout": "2x2",
+      "original_size": [
+        300,
+        300
+      ],
+      "crop_box": [
+        0,
+        0,
+        161,
+        161
+      ],
+      "stats": {
+        "v_pct": 1.0,
+        "h_pct": 0.887,
+        "bottom_v_pct": 1.0,
+        "split_x": 161,
+        "split_y": 161
+      },
+      "output_path": "03_photos_cropped_temp\\BTP BD\\PTDS\\COS\\0.jpg"
+    },
+    {
+      "rel_path": "BTP BD/PTLS/BOP/100.jpg",
+      "layout": "3_in_1",
+      "original_size": [
+        300,
+        300
+      ],
+      "crop_box": [
+        0,
+        0,
+        300,
+        138
+      ],
+      "stats": {
+        "v_pct": 0.877,
+        "h_pct": 0.827,
+        "bottom_v_pct": 0.837,
+        "split_x": 160,
+        "split_y": 138
+      },
+      "output_path": "03_photos_cropped_temp\\BTP BD\\PTLS\\BOP\\100.jpg"
+    }
+  ]
+}

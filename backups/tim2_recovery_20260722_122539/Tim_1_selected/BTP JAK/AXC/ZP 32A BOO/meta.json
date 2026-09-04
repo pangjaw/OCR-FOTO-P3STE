@@ -1,0 +1,20 @@
+{
+  "0.jpg": {
+    "yPos": 160,
+    "xPos": 15,
+    "dateText": "Kamis, Agt 07 2025 07:00",
+    "updatedAt": "2026-07-21T10:52:17.468Z"
+  },
+  "100.jpg": {
+    "yPos": 160,
+    "xPos": 15,
+    "dateText": "Kamis, Agt 07 2025 07:45",
+    "updatedAt": "2026-07-21T10:52:18.453Z"
+  },
+  "50.jpg": {
+    "yPos": 160,
+    "xPos": 15,
+    "dateText": "Kamis, Agt 07 2025 07:23",
+    "updatedAt": "2026-07-21T10:52:19.457Z"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "0.jpg": {
+    "timeText": "16:00",
+    "xPos": 243,
+    "yPos": 8,
+    "box": [
+      243,
+      8,
+      292,
+      24
+    ],
+    "fontSize": 16,
+    "opacity": 140,
+    "imageSize": [
+      300,
+      300
+    ],
+    "updatedAt": "2026-09-02T00:49:47.189944"
+  },
+  "100.jpg": {
+    "timeText": "16:30",
+    "xPos": 243,
+    "yPos": 8,
+    "box": [
+      243,
+      8,
+      292,
+      24
+    ],
+    "fontSize": 16,
+    "opacity": 140,
+    "imageSize": [
+      300,
+      300
+    ],
+    "updatedAt": "2026-09-02T00:49:47.208274"
+  },
+  "50.jpg": {
+    "timeText": "16:15",
+    "xPos": 243,
+    "yPos": 8,
+    "box": [
+      243,
+      8,
+      292,
+      24
+    ],
+    "fontSize": 16,
+    "opacity": 140,
+    "imageSize": [
+      300,
+      300
+    ],
+    "updatedAt": "2026-09-02T00:49:47.227256"
+  }
+}

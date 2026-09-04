@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR Foto Timemark - Portable Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0d1117;
+      --panel-bg: #161b22;
+      --card-bg: #21262d;
+      --border-color: #30363d;
+      --primary: #238636;
+      --primary-hover: #2ea043;
+      --accent: #58a6ff;
+      --accent-hover: #79c0ff;
+      --warning: #d29922;
+      --danger: #f85149;
+      --text-main: #c9d1d9;
+      --text-heading: #f0f6fc;
+      --text-muted: #8b949e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* SIDEBAR NAVIGATION (FIXED POSITION) */
+    aside.sidebar {
+      width: 260px;
+      height: 100vh;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    aside.sidebar.collapsed {
+      width: 68px;
+    }
+
+    .sidebar-header {
+      padding: 16px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      height: 64px;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .brand-logo {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #238636, #1f6feb);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: #fff; font-size: 15px; flex-shrink: 0;
+    }
+
+    .sidebar-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-heading);
+      transition: opacity 0.2s;
+    }
+
+    aside.sidebar.collapsed .sidebar-title,
+    aside.sidebar.collapsed .nav-text,
+    aside.sidebar.collapsed .status-badge-text {
+      display: none;
+    }
+
+    .toggle-sidebar-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-sidebar-btn:hover { color: var(--text-heading); background: rgba(255,255,255,0.1); }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-tab {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .nav-tab:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .nav-tab.active {
+      background: var(--card-bg);
+      color: var(--accent);
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* MAIN WRAPPER & HEADER */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .top-header {
+      height: 64px;
+      background: rgba(22, 27, 34, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .page-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-heading);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 13px; font-weight: 500;
+      background: rgba(46, 160, 67, 0.15); color: #3fb950;
+      border: 1px solid rgba(46, 160, 67, 0.3);
+    }
+    .status-badge.running {
+      background: rgba(210, 153, 34, 0.15); color: var(--warning);
+      border-color: rgba(210, 153, 34, 0.3);
+    }
+
+    /* MAIN CONTENT AREA */
+    main { flex: 1; padding: 24px 28px; display: flex; flex-direction: column; gap: 24px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; flex-direction: column; gap: 24px; }
+
+    /* UPLOAD TABLES & PIPELINE PANEL */
+    .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card {
+      background: var(--panel-bg); border: 1px solid var(--border-color);
+      border-radius: 10px; padding: 20px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border-color); padding-bottom: 12px;
+    }
+    .card-title { font-size: 16px; font-weight: 600; color: var(--text-heading); display: flex; align-items: center; gap: 8px; }
+
+    .dropzone {
+      border: 2px dashed var(--border-color); border-radius: 8px;
+      padding: 24px; text-align: center; background: rgba(0,0,0,0.15);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: rgba(88, 166, 255, 0.12); }
+
+    .btn {
+      padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1px solid transparent; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-accent { background: #1f6feb; color: #fff; }
+    .btn-accent:hover { background: #388bfd; }
+    .btn-outline { background: transparent; border-color: var(--border-color); color: var(--text-main); }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--text-muted); }
+    .btn-danger { background: rgba(248, 81, 73, 0.15); color: var(--danger); border-color: rgba(248, 81, 73, 0.3); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+
+    /* TABLES */
+    .table-container { max-height: 220px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+    th { background: var(--card-bg); padding: 10px 14px; font-weight: 600; color: var(--text-muted); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border-color); }
+    tr:last-child td { border-bottom: none; }
+
+    /* LOG TERMINAL */
+    .terminal {
+      background: #040d18; border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 16px; font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12px; color: #7ee787; height: 240px; overflow-y: auto;
+      white-space: pre-wrap; line-height: 1.5;
+    }
+
+    /* GALLERY PHOTO VIEWER */
+    .gallery-sticky-header {
+      position: sticky;
+      top: -24px;
+      z-index: 80;
+      background: var(--panel-bg);
+      padding-top: 4px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .gallery-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .input-search, .select-control {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      color: var(--text-main); padding: 8px 12px; border-radius: 6px; font-size: 13px;
+    }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+    .gallery-card {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .gallery-card-header { font-size: 12px; font-weight: 600; color: var(--accent); display: flex; justify-content: space-between; }
+    .gallery-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .img-box {
+      border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden;
+      aspect-ratio: 1; background: #000; position: relative; cursor: pointer;
+    }
+    .img-box img { width: 100%; height: 100%; object-fit: contain; }
+    .img-tag {
+      position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.7);
+      color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px;
+    }
+
+    /* PDF PREVIEW — sidebar layout */
+    .pdf-viewer-container { display: flex; gap: 14px; height: calc(100vh - 180px); }
+    .pdf-sidebar { width: 300px; min-width: 260px; display: flex; flex-direction: column; gap: 10px; background: var(--panel-bg); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); overflow-y: auto; }
+    .pdf-sidebar-label { font-size: 14px; font-weight: 600; color: var(--text-heading); }
+    .pdf-file-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex: 1; }
+    .pdf-file-item { padding: 8px 10px; font-size: 12px; border-radius: 6px; cursor: pointer; color: var(--text-primary); border: 1px solid transparent; transition: all 0.15s; word-break: break-all; }
+    .pdf-file-item:hover { background: var(--hover-bg, rgba(255,255,255,0.06)); border-color: var(--border-color); }
+    .pdf-file-item.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+    .pdf-main { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .pdf-main .pdf-toolbar { display: flex; align-items: center; gap: 10px; background: var(--panel-bg); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); }
+    iframe.pdf-frame { width: 100%; flex: 1; border: 1px solid var(--border-color); border-radius: 8px; background: #525659; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(4px);
+      z-index: 200; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+
+    /* INTERACTIVE FREEFORM VISUAL CROPPER */
+    .crop-canvas-container {
+      position: relative; width: 340px; height: 340px; margin: 0 auto;
+      border: 2px dashed var(--accent); border-radius: 8px; overflow: hidden; background: #000;
+      user-select: none; touch-action: none;
+    }
+    .crop-canvas-container img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+    .crop-box-selection {
+      position: absolute; border: 2px solid #3fb950; background: rgba(63, 185, 80, 0.2);
+      cursor: move; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+    }
+    .crop-handle {
+      position: absolute; width: 10px; height: 10px; background: #3fb950; border: 1px solid #fff;
+      border-radius: 50%; z-index: 10;
+    }
+    .handle-tl { top: -5px; left: -5px; cursor: nwse-resize; }
+    .handle-tr { top: -5px; right: -5px; cursor: nesw-resize; }
+    .handle-bl { bottom: -5px; left: -5px; cursor: nesw-resize; }
+    .handle-br { bottom: -5px; right: -5px; cursor: nwse-resize; }
+    .handle-t { top: -5px; left: calc(50% - 5px); cursor: ns-resize; }
+    .handle-b { bottom: -5px; left: calc(50% - 5px); cursor: ns-resize; }
+    .handle-l { top: calc(50% - 5px); left: -5px; cursor: ew-resize; }
+    .handle-r { top: calc(50% - 5px); right: -5px; cursor: ew-resize; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="brand-logo">OCR</div>
+        <div class="sidebar-title">OCR Foto Timemark</div>
+      </div>
+      <button class="toggle-sidebar-btn" id="toggleSidebarBtn" onclick="toggleSidebar()" title="Hide/Show Sidebar">◀</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-tab active" onclick="switchTab('uploadTab', this)">
+        <span class="nav-icon">📂</span>
+        <span class="nav-text">Upload & Pipeline</span>
+      </div>
+      <div class="nav-tab" onclick="switchTab('galleryTab', this)">
+        <span class="nav-icon">🖼️</span>
+        <span class="nav-text">Photo Viewer</span>
+      </div>
+      <div class="nav-tab" onclick="switchTab('analyzerTab', this)">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-text">Quality Analyzer</span>
+      </div>
+      <div class="nav-tab" onclick="switchTab('pdfTab', this)">
+        <span class="nav-icon">📑</span>
+        <span class="nav-text">PDF Preview</span>
+      </div>
+      <div class="nav-tab" onclick="switchTab('inspectorTab', this)">
+        <span class="nav-icon">🎨</span>
+        <span class="nav-text">Pixel Inspector</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div style="font-size:11px; color:var(--text-muted); text-align:center;" class="status-badge-text">Engine v2.5 Portable</div>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="page-title" id="pageTitleText">📂 Upload & Execution Pipeline</div>
+      <div class="status-badge" id="statusBadge">
+        <span style="width:8px; height:8px; border-radius:50%; background:currentColor;"></span>
+        <span id="statusText">System Ready</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- TAB 1: UPLOAD & PIPELINE -->
+      <div class="tab-content active" id="uploadTab">
+        <div class="grid-2col">
+          <!-- Folder 1: Source PDF 2026 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                📁 01_pdf_source (PDF 2026)
+                <span class="status-badge" id="countBadgeSource" style="font-size:11px; padding:2px 8px;">0 Berkas</span>
+              </div>
+              <button class="btn btn-outline" onclick="loadFiles()">🔄 Refresh</button>
+            </div>
+            <div class="dropzone" id="dropzoneSource" onclick="document.getElementById('fileInputSource').click()">
+              <p style="font-size:14px; font-weight:500; color:var(--text-heading);">Drag & Drop Berkas PDF 2026 di sini</p>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">atau klik untuk memilih berkas PDF</p>
+              <input type="file" id="fileInputSource" multiple accept=".pdf" style="display:none" onchange="uploadFiles('source', this.files); this.value='';">
+            </div>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Nama File PDF</th><th>Ukuran</th><th>Aksi</th></tr></thead>
+                <tbody id="sourceFileTable"><tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Memuat berkas...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Folder 2: Target PDF 2025 -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                📁 02_pdf_target (PDF 2025 Target)
+                <span class="status-badge" id="countBadgeTarget" style="font-size:11px; padding:2px 8px;">0 Berkas</span>
+              </div>
+              <button class="btn btn-outline" onclick="loadFiles()">🔄 Refresh</button>
+            </div>
+            <div class="dropzone" id="dropzoneTarget" onclick="document.getElementById('fileInputTarget').click()">
+              <p style="font-size:14px; font-weight:500; color:var(--text-heading);">Drag & Drop Berkas PDF 2025 di sini</p>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">atau klik untuk memilih berkas PDF</p>
+              <input type="file" id="fileInputTarget" multiple accept=".pdf" style="display:none" onchange="uploadFiles('target', this.files); this.value='';">
+            </div>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Nama File PDF</th><th>Ukuran</th><th>Aksi</th></tr></thead>
+                <tbody id="targetFileTable"><tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Memuat berkas...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pipeline Control Panel -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚙️ Execution Pipeline Control</div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-primary" onclick="runStep('all')">🚀 Run All Pipeline Steps</button>
+              <button class="btn btn-danger" onclick="stopPipeline()">🛑 Stop Execution</button>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-outline" onclick="runStep('step1')">Step 1: Export Foto</button>
+            <button class="btn btn-outline" onclick="runStep('step1.5')">Step 1.5: Crop Kolase</button>
+            <button class="btn btn-outline" onclick="runStep('step2')">Step 2: Extract Dates</button>
+            <button class="btn btn-outline" onclick="runStep('step3')">Step 3: Scheduler</button>
+            <button class="btn btn-outline" onclick="runStep('step4')">Step 4: Edit Timemark</button>
+            <button class="btn btn-outline" onclick="runStep('step5')">Step 5: Merge PDF</button>
+          </div>
+          <div class="terminal" id="terminalLog">System Ready. Click a pipeline step button to execute script...</div>
+        </div>
+      </div>
+
+      <!-- TAB 2: PHOTO VIEWER GALLERY -->
+      <div class="tab-content" id="galleryTab">
+        <div class="card">
+          <div class="gallery-sticky-header">
+            <div class="card-header" style="border-bottom:none; padding-bottom:0;">
+              <div class="card-title">
+                🖼️ Dual Photo Comparison Gallery
+                <span class="status-badge" id="countBadgePhotoTotal" style="font-size:11px; padding:2px 8px; cursor:pointer;" onclick="filterByStatus('ALL')" title="Klik untuk tampilkan semua foto">0 Total Foto</span>
+                <span class="status-badge" id="countBadgePhotoEdited" style="font-size:11px; padding:2px 8px; background:rgba(46,160,67,0.15); color:#3fb950; cursor:pointer;" onclick="filterByStatus('EDITED')" title="Klik untuk filter foto ter-edit">0 ✅ Timemarked</span>
+                <span class="status-badge" id="countBadgePhotoRaw" style="font-size:11px; padding:2px 8px; background:rgba(210,153,34,0.15); color:var(--warning); cursor:pointer;" onclick="filterByStatus('UNEDITED')" title="Klik untuk filter foto belum di-edit">0 ⏳ Raw Only</span>
+              </div>
+              <button class="btn btn-outline" onclick="loadGallery()">🔄 Refresh Gallery</button>
+            </div>
+            <div class="gallery-controls">
+              <input type="text" id="gallerySearch" class="input-search" placeholder="Cari aset (e.g. ZP 72 BOO)..." oninput="filterGallery()">
+              <select id="categoryFilter" class="select-control" onchange="filterGallery()">
+                <option value="ALL">Semua Kategori Aset</option>
+                <option value="UNEDITED">⏳ BELUM DI-EDIT (Unedited / Raw Only)</option>
+                <option value="EDITED">✅ SUDAH DI-EDIT (Timemarked)</option>
+                <option value="AXC">AXC</option>
+                <option value="WESEL">WESEL</option>
+                <option value="SINYAL">SINYAL</option>
+                <option value="CATUDAYA">CATUDAYA</option>
+                <option value="SERAT OPTIK">SERAT OPTIK</option>
+                <option value="JPL">JPL</option>
+                <option value="PDSE">PDSE</option>
+                <option value="PTPP">PTPP</option>
+                <option value="PTDS">PTDS</option>
+                <option value="PTLS">PTLS</option>
+                <option value="CTS">CTS</option>
+              </select>
+              <span style="font-size:13px; color:var(--text-muted);" id="galleryCount">Showing 0 photos</span>
+            </div>
+          </div>
+          <div class="gallery-grid" id="galleryGrid">
+            <p style="color:var(--text-muted);">Memuat galeri foto...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: QUALITY ANALYZER (Misposition + Collage) -->
+      <div class="tab-content" id="analyzerTab">
+        <!-- Sub-tab header -->
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <button id="subTabMisposition" class="btn btn-primary" onclick="switchAnalyzerSubTab('misposition')" style="font-size:13px;">🔍 Misposition Analyzer</button>
+          <button id="subTabCollage" class="btn btn-outline" onclick="switchAnalyzerSubTab('collage')" style="font-size:13px;">🗂️ Collage Analyzer</button>
+        </div>
+
+        <!-- Sub-tab: Misposition Analyzer -->
+        <div id="analyzerSubMisposition" class="card">
+          <div class="card-header">
+            <div class="card-title">
+              🔍 Timemark Misposition Quality Analyzer
+              <span class="status-badge" id="badgeAnalyzerTotal" style="font-size:11px; padding:2px 8px;">0 Foto Audited</span>
+              <span class="status-badge" id="badgeAnalyzerHigh" style="font-size:11px; padding:2px 8px; background:rgba(248,81,73,0.15); color:var(--danger); cursor:pointer;" onclick="filterAnalyzer('HIGH')">0 🚨 High Risk</span>
+              <span class="status-badge" id="badgeAnalyzerMed" style="font-size:11px; padding:2px 8px; background:rgba(210,153,34,0.15); color:var(--warning); cursor:pointer;" onclick="filterAnalyzer('MEDIUM')">0 ⚠️ Medium Risk</span>
+              <span class="status-badge" id="badgeAnalyzerLow" style="font-size:11px; padding:2px 8px; background:rgba(46,160,67,0.15); color:#3fb950; cursor:pointer;" onclick="filterAnalyzer('LOW')">0 ✅ Low Risk</span>
+            </div>
+            <button class="btn btn-primary" onclick="runAnalyzer()">🚀 Jalankan Audit Otomatis</button>
+          </div>
+          <div class="gallery-controls">
+            <select id="analyzerRiskFilter" class="select-control" onchange="renderAnalyzerResults()">
+              <option value="ALL">Semua Tingkat Risiko</option>
+              <option value="HIGH">🚨 HANYA FOTO RISIKO TINGGI (High Risk / Mispositioned)</option>
+              <option value="MEDIUM">⚠️ FOTO RISIKO SEDANG (Medium Risk / Variance)</option>
+              <option value="LOW">✅ FOTO PRESISI TINGGI (Low Risk)</option>
+            </select>
+            <span style="font-size:13px; color:var(--text-muted);" id="analyzerCountText">Memuat laporan audit...</span>
+          </div>
+          <div class="table-container" style="max-height: calc(100vh - 320px);">
+            <table>
+              <thead>
+                <tr>
+                  <th>Lokasi Berkas / Aset</th>
+                  <th>Risiko</th>
+                  <th>Posisi Y / Median</th>
+                  <th>Alasan Temuan Audit</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="analyzerTableBody">
+                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Klik "Jalankan Audit Otomatis" untuk mendeteksi foto melenceng.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Sub-tab: Collage Analyzer -->
+        <div id="analyzerSubCollage" class="card" style="display:none;">
+          <div class="card-header">
+            <div class="card-title">
+              🗂️ Collage Analyzer
+              <span class="status-badge" id="badgeCollageTotal" style="font-size:11px; padding:2px 8px;">-</span>
+              <span class="status-badge" id="badgeCollageChecked" style="font-size:11px; padding:2px 8px; background:rgba(46,160,67,0.15); color:#3fb950;">0 Dipilih</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-outline" id="btnScanCollages" onclick="scanCollages()">🔍 Scan Foto Kolase</button>
+              <button class="btn btn-outline" id="btnBatalkanSemua" onclick="batalkanSemuaCrop()" disabled style="color:var(--danger);">🗑️ Batalkan Semua</button>
+              <button class="btn btn-primary" id="btnSaveCrops" onclick="saveCollagesCrop()" disabled>💾 Simpan Crop (0 Foto)</button>
+            </div>
+          </div>
+          <div id="collageAnalyzerStatus" style="padding:8px 0; font-size:13px; color:var(--text-muted);">Klik "Scan Foto Kolase" untuk mendeteksi kolase di folder 03_photos_export.</div>
+          <div id="collageGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px; margin-top:12px; max-height:calc(100vh - 320px); overflow-y:auto;"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: PDF PREVIEW -->
+      <div class="tab-content" id="pdfTab">
+        <div class="pdf-viewer-container">
+          <!-- Left: File list panel -->
+          <div class="pdf-sidebar">
+            <div class="pdf-sidebar-label">📑 Merged PDFs</div>
+            <span class="status-badge" id="countBadgePDFTotal" style="font-size:11px; padding:2px 8px; align-self:flex-start;">0 Documents</span>
+            <button class="btn btn-outline" onclick="loadPDFList()" style="font-size:12px; padding:6px 10px; width:100%;">🔄 Refresh</button>
+            <div class="pdf-file-list" id="pdfFileList"></div>
+            <div id="pdfEmptyState" style="display:none; flex-direction:column; align-items:center; gap:10px; color:var(--text-muted); padding-top:20px;">
+              <div style="font-size:48px;">📭</div>
+              <div style="font-size:13px; font-weight:600;">No merged PDFs found</div>
+              <div style="font-size:11px; text-align:center;">Run Step 5 (Merge PDF) from the<br>Upload & Pipeline tab first</div>
+            </div>
+          </div>
+          <!-- Right: Preview area -->
+          <div class="pdf-main">
+            <div class="pdf-toolbar">
+              <span class="status-badge" id="currentPdfLabel" style="font-size:11px; padding:2px 8px;">No PDF selected</span>
+              <button class="btn btn-accent" onclick="jumpToPage(1)">📋 Page 1</button>
+              <button class="btn btn-primary" onclick="jumpToPage(3)">🖼️ Page 3</button>
+            </div>
+            <iframe id="pdfFrame" class="pdf-frame" src="about:blank"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PIXEL INSPECTOR -->
+      <div class="tab-content" id="inspectorTab">
+        <div class="card" style="height: calc(100vh - 180px); padding:0; overflow:hidden;">
+          <iframe src="/pixel-inspector" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MANUAL TIMEMARK EDITOR MODAL -->
+  <div class="modal-overlay" id="manualEditModal">
+    <div class="card" style="width:740px; max-width:92vw; background:var(--panel-bg);">
+      <div class="card-header">
+        <div class="card-title">✏️ Editor Timemark Manual</div>
+        <button class="btn btn-outline" onclick="closeManualEditModal()">❌ Tutup</button>
+      </div>
+      <div style="display:grid; grid-template-columns: 320px 1fr; gap:20px;">
+        <!-- Canvas Container -->
+        <div style="position:relative; border:1px solid var(--border-color); border-radius:6px; overflow:hidden; background:#000; height:320px; cursor:crosshair;" onclick="handleModalCanvasClick(event)" id="modalCanvasContainer">
+          <img id="modalImgPreview" style="width:100%; height:100%; object-fit:contain;">
+          <div id="modalBoxOverlay" style="position:absolute; border:2px solid #58a6ff; background:rgba(88,166,255,0.25); pointer-events:none; width:144px; height:16px; top:73.3%; left:4.7%;"></div>
+        </div>
+        <!-- Form Controls -->
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="font-size:13px; font-weight:600; color:var(--text-heading);" id="modalPhotoTitle">Detail Foto: -</div>
+          <div>
+            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Teks Timemark Watermark:</label>
+            <input type="text" id="modalDateText" class="input-search" style="width:100%; font-family:monospace;" placeholder="Rabu, Jul 08 2026 07:00">
+          </div>
+          <div>
+            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Posisi Y Textbox (<span id="lblYPos">220</span> px):</label>
+            <input type="range" id="rngYPos" min="0" max="280" value="220" style="width:100%;" oninput="updateModalBoxFromSliders()">
+          </div>
+          <div>
+            <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Posisi X Textbox (<span id="lblXPos">14</span> px):</label>
+            <input type="range" id="rngXPos" min="0" max="280" value="14" style="width:100%;" oninput="updateModalBoxFromSliders()">
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+            <input type="checkbox" id="chkApplyToFolder" style="width:16px; height:16px; cursor:pointer;">
+            <label for="chkApplyToFolder" style="font-size:12px; color:var(--text-heading); cursor:pointer;">
+              Samakan posisi & tanggal ke foto 0, 50, dan 100 di folder ini
+            </label>
+          </div>
+          <p style="font-size:11px; color:var(--text-muted); line-height:1.4;">💡 Petunjuk: Anda bisa mengklik langsung area mana saja pada gambar di sebelah kiri untuk menentukan posisi kotak timemark secara instan!</p>
+          <div style="display:flex; gap:10px; margin-top:auto;">
+            <button class="btn btn-outline" style="flex:1;" onclick="openManualCropModal(currentEditPhoto)">✂️ Potong Kolase Manual</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="saveManualTimemark()">💾 Simpan Timemark Baru</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANUAL CROP MODAL -->
+  <div class="modal-overlay" id="manualCropModal">
+    <div class="card" style="width:620px; max-width:94vw; background:var(--panel-bg);">
+      <div class="card-header">
+        <div class="card-title">✂️ Pemotong Kolase Manual (Visual Drag & Resize)</div>
+        <button class="btn btn-outline" onclick="closeManualCropModal()">❌ Tutup</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="font-size:12px; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+          <span id="cropPhotoTitle">Memuat foto kolase...</span>
+          <span id="cropStatsText" style="font-family:monospace; color:var(--accent); font-weight:600;">Area: 50% x 50%</span>
+        </div>
+        
+        <!-- Interactive Visual Crop Canvas -->
+        <div class="crop-canvas-container" id="cropCanvasContainer">
+          <img id="cropImgPreview" src="about:blank" alt="Kolase Asli">
+          <div class="crop-box-selection" id="cropBoxSelection">
+            <div class="crop-handle handle-tl" data-handle="tl"></div>
+            <div class="crop-handle handle-tr" data-handle="tr"></div>
+            <div class="crop-handle handle-bl" data-handle="bl"></div>
+            <div class="crop-handle handle-br" data-handle="br"></div>
+            <div class="crop-handle handle-t" data-handle="t"></div>
+            <div class="crop-handle handle-b" data-handle="b"></div>
+            <div class="crop-handle handle-l" data-handle="l"></div>
+            <div class="crop-handle handle-r" data-handle="r"></div>
+          </div>
+        </div>
+
+        <!-- Quick Presets -->
+        <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+          <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setCropPreset('bottom-left')">↙ Bawah Kiri (Default)</button>
+          <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setCropPreset('top-left')">↖ Atas Kiri</button>
+          <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setCropPreset('top-right')">↗ Atas Kanan</button>
+          <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setCropPreset('bottom-right')">↘ Bawah Kanan</button>
+          <button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setCropPreset('full')">🔄 Reset 100%</button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; justify-content:center;">
+          <input type="checkbox" id="chkCropApplyToFolder" style="accent-color:var(--accent);">
+          <label for="chkCropApplyToFolder" style="font-size:12px; cursor:pointer;">Terapkan area crop ini juga ke seluruh foto lain di folder ini (0.jpg, 50.jpg, 100.jpg)</label>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button class="btn btn-outline" onclick="closeManualCropModal()">Batal</button>
+          <button class="btn btn-primary" onclick="executeManualCrop()" id="btnExecuteCrop">✂️ Potong Gambar Ini</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allGalleryPhotos = [];
+    let currentEditPhoto = null;
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('appSidebar');
+      const btn = document.getElementById('toggleSidebarBtn');
+      sidebar.classList.toggle('collapsed');
+
+      if (sidebar.classList.contains('collapsed')) {
+        btn.textContent = '▶';
+      } else {
+        btn.textContent = '◀';
+      }
+    }
+
+    let analyzerSummary = null;
+
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.sidebar .nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      if (el) el.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+
+      const titleMap = {
+        'uploadTab': '📂 Upload & Execution Pipeline',
+        'galleryTab': '🖼️ Photo Viewer & Comparison Gallery',
+        'analyzerTab': '🔍 Timemark Misposition Quality Analyzer',
+        'pdfTab': '📑 PDF Preview',
+        'inspectorTab': '🎨 Pixel Inspector'
+      };
+      document.getElementById('pageTitleText').textContent = titleMap[tabId] || 'Dashboard';
+
+      if (tabId === 'galleryTab') loadGallery();
+      if (tabId === 'analyzerTab') runAnalyzer();
+      if (tabId === 'pdfTab') loadPDFList();
+    }
+
+    async function runAnalyzer() {
+      const tbody = document.getElementById('analyzerTableBody');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Memindai dan menganalisis presisi timemark...</td></tr>`;
+      }
+
+      try {
+        const res = await fetch('/api/photos/analyze-misposition');
+        analyzerSummary = await res.json();
+
+        document.getElementById('badgeAnalyzerTotal').textContent = `${analyzerSummary.total} Foto Audited`;
+        document.getElementById('badgeAnalyzerHigh').textContent = `${analyzerSummary.highRisk} 🚨 High Risk`;
+        document.getElementById('badgeAnalyzerMed').textContent = `${analyzerSummary.mediumRisk} ⚠️ Medium Risk`;
+        document.getElementById('badgeAnalyzerLow').textContent = `${analyzerSummary.lowRisk} ✅ Low Risk`;
+
+        renderAnalyzerResults();
+      } catch (err) {
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--danger);">Gagal menjalankan analyzer: ${err.message}</td></tr>`;
+        }
+      }
+    }
+
+    function filterAnalyzer(riskLevel) {
+      document.getElementById('analyzerRiskFilter').value = riskLevel;
+      renderAnalyzerResults();
+    }
+
+    function renderAnalyzerResults() {
+      if (!analyzerSummary || !analyzerSummary.results) return;
+
+      const riskFilter = document.getElementById('analyzerRiskFilter').value;
+      const filtered = analyzerSummary.results.filter(r => {
+        if (riskFilter === 'HIGH') return r.riskCategory === 'HIGH';
+        if (riskFilter === 'MEDIUM') return r.riskCategory === 'MEDIUM';
+        if (riskFilter === 'LOW') return r.riskCategory === 'LOW';
+        return true;
+      });
+
+      document.getElementById('analyzerCountText').textContent = `Showing ${filtered.length} of ${analyzerSummary.results.length} items`;
+
+      const tbody = document.getElementById('analyzerTableBody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#3fb950; padding:20px;">✅ Tidak ditemukan foto berisiko pada kategori ini.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => {
+        const badgeColor = r.riskCategory === 'HIGH' ? 'var(--danger)' : (r.riskCategory === 'MEDIUM' ? 'var(--warning)' : '#3fb950');
+        const photoObj = allGalleryPhotos.find(p => p.rel === r.rel) || { rel: r.rel, detail: r.folder, filename: r.filename, rawUrl: `/static/photos/export/${r.rel}`, targetDateText: r.dateText };
+
+        return `
+          <tr>
+            <td style="font-weight:600; color:var(--text-heading);">${r.rel}</td>
+            <td><span class="status-badge" style="font-size:11px; padding:2px 8px; color:${badgeColor}; border-color:${badgeColor};">${r.riskCategory} (${r.riskScore})</span></td>
+            <td>Y=${r.yPos}px <span style="color:var(--text-muted); font-size:11px;">(Median: ${r.folderMedianY}px)</span></td>
+            <td style="font-size:12px; color:${r.riskCategory === 'HIGH' ? 'var(--danger)' : 'var(--text-main)'};">${r.reasons.join('; ') || 'Presisi Normal'}</td>
+            <td>
+              <button class="btn btn-accent" style="padding:4px 10px; font-size:11px;" onclick='openManualEditModal(${JSON.stringify(photoObj)})'>✏️ Koreksi Posisi</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // --- DRAG AND DROP SETUP ---
+    function setupDropzone(dropzoneId, folderName) {
+      const dz = document.getElementById(dropzoneId);
+      if (!dz) return;
+
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dz.addEventListener(eventName, e => {
+          e.preventDefault();
+          e.stopPropagation();
+        }, false);
+      });
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dz.addEventListener(eventName, () => dz.classList.add('dragover'), false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dz.addEventListener(eventName, () => dz.classList.remove('dragover'), false);
+      });
+
+      dz.addEventListener('drop', e => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        uploadFiles(folderName, files);
+      }, false);
+    }
+
+    function initDragAndDrop() {
+      window.addEventListener('dragover', e => e.preventDefault(), false);
+      window.addEventListener('drop', e => e.preventDefault(), false);
+
+      setupDropzone('dropzoneSource', 'source');
+      setupDropzone('dropzoneTarget', 'target');
+    }
+
+    // --- FILE UPLOAD & TABLES ---
+    async function loadFiles() {
+      try {
+        const res = await fetch('/api/files');
+        const data = await res.json();
+        renderTable('sourceFileTable', data.sourceFiles, 'source');
+        renderTable('targetFileTable', data.targetFiles, 'target');
+      } catch (err) {
+        console.error('Error loading files:', err);
+      }
+    }
+
+    function renderTable(tableId, files, folder) {
+      const badgeId = folder === 'source' ? 'countBadgeSource' : 'countBadgeTarget';
+      const badgeEl = document.getElementById(badgeId);
+      
+      const count = files ? files.length : 0;
+      const totalSizeMB = files ? (files.reduce((acc, f) => acc + f.size, 0) / 1024 / 1024).toFixed(1) : '0';
+
+      if (badgeEl) {
+        badgeEl.textContent = `${count} Berkas (${totalSizeMB} MB)`;
+      }
+
+      const tbody = document.getElementById(tableId);
+      if (!files || files.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">Belum ada berkas PDF</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = files.map(f => `
+        <tr>
+          <td style="font-weight:500; color:var(--text-heading);">${f.name}</td>
+          <td>${(f.size / 1024 / 1024).toFixed(2)} MB</td>
+          <td>
+            <button class="btn btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deleteFile('${folder}', '${f.name}')">🗑️ Hapus</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function uploadFiles(folder, fileList) {
+      if (!fileList || fileList.length === 0) return;
+      const formData = new FormData();
+      for (let file of fileList) formData.append('files', file);
+
+      try {
+        const endpoint = folder === 'source' ? '/api/upload/source' : '/api/upload/target';
+        const res = await fetch(endpoint, { method: 'POST', body: formData });
+        const result = await res.json();
+        if (result.success) loadFiles();
+      } catch (err) {
+        alert('Upload Gagal: ' + err.message);
+      }
+    }
+
+    async function deleteFile(folder, filename) {
+      if (!confirm(`Hapus berkas ${filename}?`)) return;
+      try {
+        const res = await fetch('/api/files', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder, filename })
+        });
+        const result = await res.json();
+        if (result.success) loadFiles();
+      } catch (err) {
+        alert('Hapus Gagal: ' + err.message);
+      }
+    }
+
+    // --- PIPELINE & SSE LOGS ---
+    function initSSE() {
+      const evtSource = new EventSource('/api/stream-logs');
+      const terminal = document.getElementById('terminalLog');
+      
+      evtSource.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        if (data.type === 'log') {
+          terminal.textContent += data.line + '\n';
+          terminal.scrollTop = terminal.scrollHeight;
+        }
+        if (data.type === 'status') {
+          const badge = document.getElementById('statusBadge');
+          const statusText = document.getElementById('statusText');
+          if (data.is_running) {
+            badge.className = 'status-badge running';
+            statusText.textContent = `Running ${data.step}...`;
+          } else {
+            badge.className = 'status-badge';
+            statusText.textContent = 'System Ready';
+          }
+        }
+      };
+    }
+
+    async function runStep(step) {
+      try {
+        document.getElementById('terminalLog').textContent += `\n>>> Command sent to run step: ${step}...\n`;
+        await fetch('/api/run-step', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ step })
+        });
+      } catch (err) {
+        alert('Gagal menjalankan step: ' + err.message);
+      }
+    }
+
+    async function stopPipeline() {
+      await fetch('/api/stop', { method: 'POST' });
+    }
+
+    // --- GALLERY PHOTO VIEWER & MANUAL EDITOR ---
+    function filterByStatus(statusVal) {
+      const select = document.getElementById('categoryFilter');
+      select.value = statusVal;
+      filterGallery();
+    }
+
+    function updateCategoryDropdown(photos) {
+      const select = document.getElementById('categoryFilter');
+      const currentValue = select.value;
+      const baseCategories = ['AXC', 'WESEL', 'SINYAL', 'CATUDAYA', 'SERAT OPTIK', 'JPL', 'PDSE', 'PTPP', 'PTDS', 'PTLS', 'CTS'];
+      const categories = new Set(['ALL', 'UNEDITED', 'EDITED', ...baseCategories]);
+
+      photos.forEach(p => {
+        if (p.category) categories.add(p.category.toUpperCase());
+      });
+
+      const catMap = {
+        'ALL': 'Semua Kategori Aset',
+        'UNEDITED': '⏳ BELUM DI-EDIT (Unedited / Raw Only)',
+        'EDITED': '✅ SUDAH DI-EDIT (Timemarked)'
+      };
+
+      const catList = Array.from(categories);
+      select.innerHTML = catList.map(c => `
+        <option value="${c}">${catMap[c] || c}</option>
+      `).join('');
+
+      if (categories.has(currentValue)) {
+        select.value = currentValue;
+      }
+    }
+
+    async function loadGallery() {
+      try {
+        const res = await fetch('/api/photos/gallery');
+        const data = await res.json();
+        allGalleryPhotos = data.photos;
+
+        const total = allGalleryPhotos.length;
+        const edited = allGalleryPhotos.filter(p => p.hasEdited).length;
+        const raw = total - edited;
+
+        document.getElementById('countBadgePhotoTotal').textContent = `${total} Total Foto`;
+        document.getElementById('countBadgePhotoEdited').textContent = `${edited} ✅ Timemarked`;
+        document.getElementById('countBadgePhotoRaw').textContent = `${raw} ⏳ Raw Only`;
+
+        updateCategoryDropdown(allGalleryPhotos);
+        filterGallery();
+      } catch (err) {
+        console.error('Error loading gallery:', err);
+      }
+    }
+
+    function filterGallery() {
+      const search = document.getElementById('gallerySearch').value.toLowerCase();
+      const cat = document.getElementById('categoryFilter').value;
+
+      const filtered = allGalleryPhotos.filter(p => {
+        const matchSearch = p.rel.toLowerCase().includes(search) || p.detail.toLowerCase().includes(search);
+        let matchCat = true;
+        if (cat === 'UNEDITED') {
+          matchCat = !p.hasEdited;
+        } else if (cat === 'EDITED') {
+          matchCat = p.hasEdited;
+        } else if (cat !== 'ALL') {
+          matchCat = (p.category.toUpperCase() === cat);
+        }
+        return matchSearch && matchCat;
+      });
+
+      document.getElementById('galleryCount').textContent = `Showing ${filtered.length} of ${allGalleryPhotos.length} photos`;
+
+      const grid = document.getElementById('galleryGrid');
+      if (filtered.length === 0) {
+        grid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1;">Tidak ada foto yang cocok dengan filter.</p>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="gallery-card" id="gcard-${p.rel.replace(/[^a-z0-9]/gi,'_')}">
+          <div class="gallery-card-header">
+            <span>${p.btp} / ${p.category}</span>
+            <span style="color:${p.hasEdited ? '#3fb950' : '#d29922'};"><span>${p.hasEdited ? '✅ Timemarked' : '⏳ Raw Only'}</span>
+          </div>
+          <div style="font-size:13px; font-weight:600; color:var(--text-heading);">${p.detail} (${p.filename})</div>
+          <div class="gallery-imgs">
+            <div class="img-box">
+              <img src="${p.rawUrl}?t=${Date.now()}" alt="Raw Photo" loading="lazy">
+              <span class="img-tag">Original (03)</span>
+            </div>
+            <div class="img-box">
+              ${p.hasEdited ? `<img src="${p.editedUrl}?t=${Date.now()}" alt="Edited Photo" loading="lazy"><span class="img-tag" style="background:#238636;">Edited (04)</span>` : `<div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-muted); font-size:11px;">Belum Di-edit</div>`}
+            </div>
+          </div>
+          <button class="btn btn-accent" style="width:100%; margin-top:4px;" onclick='openManualEditModal(${JSON.stringify(p)})'>✏️ Edit Timemark Manual</button>
+          ${!p.hasEdited ? `
+          <div style="display:flex; gap:6px; margin-top:4px;">
+            <button class="btn btn-primary" style="flex:1; font-size:12px;" onclick='runEditTimemark(${JSON.stringify(p)})' id="btnRunEdit-${p.rel.replace(/[^a-z0-9]/gi,'_')}">▶ Run Edit Timemark</button>
+            <div style="position:relative; flex:1;">
+              <button class="btn btn-outline" style="width:100%; font-size:12px;" onclick="togglePixelMenu('pmenu-${p.rel.replace(/[^a-z0-9]/gi,'_')}', event)">🔍 Pixel Inspector ▾</button>
+              <div id="pmenu-${p.rel.replace(/[^a-z0-9]/gi,'_')}" style="display:none; position:absolute; bottom:110%; left:0; background:var(--panel-bg); border:1px solid var(--border); border-radius:8px; min-width:160px; z-index:99; box-shadow:0 4px 16px rgba(0,0,0,0.4);">
+                <div style="padding:6px 0;">
+                  <div style="padding:7px 14px; cursor:pointer; font-size:12px; color:var(--danger);" onclick='runPixelInspector(${JSON.stringify(p)},"red")'>🔴 Red Mask</div>
+                  <div style="padding:7px 14px; cursor:pointer; font-size:12px; color:#56d8ff;" onclick='runPixelInspector(${JSON.stringify(p)},"cyan")'>🔵 Cyan Mask</div>
+                  <div style="padding:7px 14px; cursor:pointer; font-size:12px; color:var(--text-muted);" onclick='runPixelInspector(${JSON.stringify(p)},"custom")'>🎨 Custom Mask</div>
+                </div>
+              </div>
+            </div>
+          </div>` : ''}
+          ${!p.hasEdited ? `<button class="btn btn-outline" style="width:100%; margin-top:4px; font-size:11px; color:var(--text-muted);" onclick='openManualCropModal(${JSON.stringify(p)})'>✂️ Crop Manual</button>` : ''}
+          <button class="btn btn-outline" style="width:100%; margin-top:4px; font-size:11px; color:var(--accent);" onclick='reexportOriginalPhoto(${JSON.stringify(p)})'>🔄 Re-export Foto Ori dari PDF</button>
+        </div>
+      `).join('');
+    }
+
+    // --- COLLAGE ANALYZER SUB-TAB ---
+    function switchAnalyzerSubTab(tab) {
+      const isMisposition = tab === 'misposition';
+      document.getElementById('analyzerSubMisposition').style.display = isMisposition ? '' : 'none';
+      document.getElementById('analyzerSubCollage').style.display = isMisposition ? 'none' : '';
+      document.getElementById('subTabMisposition').className = `btn ${isMisposition ? 'btn-primary' : 'btn-outline'}`;
+      document.getElementById('subTabCollage').className = `btn ${isMisposition ? 'btn-outline' : 'btn-primary'}`;
+    }
+
+    let collageData = []; // [{rel, size, cropBox, reason, originalThumb, croppedThumb, checked}]
+
+    async function scanCollages() {
+      const btn = document.getElementById('btnScanCollages');
+      const statusEl = document.getElementById('collageAnalyzerStatus');
+      btn.disabled = true;
+      btn.textContent = '⏳ Memindai...';
+      statusEl.textContent = 'Memindai folder 03_photos_export untuk foto kolase... (mungkin 1-2 menit)';
+      document.getElementById('collageGrid').innerHTML = '';
+      document.getElementById('badgeCollageTotal').textContent = '...';
+
+      try {
+        const r = await fetch('/api/photos/scan-collages');
+        const data = await r.json();
+        if (!data.success) throw new Error(data.error || 'Scan gagal');
+
+        collageData = data.collages.map(c => ({ ...c, checked: false }));
+        statusEl.textContent = `Scan selesai. ${collageData.length} kandidat foto ditemukan. Centang foto yang ingin di-crop.`;
+        document.getElementById('badgeCollageTotal').textContent = `${collageData.length} Kolase`;
+        renderCollageGrid();
+      } catch (e) {
+        statusEl.textContent = `Error: ${e.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔍 Scan Foto Kolase';
+      }
+    }
+
+    // Store loaded images per collage entry for canvas re-draw
+    const collageImages = {};
+
+    function renderCollageGrid() {
+      const checkedCount = collageData.filter(c => c.checked).length;
+      const savBtn = document.getElementById('btnSaveCrops');
+      const batBtn = document.getElementById('btnBatalkanSemua');
+      savBtn.disabled = checkedCount === 0;
+      savBtn.textContent = `💾 Simpan Crop (${checkedCount} Foto)`;
+      batBtn.disabled = collageData.length === 0;
+      document.getElementById('badgeCollageChecked').textContent = `${checkedCount} Dipilih`;
+
+      const grid = document.getElementById('collageGrid');
+      grid.innerHTML = collageData.map((c, i) => {
+        const divXPct = c.cropBoxPct ? c.cropBoxPct[2] : 50; // right edge = divider X
+        const divYPct = c.cropBoxPct ? c.cropBoxPct[1] : 50; // upper edge = divider Y
+        return `
+        <div style="background:var(--panel-bg); border:2px solid ${c.checked ? 'var(--accent)' : 'var(--border)'}; border-radius:12px; padding:14px; opacity:${c.checked ? '1' : '0.55'};">
+          <!-- Row 1: checkbox + filename + hapus -->
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <input type="checkbox" id="chkCollage${i}" ${c.checked ? 'checked' : ''} style="accent-color:var(--accent); width:16px; height:16px;" onchange="toggleCollageCheck(${i}, this.checked)">
+            <label for="chkCollage${i}" style="font-size:12px; font-weight:600; cursor:pointer; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${c.rel}">${c.rel}</label>
+            <button class="btn btn-outline" style="font-size:11px; padding:3px 8px; color:var(--accent);" onclick="reexportCollageEntry(${i})">🔄 Re-export Ori</button>
+            <button class="btn btn-outline" style="font-size:11px; padding:3px 8px; color:var(--danger);" onclick="removeCollageEntry(${i})">🗑️ Hapus</button>
+          </div>
+          <!-- Row 2: original | canvas crop preview -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start;">
+            <div>
+              <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px; text-align:center;">📸 Kolase Asli</div>
+              <img src="${c.rawUrl || ('data:image/jpeg;base64,' + c.originalThumb)}" id="origImg${i}" style="width:100%; border-radius:6px; border:1px solid var(--border); display:block;" alt="Original" onload="initCollageCanvas(${i})">
+            </div>
+            <div>
+              <div style="font-size:10px; color:var(--text-muted); margin-bottom:4px; text-align:center;">✂️ Preview Crop (Edit Garis)</div>
+              <canvas id="cropCanvas${i}" style="width:100%; border-radius:6px; border:2px solid var(--accent); display:block;"></canvas>
+            </div>
+          </div>
+          <!-- Row 3: sliders -->
+          <div style="margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>
+              <label style="font-size:11px; color:var(--text-muted);">↕ Garis Horizontal (Y): <b id="lblDivY${i}">${Math.round(divYPct)}%</b></label>
+              <input type="range" min="20" max="80" value="${Math.round(divYPct)}" style="width:100%; accent-color:var(--accent);" oninput="updateCollageDivider(${i}, 'y', this.value)">
+            </div>
+            <div>
+              <label style="font-size:11px; color:var(--text-muted);">↔ Garis Vertikal (X): <b id="lblDivX${i}">${Math.round(divXPct)}%</b></label>
+              <input type="range" min="20" max="80" value="${Math.round(divXPct)}" style="width:100%; accent-color:var(--accent);" oninput="updateCollageDivider(${i}, 'x', this.value)">
+            </div>
+          </div>
+          <div style="font-size:10px; color:var(--text-muted); margin-top:6px; word-break:break-all;">${c.reason}</div>
+        </div>`;
+      }).join('');
+
+      // Re-init canvases after DOM update
+      collageData.forEach((c, i) => {
+        const img = document.getElementById(`origImg${i}`);
+        if (img && img.complete) initCollageCanvas(i);
+      });
+    }
+
+    function initCollageCanvas(i) {
+      const c = collageData[i];
+      if (!c) return;
+      const imgEl = document.getElementById(`origImg${i}`);
+      if (!imgEl) return;
+      // Store the image element reference
+      collageImages[i] = imgEl;
+      drawCropCanvas(i);
+    }
+
+    function updateCollageDivider(i, axis, val) {
+      const c = collageData[i];
+      if (!c) return;
+      val = parseInt(val);
+      if (!c.cropBoxPct) c.cropBoxPct = [0, 50, 50, 100];
+      if (axis === 'y') {
+        c.cropBoxPct[1] = val; // upper = divider Y
+        document.getElementById(`lblDivY${i}`).textContent = val + '%';
+      } else {
+        c.cropBoxPct[2] = val; // right = divider X
+        document.getElementById(`lblDivX${i}`).textContent = val + '%';
+      }
+      // Update cropBox pixels from percentage
+      const [w, h] = c.size;
+      c.cropBox = [
+        0,
+        Math.round(c.cropBoxPct[1] / 100 * h),
+        Math.round(c.cropBoxPct[2] / 100 * w),
+        h
+      ];
+      drawCropCanvas(i);
+    }
+
+    function drawCropCanvas(i) {
+      const c = collageData[i];
+      const canvas = document.getElementById(`cropCanvas${i}`);
+      const imgEl = collageImages[i] || document.getElementById(`origImg${i}`);
+      if (!canvas || !imgEl || !imgEl.complete) return;
+
+      const pct = c.cropBoxPct || [0, 50, 50, 100];
+      const iw = imgEl.naturalWidth  || imgEl.width;
+      const ih = imgEl.naturalHeight || imgEl.height;
+
+      const sx = Math.round(pct[0] / 100 * iw);
+      const sy = Math.round(pct[1] / 100 * ih);
+      const sw = Math.round((pct[2] - pct[0]) / 100 * iw);
+      const sh = Math.round((pct[3] - pct[1]) / 100 * ih);
+
+      canvas.width  = sw;
+      canvas.height = sh;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      // Draw divider guide lines on original image position (visual cue)
+    }
+
+    function batalkanSemuaCrop() {
+      if (collageData.length === 0) return;
+      if (!confirm(`Batalkan semua ${collageData.length} hasil scan? Tidak ada yang akan disimpan.`)) return;
+      collageData = [];
+      document.getElementById('collageAnalyzerStatus').textContent = 'Scan dibatalkan. Klik "Scan Foto Kolase" untuk mulai ulang.';
+      document.getElementById('badgeCollageTotal').textContent = '-';
+      renderCollageGrid();
+    }
+
+    function toggleCollageCheck(i, val) {
+      collageData[i].checked = val;
+      renderCollageGrid();
+    }
+
+    function removeCollageEntry(i) {
+      collageData.splice(i, 1);
+      renderCollageGrid();
+    }
+
+    async function reexportCollageEntry(i) {
+      const item = collageData[i];
+      if (!item) return;
+      if (!confirm(`Re-export foto asli ${item.rel} dari PDF source 01_pdf_source?`)) return;
+
+      const statusEl = document.getElementById('collageAnalyzerStatus');
+      statusEl.textContent = `⏳ Mengekspor ulang ${item.rel} dari PDF source...`;
+
+      try {
+        const r = await fetch('/api/photos/reexport-original', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rel: item.rel })
+        });
+        const data = await r.json();
+        if (data.success) {
+          statusEl.textContent = `✅ ${item.rel} berhasil diekspor ulang dari PDF!`;
+          collageData.splice(i, 1);
+          renderCollageGrid();
+          loadGallery();
+        } else {
+          statusEl.textContent = `❌ Re-export gagal: ${data.stderr?.slice(-100) || 'PDF source tidak ditemukan'}`;
+        }
+      } catch (e) {
+        statusEl.textContent = `❌ Error: ${e.message}`;
+      }
+    }
+
+    async function saveCollagesCrop() {
+      const toSave = collageData.filter(c => c.checked).map(c => ({ rel: c.rel, cropBox: c.cropBox }));
+      if (toSave.length === 0) return;
+
+      const savBtn = document.getElementById('btnSaveCrops');
+      savBtn.disabled = true;
+      savBtn.textContent = `⏳ Menyimpan ${toSave.length} foto...`;
+
+      try {
+        const r = await fetch('/api/photos/save-crops', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ crops: toSave })
+        });
+        const data = await r.json();
+        if (data.success) {
+          document.getElementById('collageAnalyzerStatus').textContent = `✅ ${toSave.length} foto berhasil di-crop dan disimpan ke 03_photos_export! Buka Photo Viewer → ⏳ BELUM DI-EDIT untuk melanjutkan.`;
+          // Remove saved entries from list
+          collageData = collageData.filter(c => !c.checked);
+          renderCollageGrid();
+          // Refresh gallery
+          loadGallery();
+        } else {
+          document.getElementById('collageAnalyzerStatus').textContent = `❌ Error: ${data.stderr || data.stdout || 'Unknown error'}`;
+        }
+      } catch (e) {
+        document.getElementById('collageAnalyzerStatus').textContent = `❌ Error: ${e.message}`;
+      } finally {
+        savBtn.disabled = false;
+        const cnt = collageData.filter(c => c.checked).length;
+        savBtn.textContent = `💾 Simpan Crop (${cnt} Foto)`;
+      }
+    }
+
+    // --- PHOTO VIEWER: Re-export Original Photo from PDF ---
+    async function reexportOriginalPhoto(photoObj) {
+      if (!confirm(`Ekspor ulang foto asli ${photoObj.detail} (${photoObj.filename}) langsung dari PDF source 01_pdf_source? File crop/edit lama akan di-reset.`)) return;
+
+      const cardId = `gcard-${photoObj.rel.replace(/[^a-z0-9]/gi,'_')}`;
+      const card = document.getElementById(cardId);
+      let ind = null;
+      if (card) {
+        ind = document.createElement('div');
+        ind.style.cssText = 'font-size:12px; color:var(--accent); padding:6px 0; text-align:center; font-weight:600;';
+        ind.textContent = '⏳ Membaca PDF & mengekspor ulang foto asli...';
+        card.appendChild(ind);
+      }
+
+      try {
+        const r = await fetch('/api/photos/reexport-original', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rel: photoObj.rel })
+        });
+        const data = await r.json();
+        if (data.success) {
+          if (ind) ind.textContent = '✅ Berhasil di-export ulang! Memperbarui galeri...';
+          await loadGallery();
+        } else {
+          if (ind) { ind.style.color = 'var(--danger)'; ind.textContent = `❌ Gagal: ${data.stderr?.slice(-80) || 'PDF source tidak ditemukan'}`; }
+        }
+      } catch (e) {
+        if (ind) { ind.style.color = 'var(--danger)'; ind.textContent = `❌ Error: ${e.message}`; }
+      }
+    }
+
+    // --- PHOTO VIEWER: Run Edit Timemark ---
+    async function runEditTimemark(photoObj) {
+      const cardId = `btnRunEdit-${photoObj.rel.replace(/[^a-z0-9]/gi,'_')}`;
+      const btn = document.getElementById(cardId);
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ Memproses...'; }
+
+      try {
+        const r = await fetch('/api/photos/run-edit-timemark', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rel: photoObj.rel })
+        });
+        const data = await r.json();
+        if (data.success) {
+          if (btn) { btn.textContent = '✅ Selesai! Memperbarui galeri...'; }
+          await loadGallery();
+        } else {
+          if (btn) { btn.textContent = '❌ Gagal - cek log'; btn.disabled = false; }
+          console.error('Run Edit Timemark error:', data);
+        }
+      } catch (e) {
+        if (btn) { btn.textContent = '❌ Error'; btn.disabled = false; }
+        console.error(e);
+      }
+    }
+
+    // --- PHOTO VIEWER: Pixel Inspector dropdown ---
+    function togglePixelMenu(menuId, event) {
+      event.stopPropagation();
+      // Close all other menus
+      document.querySelectorAll('[id^="pmenu-"]').forEach(el => {
+        if (el.id !== menuId) el.style.display = 'none';
+      });
+      const menu = document.getElementById(menuId);
+      if (menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+    // Close pixel menus on outside click
+    document.addEventListener('click', () => {
+      document.querySelectorAll('[id^="pmenu-"]').forEach(el => el.style.display = 'none');
+    });
+
+    async function runPixelInspector(photoObj, maskType) {
+      // Close all menus
+      document.querySelectorAll('[id^="pmenu-"]').forEach(el => el.style.display = 'none');
+
+      const cardId = `gcard-${photoObj.rel.replace(/[^a-z0-9]/gi,'_')}`;
+      const card = document.getElementById(cardId);
+      if (card) {
+        const indicator = document.createElement('div');
+        indicator.id = `pi-indicator-${cardId}`;
+        indicator.style.cssText = 'font-size:12px; color:var(--accent); padding:4px 0; text-align:center;';
+        indicator.textContent = `⏳ Running Pixel Inspector (${maskType} mask)...`;
+        card.appendChild(indicator);
+      }
+
+      try {
+        const r = await fetch('/api/photos/run-pixel-inspector', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rel: photoObj.rel, maskType })
+        });
+        const data = await r.json();
+        const ind = document.getElementById(`pi-indicator-${cardId}`);
+        if (data.success) {
+          photoObj.hasEdited = true;
+          photoObj.editedUrl = data.editedUrl;
+          if (card) {
+            const boxes = card.querySelectorAll('.img-box');
+            if (boxes.length >= 2) {
+              boxes[1].innerHTML = `<img src="${data.editedUrl}?t=${Date.now()}" alt="Edited Photo"><span class="img-tag" style="background:#238636;">Edited (04)</span>`;
+            }
+            const statusSpan = card.querySelector('.gallery-card-header span:last-child');
+            if (statusSpan) {
+              statusSpan.style.color = '#3fb950';
+              statusSpan.innerHTML = '<span>✅ Timemarked</span>';
+            }
+          }
+          if (ind) {
+            ind.style.color = '#3fb950';
+            ind.textContent = `✅ Selesai (${maskType} mask)! Foto editan telah dibuat.`;
+          }
+        } else {
+          if (ind) { ind.style.color = 'var(--danger)'; ind.textContent = `❌ Gagal: ${data.stderr?.slice(0,80) || 'Unknown error'}`; }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // --- MANUAL TIMEMARK MODAL LOGIC ---
+    function openManualEditModal(photoObj) {
+      currentEditPhoto = photoObj;
+      document.getElementById('modalPhotoTitle').textContent = `${photoObj.detail} (${photoObj.filename})`;
+      document.getElementById('modalImgPreview').src = `${photoObj.rawUrl}?t=${Date.now()}`;
+      
+      const initialDate = photoObj.lastDateText || photoObj.targetDateText || "Jumat, Agt 08 2025 07:00";
+      document.getElementById('modalDateText').value = initialDate;
+      
+      const initialY = (photoObj.lastYPos !== undefined && photoObj.lastYPos !== null) ? photoObj.lastYPos : 220;
+      const initialX = (photoObj.lastXPos !== undefined && photoObj.lastXPos !== null) ? photoObj.lastXPos : 14;
+
+      document.getElementById('rngYPos').value = initialY;
+      document.getElementById('rngXPos').value = initialX;
+      document.getElementById('chkApplyToFolder').checked = false;
+      updateModalBoxFromSliders();
+
+      document.getElementById('manualEditModal').classList.add('active');
+    }
+
+    function closeManualEditModal() {
+      document.getElementById('manualEditModal').classList.remove('active');
+    }
+
+    function updateModalBoxFromSliders() {
+      const y = parseInt(document.getElementById('rngYPos').value);
+      const x = parseInt(document.getElementById('rngXPos').value);
+      document.getElementById('lblYPos').textContent = y;
+      document.getElementById('lblXPos').textContent = x;
+
+      const overlay = document.getElementById('modalBoxOverlay');
+      overlay.style.top = `${(y / 300) * 100}%`;
+      overlay.style.left = `${(x / 300) * 100}%`;
+    }
+
+    function handleModalCanvasClick(e) {
+      const container = document.getElementById('modalCanvasContainer');
+      const rect = container.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      const normX = Math.round((clickX / rect.width) * 300);
+      const normY = Math.round((clickY / rect.height) * 300);
+
+      document.getElementById('rngXPos').value = Math.min(280, Math.max(0, normX));
+      document.getElementById('rngYPos').value = Math.min(280, Math.max(0, normY));
+      updateModalBoxFromSliders();
+    }
+
+    async function saveManualTimemark() {
+      if (!currentEditPhoto) return;
+      const dateText = document.getElementById('modalDateText').value.trim();
+      const yPos = parseInt(document.getElementById('rngYPos').value);
+      const xPos = parseInt(document.getElementById('rngXPos').value);
+      const applyToFolder = document.getElementById('chkApplyToFolder').checked;
+
+      if (!dateText) {
+        alert('Mohon isi teks timemark date!');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/photos/manual-edit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rawRelPath: currentEditPhoto.rel,
+            dateText,
+            yPos,
+            xPos,
+            timGroup: 'Tim_1',
+            applyToFolder
+          })
+        });
+        const result = await res.json();
+        if (result.success) {
+          closeManualEditModal();
+          await loadGallery();
+          await runAnalyzer();
+        } else {
+          alert('Gagal simpan timemark: ' + result.error);
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    // --- FREEFORM VISUAL CROPPER FUNCTIONS ---
+    let cropBoxNorm = { l: 0, t: 50, r: 50, b: 100 }; // percentages (0..100)
+    let isCropperDragging = false;
+    let cropDragTarget = null; // 'box' or handle name ('tl', 'br', etc.)
+    let dragStartX = 0, dragStartY = 0;
+    let initialCropBox = { l: 0, t: 50, r: 50, b: 100 };
+
+    function openManualCropModal(photoObj) {
+      if (!photoObj) return;
+      currentEditPhoto = photoObj;
+      document.getElementById('cropPhotoTitle').textContent = `Foto Kolase Asli: ${photoObj.rel}`;
+      
+      // Load raw original photo from 03_photos_export/
+      const rawImgUrl = photoObj.rawUrl || `/static/photos/export/${photoObj.rel}?t=${Date.now()}`;
+      document.getElementById('cropImgPreview').src = rawImgUrl;
+
+      document.getElementById('chkCropApplyToFolder').checked = false;
+      setCropPreset('bottom-left');
+      
+      setupCropperDragEvents();
+      document.getElementById('manualCropModal').classList.add('active');
+    }
+
+    function closeManualCropModal() {
+      document.getElementById('manualCropModal').classList.remove('active');
+    }
+
+    function setCropPreset(preset) {
+      if (preset === 'bottom-left') cropBoxNorm = { l: 0, t: 50, r: 50, b: 100 };
+      else if (preset === 'top-left') cropBoxNorm = { l: 0, t: 0, r: 50, b: 50 };
+      else if (preset === 'top-right') cropBoxNorm = { l: 50, t: 0, r: 100, b: 50 };
+      else if (preset === 'bottom-right') cropBoxNorm = { l: 50, t: 50, r: 100, b: 100 };
+      else if (preset === 'full') cropBoxNorm = { l: 0, t: 0, r: 100, b: 100 };
+
+      updateCropBoxOverlay();
+    }
+
+    function updateCropBoxOverlay() {
+      const box = document.getElementById('cropBoxSelection');
+      if (!box) return;
+
+      box.style.left = `${cropBoxNorm.l}%`;
+      box.style.top = `${cropBoxNorm.t}%`;
+      box.style.width = `${cropBoxNorm.r - cropBoxNorm.l}%`;
+      box.style.height = `${cropBoxNorm.b - cropBoxNorm.t}%`;
+
+      const wPct = (cropBoxNorm.r - cropBoxNorm.l).toFixed(1);
+      const hPct = (cropBoxNorm.b - cropBoxNorm.t).toFixed(1);
+      document.getElementById('cropStatsText').textContent = `L:${cropBoxNorm.l.toFixed(0)}%, T:${cropBoxNorm.t.toFixed(0)}% | Ukuran: ${wPct}% x ${hPct}%`;
+    }
+
+    function setupCropperDragEvents() {
+      const container = document.getElementById('cropCanvasContainer');
+      const box = document.getElementById('cropBoxSelection');
+      if (!container || !box) return;
+
+      box.onmousedown = (e) => {
+        e.preventDefault();
+        isCropperDragging = true;
+        cropDragTarget = e.target.getAttribute('data-handle') || 'box';
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        initialCropBox = { ...cropBoxNorm };
+
+        window.onmousemove = onCropperMouseMove;
+        window.onmouseup = onCropperMouseUp;
+      };
+    }
+
+    function onCropperMouseMove(e) {
+      if (!isCropperDragging) return;
+
+      const container = document.getElementById('cropCanvasContainer');
+      const rect = container.getBoundingClientRect();
+
+      const deltaXPct = ((e.clientX - dragStartX) / rect.width) * 100;
+      const deltaYPct = ((e.clientY - dragStartY) / rect.height) * 100;
+
+      let { l, t, r, b } = initialCropBox;
+
+      if (cropDragTarget === 'box') {
+        const w = r - l;
+        const h = b - t;
+        let newL = Math.max(0, Math.min(100 - w, l + deltaXPct));
+        let newT = Math.max(0, Math.min(100 - h, t + deltaYPct));
+        cropBoxNorm = { l: newL, t: newT, r: newL + w, b: newT + h };
+      } else {
+        if (cropDragTarget.includes('l')) l = Math.max(0, Math.min(r - 5, l + deltaXPct));
+        if (cropDragTarget.includes('r')) r = Math.min(100, Math.max(l + 5, r + deltaXPct));
+        if (cropDragTarget.includes('t')) t = Math.max(0, Math.min(b - 5, t + deltaYPct));
+        if (cropDragTarget.includes('b')) b = Math.min(100, Math.max(t + 5, b + deltaYPct));
+        cropBoxNorm = { l, t, r, b };
+      }
+
+      updateCropBoxOverlay();
+    }
+
+    function onCropperMouseUp() {
+      isCropperDragging = false;
+      window.onmousemove = null;
+      window.onmouseup = null;
+    }
+
+    async function executeManualCrop() {
+      if (!currentEditPhoto) return;
+      const applyToFolder = document.getElementById('chkCropApplyToFolder').checked;
+      const btn = document.getElementById('btnExecuteCrop');
+      btn.disabled = true;
+      btn.textContent = '⏳ Memotong Foto...';
+
+      const cropBoxArray = [
+        Math.round(cropBoxNorm.l * 100) / 100,
+        Math.round(cropBoxNorm.t * 100) / 100,
+        Math.round(cropBoxNorm.r * 100) / 100,
+        Math.round(cropBoxNorm.b * 100) / 100
+      ];
+
+      try {
+        const res = await fetch('/api/photos/manual-crop', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rawRelPath: currentEditPhoto.rel,
+            cropBox: cropBoxArray,
+            applyToFolder
+          })
+        });
+        const result = await res.json();
+        if (result.success) {
+          closeManualCropModal();
+          closeManualEditModal();
+          await loadGallery();
+          await runAnalyzer();
+          alert(`Success: ${result.count} foto kolase berhasil dipotong dan diperbarui timemark-nya!`);
+        } else {
+          alert('Gagal memotong kolase: ' + result.error);
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✂️ Potong Gambar Ini';
+      }
+    }
+
+    // --- PDF PREVIEW ---
+    let currentPdfUrl = null;
+
+    async function loadPDFList() {
+      try {
+        const res = await fetch('/api/pdfs');
+        const data = await res.json();
+        const fileList = document.getElementById('pdfFileList');
+        const pdfFrame = document.getElementById('pdfFrame');
+        const emptyState = document.getElementById('pdfEmptyState');
+
+        const pdfCount = data.pdfs ? data.pdfs.length : 0;
+        document.getElementById('countBadgePDFTotal').textContent = `${pdfCount} Documents`;
+
+        if (!data.pdfs || data.pdfs.length === 0) {
+          fileList.innerHTML = '';
+          pdfFrame.src = 'about:blank';
+          document.getElementById('currentPdfLabel').textContent = 'No PDF selected';
+          if (emptyState) emptyState.style.display = 'flex';
+          return;
+        }
+
+        if (emptyState) emptyState.style.display = 'none';
+        fileList.innerHTML = data.pdfs.map((p, i) =>
+          `<div class="pdf-file-item" data-url="${p.url}" data-filename="${p.filename}" onclick="selectPdf(this, '${p.url}', '${p.filename}')">${p.filename}</div>`
+        ).join('');
+
+        // Auto-select first PDF
+        const firstItem = fileList.querySelector('.pdf-file-item');
+        if (firstItem) firstItem.click();
+      } catch (err) {
+        console.error('Error loading PDFs:', err);
+      }
+    }
+
+    function selectPdf(el, url, filename) {
+      document.querySelectorAll('.pdf-file-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      currentPdfUrl = url;
+      document.getElementById('currentPdfLabel').textContent = filename || url.split('/').pop();
+      // Reset then load — forces Chrome PDF viewer to respect zoom param
+      const frame = document.getElementById('pdfFrame');
+      frame.src = 'about:blank';
+      setTimeout(() => {
+        frame.src = `${url}#page=3&zoom=page-fit`;
+      }, 50);
+    }
+
+    function jumpToPage(pageNum) {
+      if (currentPdfUrl) {
+        const frame = document.getElementById('pdfFrame');
+        frame.src = 'about:blank';
+        setTimeout(() => {
+          frame.src = `${currentPdfUrl}#page=${pageNum}&zoom=page-fit`;
+        }, 50);
+      }
+    }
+
+    // Init Page
+    window.onload = () => {
+      loadFiles();
+      initSSE();
+      initDragAndDrop();
+    };
+  </script>
+</body>
+</html>

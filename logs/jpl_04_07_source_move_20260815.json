@@ -1,0 +1,29 @@
+{
+  "created_at": "2026-08-15T09:57:45.265695+00:00",
+  "operation": "reversible_source_move",
+  "entries": [
+    {
+      "source": "03_photos_export/BTP JAK/SERAT OPTIK/JPL 04 BOO-BOP",
+      "destination": "03_photos_export/BTP BD/SERAT OPTIK/JPL 04 BOO-BOP",
+      "files": [
+        "0.jpg",
+        "0.txt",
+        "100.jpg",
+        "100.txt",
+        "50.jpg",
+        "50.txt",
+        "date.txt"
+      ]
+    },
+    {
+      "source": "03_photos_export/BTP JAK/SERAT OPTIK/JPL 07 BOO-BOP",
+      "destination": "03_photos_export/BTP BD/SERAT OPTIK/JPL 07 BOO-BOP",
+      "files": [
+        "0.jpg",
+        "100.jpg",
+        "50.jpg",
+        "date.txt"
+      ]
+    }
+  ]
+}

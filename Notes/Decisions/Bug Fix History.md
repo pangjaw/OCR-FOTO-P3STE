@@ -39,6 +39,22 @@ Catatan ini menjadi rujukan utama untuk memahami bug lama, penyebabnya, perbaika
 - **Manifest:** `logs/jpl_boo_bop_btp_move_20260814.json` dan `logs/jpl_boo_bop_quarantine_20260814_0034.json`.
 - **Status:** routing dan syntax sudah divalidasi; Step 4 dan Step 5 penuh belum dijalankan ulang.
 
-## 6. Aturan tindak lanjut
+## 6. Auto-Crop Kolase & Koreksi Crop Web UI — 2026-08-15
+
+- **Masalah:**
+  - Foto kolase 2x2 dan 3-in-1 memiliki tulisan timemark yang sangat kecil dan buram saat ditempel watermark baru.
+  - Skrip pemotong manual `manual_crop_helper.py` memotong path secara keliru saat dipanggil dengan path absolut Windows sehingga file hasil crop tersimpan di root tanpa folder aset.
+  - Pada Step 4 (`edit_timemark_ide1.py`), foto kolase cropped yang tidak memiliki guideline oranye di kuadran terpilih masuk ke `stage_fallback` dan menyalin file mentah Folder 3 (foto kolase utuh) ke Folder 4 tanpa pemotongan dan tanpa timemark.
+  - Panggilan CLI untuk edit manual 1 file gagal mengenali path absolut sehingga proses dilewati (*skipped*).
+- **Perbaikan:**
+  - Menerapkan algoritma isolasi garis pembatas putih (*white-seam isolation*) di `scripts/auto_crop_collages.py` (15 kolase terpotong rapi, 0 false positive pada 1.401 foto tunggal).
+  - Memperbaiki parsing path relatif berbasis `.resolve()` dan `.parts` di `manual_crop_helper.py` dan `edit_timemark_ide1.py`.
+  - Memperbaiki kondisi fallback di `edit_timemark_ide1.py` agar foto kolase cropped selalu memuat `03_photos_cropped_temp` dan menempelkan timemark standar (`y=220`).
+  - Menambahkan header `no-store/no-cache` di `server.js` dan menghapus semua popup `alert/confirm` yang mengganggu.
+- **Hasil:**
+  - 1.416 / 1.416 foto di `04_photos_edited` berhasil 100% diproses (0 skipped, 0 failed).
+  - Tampilan kartu Folder 4 dan editor timemark manual sinkron secara presisi.
+
+## 7. Aturan tindak lanjut
 
 Saat menemukan bug lama, baca catatan ini sebelum membuat perubahan baru. Setelah behavior berubah, catat tanggal, penyebab, perbaikan, validasi, dan status tindak lanjut.

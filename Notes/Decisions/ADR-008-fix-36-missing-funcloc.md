@@ -1,7 +1,7 @@
 # ADR-008: Fix 36 Missing Funcloc Photos
 
 > **Status:** Pending | **Date:** 2026-07-14
-> ← [[Notes/Decisions/ADR-003 - PDF Layout Parsing and Output Structure|ADR-003]] | [[Dashboard]]
+> ← [[Notes/Decisions/ADR-003 - PDF Layout Parsing and Output Structure|ADR-003]] | [[PROJECT_INDEX]]
 
 ## Problem
 

@@ -1,6 +1,6 @@
 # 🧪 Catatan Hasil Uji Coba (Test Results)
 
-> Kembali ke [[Dashboard]]
+> Kembali ke [[PROJECT_INDEX]]
 
 ---
 

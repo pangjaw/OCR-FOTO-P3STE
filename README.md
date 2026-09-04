@@ -1,48 +1,21 @@
-# OCR Foto Timemark
+# OCR-FOTO-P3STE
 
-Koreksi tanggal watermark GPS Map Camera pada foto dokumentasi kerja secara batch.
+Pipeline lokal untuk mengekstrak foto dari PDF, membaca tanggal referensi, mendeteksi guide timemark, menempatkan tanggal, dan menghasilkan output foto/PDF.
 
-## Tujuan
-- Ganti teks tanggal salah di watermark Timemark
-- Proses batch tanpa timpa file asli
-- Export foto dari PDF, edit watermark, gabung balik ke PDF
-- Dashboard Web UI lokal untuk kontrol pipeline 5-tahap
+## Start here
 
-## Pipeline 5 Tahap
-```
-01_pdf_source/ (PDF 2026)          02_pdf_target/ (PDF 2025)
-       │                                  │
-       ▼                                  ▼
-  export_pdf_foto.py               extract_pdf_dates.py
-  (ekstrak foto asli)              (ambil tanggal halaman 1)
-       │                                  │
-       └──────────┬───────────────────────┘
-                  ▼
-           scheduler.py + edit_timemark_ide1.py
-           (jadwal Tim → edit watermark)
-                  │
-                  ▼
-           merge_pdf_foto.py
-           (gabung foto edit → PDF final)
-                  │
-                  ▼
-           05_pdf_merged/
-```
+Baca [[PROJECT_INDEX]] untuk peta lengkap. Dokumen utama:
 
-## Batasan
-- Hanya area tanggal watermark yang diedit
-- Output revisi di folder/file berbeda (tidak timpa asli)
-- Export foto ambil image object asli dari PDF, bukan halaman penuh
-- **Folder `03_photos_export/` sebagai sumber kebenaran** — struktur `station/asset_type/detail/` dipertahankan di seluruh pipeline
+- [[PRD]] — kebutuhan produk
+- [[ARCHITECTURE]] — alur sistem
+- [[OPERATIONS]] — penggunaan dan troubleshooting
+- [[CONTRIBUTING]] — aturan kontribusi
+- [[setup]] — setup environment
 
-## Dokumentasi
-| File | Untuk | Isi |
-|------|-------|-----|
-| [[setup.md]] | Manusia | Instalasi, dependensi, cara menjalankan |
-| [[Dashboard.md]] | Agent + Manusia | Status tracker, daily logs, quick commands |
-| [[AGENTS.md]] | Agent | Function reference, detection logic, debugging patterns |
-| [[Notes/Daily/\|Daily Logs]] | Catatan | Perubahan harian detail |
-| [[system_architecture_gabung foto ke pdf\|Arsitektur Merge PDF]] | Manusia | Flowchart & komponen merge_pdf_foto.py |
-| [[Notes/Test Results\|Hasil Test]] | Catatan | Riwayat pengujian batch & unit |
-| [[Data Acuan Tenaga Perawatan Gabungan\|Data Acuan]] | Referensi | Standar waktu perawatan per aset |
+## Prinsip penting
 
+Posisi tanggal berasal dari guide yang terlihat pada foto yang sedang diproses. Posisi dari foto lain atau override manual hanya boleh digunakan bila secara eksplisit disetujui untuk eksperimen tertentu.
+
+## Repository areas
+
+Input/output utama berada pada `01_pdf_source/` sampai `05_pdf_merged/`. Script berada di `scripts/`, konfigurasi di `config/`, dan hasil audit/diagnostik di `logs/`.

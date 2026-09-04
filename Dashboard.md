@@ -11,14 +11,21 @@ Script references, detection logic, debugging → lihat [[AGENTS.md]].
 ## 📌 Status Tracker
 
 ### Active Scripts
-- [x] `app.py` — Flask Web Dashboard (port 5000)
+- [x] `server.js` — Node.js Express Web Dashboard (port 5000)
+- [x] `export_dinasan_excel.py` — Generator Excel Daftar Dinasan Pegawai (Format Resmi KAI)
 - [x] `edit_timemark_ide1.py` — Core watermark editor. HSV + Red Guide + Folder Consensus
+- [x] `edit_photo_time_only.py` — Standalone 24h Time Stamper (output: `04_Time`)
+- [x] `employee_manager.py` — Roster Personil Tim 2 (KAUR/PNC) & True PDF Redaction
 - [x] `export_pdf_foto.py` — Ekstrak foto dari PDF
 - [x] `merge_pdf_foto.py` — Gabung foto edit ke PDF lama
 - [x] `extract_pdf_dates.py` — Ekstrak tanggal dari PDF target
 - [x] `scheduler.py` — Penjadwalan Tim (07:00-18:00)
 
 ### Pipeline Status (Post-Audit)
+- [x] Detailed Error Logging & Exit Code Fix pada `export_pdf_foto.py` (Step 1)
+- [x] Generator & Export **Daftar Dinasan Pegawai (Format Resmi KAI .xlsx)**
+- [x] Menu Web **👥 Daftar Pegawai** & Alokasi Otomatis Roster Tim 2 per Tanggal
+- [x] Modul mandiri **Edit Jam Foto** (Step 1-5 Time, `04_Time` & `05_pdf_merged_Time`)
 - [x] Stage 1-5 pipeline: export → extract dates → schedule → edit → merge
 - [x] Web UI dengan SSE real-time log & stage indicator
 - [x] All asset types + funcloc1 categories (PDSE, PTDS, PTLS, CATUDAYA, SERAT OPTIK, **JPL, CTS**)
@@ -50,9 +57,11 @@ Script references, detection logic, debugging → lihat [[AGENTS.md]].
   - **Multi-page export**: scan ALL pages with ≥3 images for SINYAL/WESEL/AXC
   - **WESEL date suffix**: `_extract_date_suffix()` → `W21B2 BOO_02-01/` folders
   - **SINYAL dotted codes**: regex `\.?` for B, J, JL, L prefixes (B.108, J.10)
-  - **BTP routing**: `determine_btp()` now uses `re.findall` for compound identifiers (W23 MSG → BTP BD)
-  - **BTP reorg**: 107+15 assets moved from BTP JAK to BTP BD
-  - **Edit timemark date.txt**: `_read_date_txt()` reads from `03_photos_export/` folder
+  - **Auto-Crop Kolase (White-Seam Isolation):** Selesai diimplementasikan di `scripts/auto_crop_collages.py` dan terintegrasi di `server.js` (Step 1.5 & Run All).
+  - **Filter & Koreksi Kolase Web UI:** Filter `🗂️ FOTO KOLASE`, badge filter, dan `Editor Timemark Manual` telah terintegrasi untuk menampilkan foto hasil potong (cropped 300x300) secara presisi.
+  - **Sinkronisasi Tim 1 & Tim 2 Multi-Team:** Parameter `--schedule` di `edit_timemark_ide1.py` telah diset default ke `schedule.json`. Distribusi output:
+    - `04_photos_edited`: Tim_1 = 1.341 foto, Tim_2 = 75 foto (Total 1.416 foto, semua `meta.json` dan `detector.json` aman).
+    - `05_pdf_merged`: Tim_1 = 310 PDF, Tim_2 = 25 PDF (Total 335 PDF sukses). 1 PDF (`PERAWATAN PTLS CGB 28-08-2025.pdf` / MULTIPLEX CGB) dilewati sesuai konfirmasi karena tidak ada dokumen inspeksi di sumber 2026.
   - **Edit timemark blur/textbox sync**: same `(x1,y1,x2,y2)` dimensions
   - **BOX_HEIGHT_RATIO**: reverted to 0.053 (original size)
 - **2026-07-14 17:48 WIB** — Full pipeline clean run (BTP cross-search + no-photo fallback):
@@ -84,6 +93,7 @@ python merge_pdf_foto.py --schedule schedule.json       # Step 5
 
 | Tanggal | Ringkasan Update | File Terkait |
 |---------|------------------|--------------|
+| [[Notes/Daily/2026-08-30\|**30 Agt**]] | Modul Edit Jam Foto (`04_Time`), Galeri Asset Row Grouping (0/50/100%), Filter Kalender per Tanggal, dan Tab Baru `📅 Schedule Sheet` (Spreadsheet Viewer + Export Excel). | `scripts/edit_photo_time_only.py`, `scripts/export_schedule_excel.py`, `server.js`, `templates/index.html` |
 | [[Notes/Daily/2026-07-16\|**16 Jul**]] | Investigasi JPL naming inconsistency. Root cause: KEL2 pakai funcloc (salah), harusnya filename. Buat ADR-009, plan skrip `export_kel2_from_filename.py`. | `export_pdf_foto.py`, `Notes/Decisions/ADR-009-kel2-filename-export.md` |
 | [[Notes/Daily/2026-07-15\|**15 Jul**]] | BTP routing fix (re.findall compound ID). WESEL suffix folders. SINYAL multi-page. Edit timemark: date.txt reading, blur/textbox sync. BTP reorg 122 assets. 4521 foto, 1290 edit, 278 dates. | `export_pdf_foto.py`, `edit_timemark_ide1.py` |
 | [[Notes/Daily/2026-07-14\|**14 Jul**]] | Full pipeline fix: OTB→TELEKOM, BANGUNAN→PDSE, MULTIPLEX→PTLS, BOP-BTT split. Clean run: 474 foto, 156 edit, 79 PDF. | `export_pdf_foto.py`, `merge_pdf_foto.py` |

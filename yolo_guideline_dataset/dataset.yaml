@@ -1,0 +1,5 @@
+path: C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/yolo_guideline_dataset
+train: images/train
+val: images/val
+names:
+  0: guideline
