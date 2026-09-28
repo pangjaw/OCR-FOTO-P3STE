@@ -30,20 +30,13 @@ from openpyxl.utils import get_column_letter
 from openpyxl.drawing.image import Image as OpenpyxlImage
 from openpyxl.formatting.rule import CellIsRule
 
-# Try importing employee_manager helpers
+from employee_manager import load_pegawai_config
+
 try:
-    from employee_manager import (
-        load_pegawai_config,
-        extract_page1_tim1_personnel,
-        get_tim2_roster_for_date
-    )
+    from audit_and_correct_personnel import extract_personnel_from_pdf, get_roster_sets
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from employee_manager import (
-        load_pegawai_config,
-        extract_page1_tim1_personnel,
-        get_tim2_roster_for_date
-    )
+    from audit_and_correct_personnel import extract_personnel_from_pdf, get_roster_sets
 
 import fitz
 
@@ -59,17 +52,218 @@ DAY_NAMES_ID = {
 }
 
 
-def build_dinasan_workbook(year: int, month: int, schedule_path: Path, config_path: Path, output_path: Path):
+def _build_simple_dinasan_workbook(year: int, month: int, schedule_path: Path, output_path: Path, with_personnel: bool = False, config_path: Path = None):
+    """Export compact maintenance list; optional PERSONIL column."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = f"Dinasan {MONTH_NAMES_ID[month]} {year}"
+    ws.page_setup.paperSize = ws.PAPERSIZE_A4
+    ws.page_setup.orientation = ws.ORIENTATION_PORTRAIT
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ws.page_setup.fitToPage = True
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    ws.print_options.horizontalCentered = True
+    ws.print_options.verticalCentered = False
+    ws.page_margins.left = 0.25
+    ws.page_margins.right = 0.25
+    ws.page_margins.top = 0.35
+    ws.page_margins.bottom = 0.35
+
+    logo_path = Path("config/kai_logo.png")
+    if logo_path.exists():
+        img = OpenpyxlImage(str(logo_path))
+        img.width, img.height = 110, 42
+        ws.add_image(img, "A1")
+
+    end_col = "E" if with_personnel else "D"
+    ws.merge_cells(f"A1:{end_col}1")
+    ws["A1"] = "DAFTAR JADWAL PERAWATAN"
+    ws["A1"].font = Font(name="Arial", size=14, bold=True)
+    ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
+    ws.merge_cells(f"A2:{end_col}2")
+    ws["A2"] = f"DINASAN {MONTH_NAMES_ID[month]} {year}"
+    ws["A2"].font = Font(name="Arial", size=11, bold=True)
+    ws["A2"].alignment = Alignment(horizontal="center", vertical="center")
+    ws.row_dimensions[1].height = 32
+    ws.row_dimensions[2].height = 22
+
+    headers = ["NO", "PERAWATAN", "PROGRAM", "REALISASI"]
+    if with_personnel:
+        headers.append("PERSONIL")
+    header_fill = PatternFill("solid", fgColor="1F4E78")
+    header_font = Font(name="Arial", size=10, bold=True, color="FFFFFF")
+    body_font = Font(name="Arial", size=10)
+    border = Border(*(Side(style="thin", color="000000"),) * 4)
+    for col, value in enumerate(headers, 1):
+        cell = ws.cell(4, col, value)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+        cell.border = border
+    ws.row_dimensions[4].height = 22
+
+    schedules = []
+    if schedule_path.exists():
+        with open(schedule_path, "r", encoding="utf-8") as f:
+            schedules = json.load(f).get("schedules", [])
+    by_date = {}
+    personnel_by_date = {}
+    cfg = load_pegawai_config(config_path)
+    kaur_map, pnc_map, _ = get_roster_sets(cfg)
+    roster_names = sorted(set(kaur_map) | set(pnc_map), key=len, reverse=True)
+    if cfg.get("resor", {}).get("nama"):
+        resor_name = cfg["resor"]["nama"].strip().upper()
+        if resor_name and resor_name not in roster_names:
+            roster_names.append(resor_name)
+
+    def normalize_personnel(values):
+        result = set()
+        for value in values:
+            text = re.sub(r'\s+', ' ', str(value).upper()).strip(' ,;')
+            clean_text = re.sub(r'[^A-Z]', '', text)
+            found = []
+            for name in roster_names:
+                clean_name = re.sub(r'[^A-Z]', '', name)
+                if clean_name and (clean_name == clean_text or (len(clean_name) >= 6 and clean_name in clean_text) or (len(clean_text) >= 6 and clean_text in clean_name)):
+                    found.append(name)
+                else:
+                    chars = [re.escape(c) for c in name if not c.isspace()]
+                    if chars and re.search(r'\b' + r'\s*'.join(chars) + r'\b', text):
+                        found.append(name)
+            if found:
+                result.update(found)
+            elif text:
+                result.add(text)
+        return result
+
+    pdf_by_date = {}
+    for item in schedules:
+        iso = item.get("iso_date", "")
+        try:
+            date_key = datetime.strptime(iso, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        override = (item.get("personnel_override") or "").strip()
+        if override:
+            personnel_by_date.setdefault(date_key, set()).update(
+                normalize_personnel(re.split(r"[,;\n]+", override))
+            )
+        elif item.get("personnel"):
+            personnel_by_date.setdefault(date_key, set()).update(
+                normalize_personnel(item["personnel"])
+            )
+        pdf_value = item.get("pdf_path") or item.get("file") or ""
+        pdf_file = Path(str(pdf_value).replace('\\\\', '\\'))
+        if not pdf_file.is_file() and item.get("file"):
+            search_dirs = [pdf_file.parent] if pdf_file.parent.exists() else []
+            search_dirs.extend([Path("02_pdf_target"), Path("01_pdf_source")])
+            for root in search_dirs:
+                matches = list(root.rglob(item["file"])) if root.exists() else []
+                if matches:
+                    pdf_file = matches[0]
+                    break
+        if pdf_file.is_file():
+            pdf_by_date.setdefault(date_key, []).append(pdf_file)
+
+    if with_personnel:
+        for date_key, pdf_files in pdf_by_date.items():
+            if not personnel_by_date.get(date_key):
+                for pdf_file in pdf_files:
+                    try:
+                        with fitz.open(pdf_file) as doc:
+                            _, _, raw_personnel = extract_personnel_from_pdf(doc, kaur_map, pnc_map)
+                        personnel_by_date.setdefault(date_key, set()).update(
+                            normalize_personnel(raw_personnel)
+                        )
+                    except Exception:
+                        pass
+
+    for item in schedules:
+        try:
+            dt = datetime.strptime(item.get("iso_date", ""), "%Y-%m-%d")
+        except ValueError:
+            continue
+        if dt.year != year or dt.month != month:
+            continue
+        category = (item.get("category") or "").strip().upper()
+        identifier = (item.get("identifier") or "").strip().upper()
+        match = re.match(r"^(.*?)\s+((?:BOO|CLT|BOP|BTT|MSG|CGB|COS)(?:[- ].*)?)$", identifier)
+        if match:
+            asset_name, location = match.group(1).strip(), match.group(2).strip()
+        else:
+            asset_name, location = identifier, ""
+        date_key = dt.date()
+        group_key = (category, location)
+        groups = by_date.setdefault(date_key, {})
+        group = groups.setdefault(group_key, [])
+        detail = asset_name
+        if detail and detail not in group:
+            group.append(detail)
+
+    rows = []
+    for date_key, groups in sorted(by_date.items()):
+        details = []
+        for (category, location), assets in groups.items():
+            names = ", ".join(assets)
+            suffix = f" {location}" if location else ""
+            details.append(f"PERAWATAN {category} {names}{suffix}".strip())
+        personnel = "\n".join(sorted(personnel_by_date.get(date_key, set()))) or "-"
+        rows.append((datetime.combine(date_key, datetime.min.time()), "\n".join(details), personnel))
+
+    for no, (dt, detail, personnel) in enumerate(rows, 1):
+        date_text = dt.strftime("%d-%m-%Y")
+        values = [no, detail, date_text, date_text]
+        if with_personnel:
+            values.append(personnel)
+        row_number = 4 + no
+        for col, value in enumerate(values, 1):
+            cell = ws.cell(row_number, col, value)
+            cell.font = body_font
+            cell.border = border
+            cell.alignment = Alignment(horizontal="center" if col not in (2, 5) else "left", vertical="center", wrap_text=True)
+        col_b_wrap = 48 if with_personnel else 72
+        wrapped_lines = sum(max(1, (len(line) + col_b_wrap - 1) // col_b_wrap) for line in detail.split("\n"))
+        if with_personnel:
+            wrapped_lines = max(wrapped_lines, len(personnel.split("\n")))
+        ws.row_dimensions[row_number].height = max(24, min(140, 16 * wrapped_lines))
+
+    ws.column_dimensions["A"].width = 5
+    ws.column_dimensions["B"].width = 48 if with_personnel else 72
+    ws.column_dimensions["C"].width = 13
+    ws.column_dimensions["D"].width = 13
+    if with_personnel:
+        ws.column_dimensions["E"].width = 26
+    ws.print_title_rows = "1:4"
+    ws.print_area = f"A1:{end_col}{max(4, 4 + len(rows))}"
+    ws.freeze_panes = "A5"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    wb.save(output_path)
+    wb.close()
+    print(f"[OK] Dinasan Excel exported successfully -> {output_path}")
+    return output_path
+
+
+def build_dinasan_workbook(year: int, month: int, schedule_path: Path, config_path: Path, output_path: Path, with_personnel: bool = False):
+    return _build_simple_dinasan_workbook(year, month, schedule_path, output_path, with_personnel, config_path)
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = f"Dinasan {MONTH_NAMES_ID[month]} {year}"
     ws.views.sheetView[0].showGridLines = True
+    ws.page_setup.paperSize = ws.PAPERSIZE_A4
+    ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
+    ws.page_setup.fitToPage = True
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 1
+    ws.print_options.horizontalCentered = True
+    ws.print_options.verticalCentered = True
 
     # ── 1. Load Configurations ──
     cfg = load_pegawai_config(config_path)
     resor = cfg.get("resor", {
-        "nama": "FURQON SUSILO WARDOYO",
-        "nipp": "64465",
+        "nama": "S. SLAMET RIYADI",
+        "nipp": "-",
         "jabatan": "KUPT RESOR STL 1.21 BOGOR"
     })
     kaur_list = cfg.get("kaur", [])
@@ -105,16 +299,33 @@ def build_dinasan_workbook(year: int, month: int, schedule_path: Path, config_pa
         except Exception:
             continue
 
-    # Pre-scan Tim 1 personnel from 01_pdf_source
-    src_dir = Path("01_pdf_source")
+    # Pre-scan Tim 1 personnel from schedule PDF paths, fallback to 01_pdf_source
     pdf_by_date = {}
-    if src_dir.exists():
-        for pdf_file in src_dir.glob("*.pdf"):
-            m = re.search(r'(\d{2})-(\d{2})-(\d{4})', pdf_file.name)
-            if m:
-                d_str = m.group(0)
-                if d_str not in pdf_by_date:
-                    pdf_by_date[d_str] = pdf_file
+    try:
+        with open(schedule_path, "r", encoding="utf-8") as f:
+            for item in json.load(f).get("schedules", []):
+                pdf_file = Path(item.get("pdf_path", ""))
+                iso = item.get("iso_date", "")
+                if not pdf_file.is_file() and item.get("file"):
+                    search_dirs = [pdf_file.parent] if pdf_file.parent.exists() else []
+                    search_dirs.extend([Path("02_pdf_target"), Path("01_pdf_source")])
+                    for root in search_dirs:
+                        matches = list(root.rglob(item["file"])) if root.exists() else []
+                        if matches:
+                            pdf_file = matches[0]
+                            break
+                if pdf_file.is_file() and iso:
+                    d_key = datetime.strptime(iso, "%Y-%m-%d").strftime("%d-%m-%Y")
+                    pdf_by_date.setdefault(d_key, []).append(pdf_file)
+    except (OSError, ValueError, json.JSONDecodeError):
+        pass
+    if not pdf_by_date:
+        src_dir = Path("01_pdf_source")
+        if src_dir.exists():
+            for pdf_file in src_dir.glob("*.pdf"):
+                m = re.search(r'(\d{2})-(\d{2})-(\d{4})', pdf_file.name)
+                if m:
+                    pdf_by_date.setdefault(m.group(0), []).append(pdf_file)
 
     # Build duty roster per day: day -> set of UPPERCASE names on duty
     daily_duties = {}
@@ -131,12 +342,31 @@ def build_dinasan_workbook(year: int, month: int, schedule_path: Path, config_pa
         t1_tokens = set()
 
         if (has_tim1 or has_tim2) and d_str in pdf_by_date:
-            try:
-                doc = fitz.open(pdf_by_date[d_str])
-                t1_tokens = extract_page1_tim1_personnel(doc)
-                doc.close()
-            except Exception:
-                pass
+            for pdf_f in pdf_by_date[d_str]:
+                try:
+                    doc = fitz.open(pdf_f)
+                    t1_tokens.update(extract_page1_tim1_personnel(doc))
+                    doc.close()
+                except Exception:
+                    pass
+
+        # Personil dari item jadwal dan koreksi Audit Jadwal Dinasan
+        for item in schedules:
+            if item.get("iso_date") == f"{year:04d}-{month:02d}-{day:02d}":
+                if item.get("personnel"):
+                    for p in item["personnel"]:
+                        t1_tokens.add(str(p).strip().upper())
+
+        override_names = set()
+        for item in schedules:
+            if item.get("iso_date") == f"{year:04d}-{month:02d}-{day:02d}" and item.get("personnel_override"):
+                override_names.update(
+                    name.strip().upper()
+                    for name in re.split(r"[,;\\n]+", str(item["personnel_override"]))
+                    if name.strip()
+                )
+        if override_names:
+            t1_tokens.update(override_names)
 
         if has_tim1:
             for k in kaur_list:
@@ -490,8 +720,8 @@ def build_dinasan_workbook(year: int, month: int, schedule_path: Path, config_pa
     sig_col_let = get_column_letter(sig_col)
 
     ws.cell(row=legend_start, column=sig_col, value=resor.get("jabatan", "KUPT RESOR STL 1.21 BOGOR")).font = font_bold
-    ws.cell(row=legend_start + 4, column=sig_col, value=resor.get("nama", "FURQON SUSILO WARDOYO")).font = font_bold
-    ws.cell(row=legend_start + 5, column=sig_col, value=f"NIPP : {resor.get('nipp', '64465')}").font = font_bold
+    ws.cell(row=legend_start + 4, column=sig_col, value=resor.get("nama", "S. SLAMET RIYADI")).font = font_bold
+    ws.cell(row=legend_start + 5, column=sig_col, value=f"NIPP : {resor.get('nipp', '-')}").font = font_bold
 
     # ── 10. Column Widths ──
     ws.column_dimensions["A"].width = 5
@@ -516,6 +746,7 @@ def main():
     parser.add_argument("--schedule", type=str, default="schedule.json", help="Path to schedule.json")
     parser.add_argument("--config", type=str, default="config/daftar_pegawai.json", help="Path to daftar_pegawai.json")
     parser.add_argument("--output", type=str, default=None, help="Output path for .xlsx")
+    parser.add_argument("--with-personnel", action="store_true", help="Tambahkan kolom PERSONIL")
     args = parser.parse_args()
 
     sch_path = Path(args.schedule)
@@ -556,7 +787,7 @@ def main():
     else:
         out_path = Path(f"logs/DAFTAR_DINASAN_PEGAWAI_{m_name}_{year}.xlsx")
 
-    build_dinasan_workbook(year, month, sch_path, cfg_path, out_path)
+    build_dinasan_workbook(year, month, sch_path, cfg_path, out_path, args.with_personnel)
 
 
 if __name__ == "__main__":

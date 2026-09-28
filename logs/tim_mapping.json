@@ -1,12 +1,14 @@
 {
   "version": 1,
-  "generated_at": "2026-09-02T01:10:20.454433",
+  "generated_at": "2026-09-24T07:36:04.560322",
   "mapping": {
-    "BTP BD\\PTDS\\COS\\0.jpg": 2,
-    "BTP BD\\PTDS\\COS\\100.jpg": 2,
-    "BTP BD\\PTDS\\COS\\50.jpg": 2
+    "BTP JAK\\SERAT OPTIK\\JPL 01 BOO\\0.jpg": 2,
+    "BTP JAK\\SERAT OPTIK\\JPL 01 BOO\\100.jpg": 2,
+    "BTP JAK\\SERAT OPTIK\\JPL 01 BOO\\100.original_backup.jpg": 1,
+    "BTP JAK\\SERAT OPTIK\\JPL 01 BOO\\50.jpg": 2
   },
   "tims_used": [
+    1,
     2
   ]
 }

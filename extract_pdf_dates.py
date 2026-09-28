@@ -9,6 +9,8 @@ import datetime
 import os
 import re
 import sys
+import json
+import shutil
 from pathlib import Path
 from collections import defaultdict
 
@@ -196,6 +198,13 @@ def parse_target_filename(filename: str) -> tuple[str, str, str] | None:
                 identifier = f"RADIO_{code}" if prefix == "ER RADIO " else code
                 break
 
+    # ── SERAT OPTIK: strip "OTB " prefix and map "BOO" / "BOGOR" / "RUANG RADIO BOGOR" -> "RUANG RADIO BOO" ──
+    if category == "SERAT OPTIK":
+        if identifier.startswith("OTB "):
+            identifier = identifier[4:].strip()
+        if identifier in ("BOO", "BOGOR", "RUANG RADIO BOGOR"):
+            identifier = "RUANG RADIO BOO"
+
     # ── PINTU_PERLINTASAN: map category to JPL (folder export pake JPL)
     # dan normalisasi identifier
     if category == "PINTU_PERLINTASAN":
@@ -208,18 +217,36 @@ def parse_target_filename(filename: str) -> tuple[str, str, str] | None:
     return (category, identifier, date_str)
 
 
+def _has_jpg(d: Path) -> bool:
+    try:
+        with os.scandir(d) as entries:
+            for entry in entries:
+                if entry.name.lower().endswith(".jpg"):
+                    return True
+    except OSError:
+        pass
+    return False
+
+
 def extract_date_from_pdf(pdf_path) -> datetime.date | None:
-    """Fallback: read date from PDF page 1 via pdfplumber."""
-    import pdfplumber
-    with pdfplumber.open(str(pdf_path)) as pdf:
-        if not pdf.pages:
-            return None
-        for page in pdf.pages:
-            text = page.extract_text() or ""
-            dt = parse_date_indonesian(text)
-            if dt:
-                return dt
-    return None
+    """Fallback: read date from PDF page 1 via PyMuPDF fitz with pdfplumber fallback."""
+    try:
+        import fitz
+        with fitz.open(str(pdf_path)) as doc:
+            if len(doc) > 0:
+                t = doc[0].get_text() or ""
+                dt = parse_date_indonesian(t)
+                if dt:
+                    return dt
+    except Exception:
+        pass
+    try:
+        with pdfplumber.open(str(pdf_path)) as pdf:
+            if not pdf.pages:
+                return None
+            return parse_date_indonesian(pdf.pages[0].extract_text() or "")
+    except Exception:
+        return None
 
 
 def build_folder_lookup(output_root: Path) -> dict[tuple[str, str], list[Path]]:
@@ -247,22 +274,21 @@ def build_folder_lookup(output_root: Path) -> dict[tuple[str, str], list[Path]]:
             for ident_dir in cat_dir.iterdir():
                 if not ident_dir.is_dir():
                     continue
-                if any(ident_dir.glob("*.jpg")):
+                if _has_jpg(ident_dir):
                     key = (category, ident_dir.name)
                     lookup[key].append(ident_dir)
 
-                    # WESEL: strip _DD-MM suffix → also map base identifier
-                    # "W13 BOO_02-01" → base "W13 BOO"
+                    # Strip _DD-MM suffix if present → also map base identifier for any category
+                    # e.g. "W13 BOO_02-01" → base "W13 BOO", "B104 CLT-BOO_10-02" → base "B104 CLT-BOO"
                     name = ident_dir.name
-                    if category == "WESEL":
-                        we_m = re.match(r'^(.+?)_(\d{2}-\d{2})$', name)
-                        if we_m:
-                            base_name = we_m.group(1)
-                            base_key = (category, base_name)
-                            if base_key not in lookup:
-                                lookup[base_key] = []
-                            if ident_dir not in lookup[base_key]:
-                                lookup[base_key].append(ident_dir)
+                    suf_m = re.match(r'^(.+?)_(\d{2}-\d{2})$', name)
+                    if suf_m:
+                        base_name = suf_m.group(1)
+                        base_key = (category, base_name)
+                        if base_key not in lookup:
+                            lookup[base_key] = []
+                        if ident_dir not in lookup[base_key]:
+                            lookup[base_key].append(ident_dir)
 
                     # Add fuzzy/prefix keys (strip compound station suffixes)
                     # "MJ28 BOP-BTT" -> keys: "MJ28 BOP", "MJ28 BTT", "MJ28"
@@ -340,6 +366,156 @@ def _alternate_ids(identifier: str) -> list[str]:
     return alts
 
 
+MAPPING_FILE = Path("logs/asset_folder_mapping.json")
+
+
+def load_folder_mapping(path: Path = MAPPING_FILE) -> dict:
+    if path.exists():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+    return {}
+
+
+def save_folder_mapping(path: Path, mapping: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        path.write_text(json.dumps(mapping, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception as e:
+        print(f"[WARNING] Gagal menyimpan {path}: {e}")
+
+
+def prepare_multi_date_folders(output_root: Path, pdf_files: list[Path], logs_dir: Path = Path("logs")) -> dict:
+    """Pre-scan target PDFs, identify assets with multiple dates, and manage suffixed folders.
+    - If base folder exists (e.g. B104 CLT-BOO):
+        1. Renames base folder to B104 CLT-BOO_{first_date}
+        2. Copies to B104 CLT-BOO_{subsequent_dates}
+    - If base folder already renamed in earlier run:
+        Ensures all subsequent dates have folders copied.
+    - Saves mapping to logs/asset_folder_mapping.json.
+    """
+    mapping = load_folder_mapping(logs_dir / "asset_folder_mapping.json")
+    
+    # 1. Pre-scan PDF targets to find dates per asset
+    print("[*] Pre-scanning target PDFs untuk mendeteksi aset tanggal ganda...", flush=True)
+    asset_dates = defaultdict(lambda: defaultdict(dict))
+    
+    for pdf_path in pdf_files:
+        fname = pdf_path.name
+        parsed = parse_target_filename(fname)
+        base_category = None
+        base_identifier = None
+        dt = None
+        
+        if parsed:
+            base_category, base_identifier, date_str = parsed
+            dt = parse_date_from_filename(date_str)
+        if not dt:
+            dt = extract_date_from_pdf(pdf_path)
+        if not dt:
+            continue
+            
+        date_suf = dt.strftime("%d-%m")
+        date_fmt = format_date_target(dt)
+        
+        all_funclocs = []
+        if not parsed or base_category in {"AXC", "WESEL", "SINYAL"}:
+            try:
+                import fitz
+                with fitz.open(str(pdf_path)) as doc:
+                    if len(doc) > 0:
+                        text = doc[0].get_text() or ""
+                        all_funclocs = extract_all_funclocs(text)
+            except Exception:
+                pass
+                
+        idents = []
+        if all_funclocs and base_category:
+            for fl in all_funclocs:
+                ident = extract_identifier(fl, base_category)
+                if ident:
+                    for old, new in IDENTIFIER_EXCEPTIONS.items():
+                        tokens = ident.split()
+                        old_tokens = old.split()
+                        if len(tokens) >= len(old_tokens) and tokens[:len(old_tokens)] == old_tokens:
+                            rest = ' '.join(tokens[len(old_tokens):])
+                            ident = f"{new} {rest}".strip() if rest else new
+                    norm = normalize_identifier(ident)
+                    idents.append((base_category, norm, ident))
+        if not idents and base_category and base_identifier:
+            norm = normalize_identifier(base_identifier)
+            idents.append((base_category, norm, base_identifier))
+            
+        seen_in_file = set()
+        for cat, norm_id, orig_id in idents:
+            if orig_id in seen_in_file:
+                continue
+            seen_in_file.add(orig_id)
+            if cat == "PINTU_PERLINTASAN":
+                cat = "JPL"
+            asset_dates[(cat, orig_id)][date_suf] = {"date": date_fmt, "pdf": fname, "norm": norm_id}
+
+    # 2. Filter multi-date assets
+    multi_date_assets = {k: v for k, v in asset_dates.items() if len(v) > 1}
+    print(f"[*] Terdeteksi {len(multi_date_assets)} aset memiliki tanggal ganda pada target PDF.", flush=True)
+
+    # 3. For each multi-date asset, check and manage folders in output_root
+    btp_dirs = [d for d in output_root.iterdir() if d.is_dir() and d.name.startswith("BTP")]
+    if not btp_dirs:
+        btp_dirs = [output_root]
+
+    for (cat, orig_id), date_map in multi_date_assets.items():
+        sorted_sufs = sorted(date_map.keys())
+        first_suf = sorted_sufs[0]
+        
+        for btp_dir in btp_dirs:
+            cat_dir = btp_dir / cat if btp_dir != output_root else output_root / cat
+            if not cat_dir.is_dir():
+                continue
+                
+            base_folder = cat_dir / orig_id
+            norm_id = list(date_map.values())[0].get("norm", orig_id)
+            if not base_folder.is_dir() and (cat_dir / norm_id).is_dir():
+                base_folder = cat_dir / norm_id
+                
+            first_suffixed = cat_dir / f"{orig_id}_{first_suf}"
+            if not first_suffixed.is_dir() and (cat_dir / f"{norm_id}_{first_suf}").is_dir():
+                first_suffixed = cat_dir / f"{norm_id}_{first_suf}"
+
+            # If base folder exists (from fresh Step 1 export):
+            if base_folder.is_dir():
+                if first_suffixed.exists() and first_suffixed != base_folder:
+                    try:
+                        shutil.rmtree(first_suffixed)
+                    except Exception:
+                        pass
+                base_folder.rename(first_suffixed)
+                print(f"  [STEP 2] Rename folder dasar: {base_folder.name} -> {first_suffixed.name}", flush=True)
+            
+            # Now, if first_suffixed exists, ensure all subsequent dates have copies
+            if first_suffixed.is_dir():
+                for next_suf in sorted_sufs[1:]:
+                    next_suffixed = cat_dir / f"{orig_id}_{next_suf}"
+                    if not next_suffixed.exists():
+                        shutil.copytree(first_suffixed, next_suffixed)
+                        print(f"  [STEP 2] Salin foto tanggal ganda: {first_suffixed.name} -> {next_suffixed.name}", flush=True)
+                        
+                # Update mapping
+                map_key = f"{btp_dir.name}/{cat}/{orig_id}"
+                mapping[map_key] = {
+                    "btp": btp_dir.name,
+                    "category": cat,
+                    "base_identifier": orig_id,
+                    "dates": sorted_sufs,
+                    "folders": {suf: f"{orig_id}_{suf}" for suf in sorted_sufs}
+                }
+                break
+
+    save_folder_mapping(logs_dir / "asset_folder_mapping.json", mapping)
+    return mapping
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Ekstrak tanggal dari filename PDF target → date.txt di folder foto export."
@@ -357,26 +533,33 @@ def main() -> int:
         print(f"[ERROR] Folder PDF '{pdf_dir}' tidak ditemukan.")
         return 1
 
+    pdf_files = sorted(pdf_dir.rglob("*.pdf"))
+    if not pdf_files:
+        print(f"Tidak ada PDF di '{pdf_dir}'.")
+        return 0
+
+    # ── Multi-date folder management ──
+    prepare_multi_date_folders(output_root, pdf_files)
+
     # ── Pre-scan folder lookup ──
     print(f"Pre-scan folder lookup dari '{output_root.name}'...")
     folder_lookup = build_folder_lookup(output_root)
     total_folders = sum(len(v) for v in folder_lookup.values())
     print(f"  {len(folder_lookup)} unique identifiers, {total_folders} folder.\n")
 
-    pdf_files = sorted(pdf_dir.rglob("*.pdf"))
-    if not pdf_files:
-        print(f"Tidak ada PDF di '{pdf_dir}'.")
-        return 0
-
     print(f"Processing {len(pdf_files)} PDF dari '{pdf_dir.name}'...\n")
 
     updated = 0
+    unchanged = 0
     skipped = 0
+    missed = 0
+    errors = 0
     fallback_used = 0
 
     for idx, pdf_path in enumerate(pdf_files, 1):
         fname = pdf_path.name
-        print(f"[{idx}/{len(pdf_files)}] 📄 {fname}", flush=True)
+        if idx == 1 or idx % 25 == 0 or idx == len(pdf_files):
+            print(f"[PROGRESS] {idx}/{len(pdf_files)} PDF", flush=True)
 
         # ── Try filename parsing first ──
         parsed = parse_target_filename(fname)
@@ -387,30 +570,35 @@ def main() -> int:
         if parsed:
             base_category, base_identifier, date_str = parsed
             dt = parse_date_from_filename(date_str)
-            method = "filename"
         
         if not dt:
-            # ── Fallback: pdfplumber for date ──
             dt = extract_date_from_pdf(pdf_path)
-            method = "pdfplumber"
             fallback_used += 1
             if not dt:
-                print(f"  └── ⏩ [SKIP] Tidak bisa mengekstrak tanggal dari file ini\n", flush=True)
+                print(f"[SKIP] {fname}: tanggal tidak ditemukan", flush=True)
                 skipped += 1
                 continue
 
         formatted = format_date_target(dt)
-        print(f"  ├── Tanggal  : {formatted} ({method})", flush=True)
 
-        # ── Extract all funclocs ──
+        # Kategori multi-aset perlu semua funcloc; kategori biasa cukup dari filename.
         all_funclocs = []
-        try:
-            with pdfplumber.open(str(pdf_path)) as pdf:
-                if pdf.pages:
-                    text = pdf.pages[0].extract_text() or ""
-                    all_funclocs = extract_all_funclocs(text)
-        except Exception:
-            pass
+        if not parsed or base_category in {"AXC", "WESEL", "SINYAL"}:
+            try:
+                import fitz
+                with fitz.open(str(pdf_path)) as doc:
+                    if len(doc) > 0:
+                        text = doc[0].get_text() or ""
+                        all_funclocs = extract_all_funclocs(text)
+            except Exception:
+                try:
+                    with pdfplumber.open(str(pdf_path)) as pdf:
+                        if pdf.pages:
+                            text = pdf.pages[0].extract_text() or ""
+                            all_funclocs = extract_all_funclocs(text)
+                except Exception as exc:
+                    print(f"[ERROR] {fname}: gagal membaca halaman pertama: {exc}", flush=True)
+                    errors += 1
 
         identifiers_to_process = []
         if all_funclocs and base_category:
@@ -455,11 +643,10 @@ def main() -> int:
                 unique_idents.append((cat, norm, orig))
 
         if not unique_idents:
-            print(f"  └── ⏩ [SKIP] Tidak ada category/identifier yang terdeteksi\n", flush=True)
+            print(f"[SKIP] {fname}: category/identifier tidak terdeteksi", flush=True)
             skipped += 1
             continue
 
-        current_pdf_updates = 0
         for cat, norm_id, orig_id in unique_idents:
             if cat == "PINTU_PERLINTASAN":
                 cat = "JPL"
@@ -467,8 +654,8 @@ def main() -> int:
             # -- Look up folder --
             matches = []
             
-            # WESEL: try suffixed match first (date from target PDF filename)
-            if cat == "WESEL" and dt:
+            # Try suffixed match first (date from target PDF filename)
+            if dt:
                 date_suffix = dt.strftime("_%d-%m")
                 suffixed_id = f"{orig_id}{date_suffix}"
                 matches = folder_lookup.get((cat, suffixed_id), [])
@@ -507,30 +694,31 @@ def main() -> int:
                         break
 
             if not matches:
-                print(f"  │   ├── [MISS] {cat}/{orig_id} -> folder tidak ditemukan", flush=True)
-                skipped += 1
+                print(f"[MISS] {fname}: {cat}/{orig_id} -> folder tidak ditemukan", flush=True)
+                missed += 1
                 continue
 
             for folder in matches:
                 date_file = folder / "date.txt"
                 try:
                     if os.environ.get("OVERWRITE", "1") == "0" and date_file.exists():
-                        print(f"  │   ├── [SKIP] {folder.relative_to(output_root)}/date.txt (sudah ada)", flush=True)
+                        print(f"[SKIP] {fname}: {folder.relative_to(output_root)}/date.txt sudah ada", flush=True)
+                        skipped += 1
+                        continue
+                    if date_file.exists() and date_file.read_text(encoding="utf-8").strip() == formatted:
+                        unchanged += 1
                         continue
                     date_file.write_text(formatted, encoding="utf-8")
-                    rel = folder.relative_to(output_root)
-                    print(f"  │   ├── [MATCH] {rel}/date.txt -> {formatted}", flush=True)
                     updated += 1
-                    current_pdf_updates += 1
                 except Exception as e:
-                    print(f"  │   ├── [ERROR] {date_file}: {e}", flush=True)
+                    print(f"[ERROR] {fname}: {date_file}: {e}", flush=True)
+                    errors += 1
 
-        if current_pdf_updates > 0:
-            print(f"  └── [OK] {current_pdf_updates} folder date.txt berhasil diperbarui\n", flush=True)
-        else:
-            print(f"  └── [SKIP] Selesai tanpa update date.txt baru\n", flush=True)
-
-    print(f"\nSelesai: {updated} date.txt ditulis, {skipped} dilewati, {fallback_used} pakai pdfplumber fallback.")
+    print(
+        f"\nSelesai: {updated} ditulis, {unchanged} tidak berubah, "
+        f"{missed} miss, {skipped} skip, {errors} error, "
+        f"{fallback_used} fallback pdfplumber."
+    )
     return 0
 
 

@@ -4,7 +4,6 @@ import json
 import os
 import re
 import sys
-from datetime import date as date_type
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,6 +16,9 @@ if hasattr(sys.stderr, 'reconfigure'):
 import pdfplumber
 from pypdf import PdfReader
 from openpyxl import Workbook, load_workbook
+import threading
+
+CSV_LOCK = threading.Lock()
 
 
 # ── Constants ───────────────────────────────────────────────────
@@ -60,36 +62,6 @@ def _log_error(pdf_name: str, category: str, funcloc_text: str, reason: str):
         wb.save(ERROR_LOG_PATH)
     except Exception as exc:
         print(f"[WARN] Failed to write error log to {ERROR_LOG_PATH}: {exc}")
-
-
-def _extract_pdf_date(pdf_text: str, pdf_name: str) -> str | None:
-    """Extract PDF date and format it for edit_timemark_ide1.py date.txt."""
-    patterns = [
-        r"(?<!\d)(\d{2})[-/](\d{2})[-/](\d{4})(?!\d)",
-        r"(?<!\d)(\d{4})[-/](\d{2})[-/](\d{2})(?!\d)",
-    ]
-    match = None
-    for source in (pdf_text or "", pdf_name):
-        for pattern in patterns:
-            candidate = re.search(pattern, source)
-            if candidate:
-                values = [int(value) for value in candidate.groups()]
-                if len(str(values[0])) == 4:
-                    year, month, day = values
-                else:
-                    day, month, year = values
-                try:
-                    match = date_type(year, month, day)
-                except ValueError:
-                    continue
-                break
-        if match:
-            break
-    if not match:
-        return None
-    days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
-    months = ["", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
-    return f"{days[match.weekday()]}, {months[match.month]} {match.day:02d} {match.year} 07:00"
 
 
 def _extract_date_suffix(pdf_name: str, target_lookup: dict | None = None, identifier: str | None = None) -> str | None:
@@ -167,22 +139,23 @@ def original_images_by_name(reader: PdfReader, page_index: int) -> dict[str, tup
 
 
 def _render_page_and_crop(page: pdfplumber.page.Page, placement: dict,
-                          resolution: int = 600) -> bytes:
+                          resolution: int = 300, page_img=None) -> bytes:
     """Render a pdfplumber page and crop an image region. Returns JPEG bytes.
 
-    Used as fallback when pypdf can't find original (inline images).
+    Used as fallback when pypdf can't find original (inline images) or in --render-crop mode.
     """
     from PIL import Image
     from io import BytesIO
 
-    page_img = page.to_image(resolution=resolution)
+    if page_img is None:
+        page_img = page.to_image(resolution=resolution)
     # placement has x0, top, x1, bottom in PDF points
     scale = resolution / 72.0
     crop_box = (
         float(placement['x0']) * scale,
         float(placement['top']) * scale,
         float(placement['x1']) * scale if 'x1' in placement else (float(placement['x0']) + float(placement.get('width', 0))) * scale,
-        float(placement['bottom']) * scale,
+        float(placement['bottom']) * scale if 'bottom' in placement else (float(placement['top']) + float(placement.get('height', 0))) * scale,
     )
     # Recompute x1, y1 from width/height if not present
     if 'x1' not in placement:
@@ -346,9 +319,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--start-page", type=int, default=DEFAULT_START_PAGE,
                         help="Nomor halaman awal scan aset. Default: 2")
     parser.add_argument("--resolution", type=int, default=DEFAULT_RESOLUTION,
-                        help="Diabaikan saat export original image.")
+                        help="Resolusi render (default: 220, atau 300 saat --render-crop aktif).")
     parser.add_argument("--sap-mapping", default=SAP_MAPPING_PATH,
                         help=f"Path ke file mapping SAP. Default: {SAP_MAPPING_PATH}")
+    parser.add_argument("--render-crop", action="store_true",
+                        help="Mode crop render halaman PDF (300 DPI) agar teks/watermark yang melayang di atas foto ikut terbawa.")
     return parser.parse_args()
 
 
@@ -674,6 +649,7 @@ def extract_identifier(funcloc_text: str, category: str) -> str | None:
         cleaned_text = re.sub(r'M\s*S\s*G\s*', 'MSG ', cleaned_text, flags=re.I)
         cleaned_text = re.sub(r'C\s*C\s*R\s*', 'CCR ', cleaned_text, flags=re.I)
         cleaned_text = re.sub(r'\s+', ' ', cleaned_text).strip()
+        cleaned_text = re.sub(r'\s*-\s*', '-', cleaned_text)
 
         # First try: named JPL (e.g. "JPL BNR BOP - BTT" from "JPL10489 : PESAWAT TELEPON JPL BNR BOP - BTT")
         desc_part = cleaned_text.split(":", 1)[1].strip() if ":" in cleaned_text else cleaned_text
@@ -691,12 +667,12 @@ def extract_identifier(funcloc_text: str, category: str) -> str | None:
                 raw = f"JPL {jpl_name} {stations_raw}"
                 return normalize_jpl_identifier(raw)
         # Second try: "NO 28 CLT-BOO" pattern
-        m = re.search(r'(?:NO|JPL)\s*(\d{1,3}[A-Z]?\s+[A-Za-z]{2,3}(?:-[A-Za-z]{2,3})?)', cleaned_text, re.I)
+        m = re.search(r'(?:NO|JPL)\s*(\d{1,3}[A-Z]?\s+[A-Za-z]{2,3}(?:\s*-\s*[A-Za-z]{2,3})?)', cleaned_text, re.I)
         if m:
             raw = f"JPL {m.group(1).strip()}"
             return normalize_jpl_identifier(raw)
         # Match named JPL anywhere: "JPL BNR BOP-BTT"
-        m_named = re.search(r'\bJPL\s+([A-Z]{2,3})\s+([A-Za-z]{2,3}(?:-[A-Za-z]{2,3})?)\b', cleaned_text, re.I)
+        m_named = re.search(r'\bJPL\s+([A-Z]{2,3})\s+([A-Za-z]{2,3}(?:\s*-\s*[A-Za-z]{2,3})?)\b', cleaned_text, re.I)
         if m_named and m_named.group(1).upper() not in ("NO", "ELE", "OPT", "FO", "IB"):
             raw = f"JPL {m_named.group(1).upper()} {m_named.group(2)}"
             return normalize_jpl_identifier(raw)
@@ -705,6 +681,12 @@ def extract_identifier(funcloc_text: str, category: str) -> str | None:
         m2 = re.search(r'\bJPL\s+(\d{1,3}[A-Z]?)\b', desc_clean, re.I)
         if m2:
             return f"JPL {m2.group(1)}"
+        # Some PTPP records have only a numeric funcloc plus station name,
+        # e.g. "JPL10514 : SENTRANIK PPKA BTT" → "JPL BTT".
+        station = re.search(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|COS|CS|MSG|CCR)\b', desc_clean, re.I)
+        if station:
+            code = station.group(1).upper()
+            return f"JPL {'COS' if code == 'CS' else code}"
         return None
     
     if category == "SERAT OPTIK":
@@ -803,55 +785,43 @@ def extract_all_funclocs(page_text: str) -> list[str]:
     return results
 
 
-def determine_btp(identifier: str) -> str:
-    """Determine BTP from identifier string.
+BTP_BD_PATTERNS = [
+    r'\bBOO\s*-\s*BOP\b',
+    r'\bBOP\s*-\s*BOO\b',
+    r'\bBOP\s*-\s*BTT\b',
+    r'\bBTT\s*-\s*BOP\b',
+    r'\b(?:BOP|BTT|CGB|COS|MSG|CCR|BNR)\b',
+    r'\b(?:BATU\s*TULIS|BATUTULIS|CIOMAS|MASENG|CIGOMBONG|CICURUG|BOGOR\s*PALEDANG|PALEDANG)\b',
+    r'\bCS\b',
+]
 
-    For ER/RUANG identifiers (e.g. "ER SINYAL IB CGB"): scan for station keywords.
-    For generic identifiers (e.g. "W31D BOO", "ZP 201B MSG"): extract last code.
-    Default: UNKNOWN when no match found.
+BTP_JAK_PATTERNS = [
+    r'\b(?:BOO|CLT|BJD)\b',
+    r'\b(?:BOGOR|CILEBUT|BOJONGGEDE|BOJONG\s*GEDE|DEPOK)\b',
+]
+
+
+def determine_btp(text: str, fallback_text: str = None) -> str:
+    """Determine BTP (BTP BD or BTP JAK) from identifier or filename string.
+
+    Canonical source of truth for BTP routing across the entire pipeline:
+    - Cross-boundary routes like BOO-BOP / BOP-BTT always route to BTP BD.
+    - Full station names (BATU TULIS, CIOMAS, MASENG, CIGOMBONG, etc.) route to BTP BD.
+    - Radio prefixes like RADIO_COS, RADIO_BOO are normalized and correctly routed.
+    - Supports fallback to filename if identifier doesn't contain station info.
     """
-    if not identifier:
-        return "UNKNOWN"
-    if identifier.startswith("JPL ") and re.search(r'\bBOO\s*-\s*BOP\b', identifier.upper()):
-        return "BTP BD"
-    if identifier.startswith("JPL "):
-        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
-        if codes:
-            station = codes[0].upper()
-            if station == "CS": station = "COS"
-            return STATION_TO_BTP.get(station, "UNKNOWN")
-        return "UNKNOWN"
-    elif identifier.startswith("ER ") or identifier.startswith("RUANG ") or identifier.startswith("RADIO_"):
-        # Split on both spaces AND underscores for RADIO_ identifiers like "RADIO_COS"
-        parts = identifier.upper().replace('_', ' ').split()
-        code = None
-        for kw in ["BOO", "BTT", "CLT", "BOP", "CGB", "COS", "MSG", "BJD", "CCR"]:
-            if kw in parts:
-                code = kw
-                break
-        if not code:
-            # Fallback: check full station names (e.g. "CIOMAS" → "COS", "MASENG" → "MSG")
-            for token in parts:
-                token_upper = token.upper()
-                if token_upper in STATION_NAME_TO_CODE:
-                    code = STATION_NAME_TO_CODE[token_upper]
-                    break
-        if not code:
-            code = "BOO"  # fallback if no station found
-        if code == "CS":
-            code = "COS"
-        return STATION_TO_BTP.get(code, "UNKNOWN")
-    else:
-        clean = identifier.replace("RADIO_", "")
-        if clean == "CS": clean = "COS"
-        # Extract station codes from compound identifiers like "W21B2 BOO", "ZP 201B MSG"
-        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', clean, re.I)
-        if codes:
-            station = codes[-1].upper()  # last code is primary station
-            if station == "CS": station = "COS"
-            return STATION_TO_BTP.get(station, "UNKNOWN")
-        return STATION_TO_BTP.get(clean, "UNKNOWN")
-    return "UNKNOWN"
+    for candidate in [text, fallback_text]:
+        if not candidate:
+            continue
+        t = str(candidate).upper().replace('_', ' ')
+        for pat in BTP_BD_PATTERNS:
+            if re.search(pat, t):
+                return 'BTP BD'
+        for pat in BTP_JAK_PATTERNS:
+            if re.search(pat, t):
+                return 'BTP JAK'
+    return 'UNKNOWN'
+
 
 
 # ── Multi-Row Export (WESEL / SINYAL / AXC) ─────────────────────
@@ -860,7 +830,8 @@ def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
                      all_funclocs: list[str], output_root: Path,
                      log_path: Path, log_exists: bool,
                      pdf_name: str, funcloc_offset: int = 0,
-                     wesel_target_lookup: dict | None = None) -> int:
+                     wesel_target_lookup: dict | None = None,
+                     render_crop: bool = False, resolution: int = 300) -> int:
     """Export photos from multi-row photo page: 3 photos per asset row.
 
     WESEL/SINYAL/AXC PDFs have a single photo page with multiple rows.
@@ -868,6 +839,7 @@ def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
     """
     page = pdf.pages[photo_page_idx]
     page_height = float(page.height)
+    page_img = page.to_image(resolution=resolution) if render_crop else None
 
     # Extract words to find funcloc positions
     words = page.extract_words(use_text_flow=True)
@@ -900,14 +872,14 @@ def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
 
     # Map each image row to nearest funcloc above it
     exported = 0
-    with log_path.open("a", newline="", encoding="utf-8") as log_file:
+    with CSV_LOCK, log_path.open("a", newline="", encoding="utf-8") as log_file:
         writer = csv.DictWriter(log_file,
             fieldnames=["pdf", "page", "asset_code", "asset_name", "label",
                         "image_name", "output_file", "status"])
         if not log_exists:
             writer.writeheader()
 
-        originals = original_images_by_name(reader, photo_page_idx)
+        originals = {} if render_crop else original_images_by_name(reader, photo_page_idx)
 
         for row_imgs in rows:
             row_top = float(row_imgs[0]['top'])
@@ -974,10 +946,9 @@ def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
 
             for placement, stem in zip(sorted_imgs, ['0', '50', '100']):
                 img_name = str(placement.get('name', ''))
-                original = originals.get(Path(img_name).stem)
-                if not original:
+                if render_crop:
                     try:
-                        data = _render_page_and_crop(page, placement)
+                        data = _render_page_and_crop(page, placement, resolution=resolution, page_img=page_img)
                         suffix = '.jpg'
                     except Exception:
                         writer.writerow({
@@ -985,11 +956,26 @@ def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
                             "asset_code": best_fc, "asset_name": identifier,
                             "label": stem, "image_name": img_name,
                             "output_file": "",
-                            "status": "failed: original image not found",
+                            "status": "failed: render crop failed",
                         })
                         continue
                 else:
-                    suffix, data = original
+                    original = originals.get(Path(img_name).stem)
+                    if not original:
+                        try:
+                            data = _render_page_and_crop(page, placement, resolution=resolution)
+                            suffix = '.jpg'
+                        except Exception:
+                            writer.writerow({
+                                "pdf": pdf_name, "page": page.page_number,
+                                "asset_code": best_fc, "asset_name": identifier,
+                                "label": stem, "image_name": img_name,
+                                "output_file": "",
+                                "status": "failed: original image not found",
+                            })
+                            continue
+                    else:
+                        suffix, data = original
 
                 out_file = out_dir / f"{stem}{suffix}"
                 if os.environ.get("OVERWRITE", "1") == "0" and out_file.exists():
@@ -1021,7 +1007,9 @@ def export_multi_row(pdf, reader, photo_page_idx: int, category: str,
 
 def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
                start_page: int, _resolution: int,
-               input_root: Path = None, sap_mapping: dict = None) -> int:
+               input_root: Path = None, sap_mapping: dict = None,
+               render_crop: bool = False,
+               wesel_target_lookup: dict | None = None) -> int:
     """Unified export: detect category from filename, find photos, output to flat identifier structure.
 
     Output: {output_root}/{btp}/{category}/{identifier}/{0,50,100}.jpg
@@ -1087,7 +1075,8 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
         identifier = "JPL 01 BOO"
 
     # ── Build WESEL target lookup (for date suffix from 02_pdf_target) ──
-    wesel_target_lookup = _build_wesel_target_lookup("02_pdf_target") if category == "WESEL" else {}
+    if wesel_target_lookup is None:
+        wesel_target_lookup = _build_wesel_target_lookup("02_pdf_target") if category == "WESEL" else {}
 
     btp = determine_btp(identifier)
 
@@ -1100,9 +1089,6 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
     # ── Build primary output directory ──
     out_dir = identifier_output_dir(output_root, btp, category, identifier)
     ensure_dir(out_dir)
-    pdf_date = _extract_pdf_date(page1_text, pdf_path.name)
-    if pdf_date:
-        (out_dir / "date.txt").write_text(pdf_date + "\n", encoding="utf-8")
 
     # ── Find photo pages ──
     photo_pages: list[int] = []
@@ -1129,13 +1115,14 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
                                           category, all_funclocs, output_root,
                                           log_path, log_exists, pdf_path.name,
                                           funcloc_offset=funcloc_offset,
-                                          wesel_target_lookup=wesel_target_lookup)
+                                          wesel_target_lookup=wesel_target_lookup,
+                                          render_crop=render_crop, resolution=_resolution)
                 total += count
                 # Advance offset by number of rows on this page
                 funcloc_offset += len(_multi_pdf.pages[page_idx].images) // 3
         return total
 
-    with pdfplumber.open(str(pdf_path)) as pdf, \
+    with CSV_LOCK, pdfplumber.open(str(pdf_path)) as pdf, \
          log_path.open("a", newline="", encoding="utf-8") as log_file:
 
         writer = csv.DictWriter(log_file,
@@ -1150,27 +1137,41 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
             if not force_per_row:
                 # Standard export: 3 photos → one folder
                 page = pdf.pages[photo_page_idx]
+                page_img = page.to_image(resolution=_resolution) if render_crop else None
                 placements = sorted(page.images, key=lambda img: float(img['x0']))
                 selected = placements[:3]
-                originals = original_images_by_name(reader, photo_page_idx)
+                originals = {} if render_crop else original_images_by_name(reader, photo_page_idx)
 
                 for placement, stem in zip(selected, ['0', '50', '100']):
                     img_name = str(placement.get('name', ''))
-                    original = originals.get(Path(img_name).stem)
-                    if not original:
+                    if render_crop:
                         try:
-                            data = _render_page_and_crop(page, placement)
+                            data = _render_page_and_crop(page, placement, resolution=_resolution, page_img=page_img)
                             suffix = '.jpg'
                         except Exception:
                             writer.writerow({
                                 "pdf": pdf_path.name, "page": page.page_number,
                                 "asset_code": "", "asset_name": "",
                                 "label": stem, "image_name": img_name,
-                                "output_file": "", "status": "failed: original image not found",
+                                "output_file": "", "status": "failed: render crop failed",
                             })
                             continue
                     else:
-                        suffix, data = original
+                        original = originals.get(Path(img_name).stem)
+                        if not original:
+                            try:
+                                data = _render_page_and_crop(page, placement, resolution=_resolution)
+                                suffix = '.jpg'
+                            except Exception:
+                                writer.writerow({
+                                    "pdf": pdf_path.name, "page": page.page_number,
+                                    "asset_code": "", "asset_name": "",
+                                    "label": stem, "image_name": img_name,
+                                    "output_file": "", "status": "failed: original image not found",
+                                })
+                                continue
+                        else:
+                            suffix, data = original
 
                     out_file = out_dir / f"{stem}{suffix}"
                     if os.environ.get("OVERWRITE", "1") == "0" and out_file.exists():
@@ -1196,23 +1197,31 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
                 # ── Multi-funcloc with shared photo page ──
                 # Extract photos once, then copy to ALL funcloc folders
                 page = pdf.pages[photo_page_idx]
+                page_img = page.to_image(resolution=_resolution) if render_crop else None
                 placements = sorted(page.images, key=lambda img: float(img['x0']))
                 selected = placements[:3]
-                originals = original_images_by_name(reader, photo_page_idx)
+                originals = {} if render_crop else original_images_by_name(reader, photo_page_idx)
 
                 # Gather photo data once
                 photo_data: list[tuple[str, str, bytes]] = []
                 for placement, stem in zip(selected, ['0', '50', '100']):
                     img_name = str(placement.get('name', ''))
-                    original = originals.get(Path(img_name).stem)
-                    if not original:
+                    if render_crop:
                         try:
-                            data = _render_page_and_crop(page, placement)
+                            data = _render_page_and_crop(page, placement, resolution=_resolution, page_img=page_img)
                             suffix = '.jpg'
                         except Exception:
                             continue
                     else:
-                        suffix, data = original
+                        original = originals.get(Path(img_name).stem)
+                        if not original:
+                            try:
+                                data = _render_page_and_crop(page, placement, resolution=_resolution)
+                                suffix = '.jpg'
+                            except Exception:
+                                continue
+                        else:
+                            suffix, data = original
                     photo_data.append((stem, suffix, data))
 
                 if not photo_data:
@@ -1262,7 +1271,8 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
                 page = pdf.pages[page_index]
                 rows = extract_asset_rows(page, sap_mapping)
                 page_height = float(page.height)
-                originals = original_images_by_name(reader, page_index)
+                page_img = page.to_image(resolution=_resolution) if render_crop else None
+                originals = {} if render_crop else original_images_by_name(reader, page_index)
 
                 if not rows:
                     continue
@@ -1316,21 +1326,34 @@ def export_pdf(pdf_path: Path, output_root: Path, log_dir: Path,
 
                     for p_idx, (placement, stem) in enumerate(zip(placements[:3], ['0', '50', '100'])):
                         img_name = str(placement.get('name', ''))
-                        original = originals.get(Path(img_name).stem)
-                        if not original:
+                        if render_crop:
                             try:
-                                data = _render_page_and_crop(page, placement)
+                                data = _render_page_and_crop(page, placement, resolution=_resolution, page_img=page_img)
                                 suffix = '.jpg'
                             except Exception:
                                 writer.writerow({
                                     "pdf": pdf_path.name, "page": page.page_number,
                                     "asset_code": row.code, "asset_name": row.title,
                                     "label": stem, "image_name": img_name,
-                                    "output_file": "", "status": "failed: original image not found",
+                                    "output_file": "", "status": "failed: render crop failed",
                                 })
                                 continue
                         else:
-                            suffix, data = original
+                            original = originals.get(Path(img_name).stem)
+                            if not original:
+                                try:
+                                    data = _render_page_and_crop(page, placement, resolution=_resolution)
+                                    suffix = '.jpg'
+                                except Exception:
+                                    writer.writerow({
+                                        "pdf": pdf_path.name, "page": page.page_number,
+                                        "asset_code": row.code, "asset_name": row.title,
+                                        "label": stem, "image_name": img_name,
+                                        "output_file": "", "status": "failed: original image not found",
+                                    })
+                                    continue
+                            else:
+                                suffix, data = original
 
                         out_file = row_out_dir / f"{stem}{suffix}"
                         if os.environ.get("OVERWRITE", "1") == "0" and out_file.exists():
@@ -1364,6 +1387,25 @@ def resolve_inputs(args: argparse.Namespace) -> list[Path]:
     return list_pdf_files(Path(args.input))
 
 
+def _export_worker_job(args_tuple):
+    pdf_path, output_root, log_dir, start_page, resolution, input_root, sap_mapping, render_crop, wesel_target_lookup = args_tuple
+    if not pdf_path.exists():
+        return pdf_path, 0, "", None, True
+
+    import io, contextlib, traceback
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        try:
+            exported = export_pdf(pdf_path, output_root, log_dir,
+                                  start_page, resolution, input_root, sap_mapping,
+                                  render_crop=render_crop, wesel_target_lookup=wesel_target_lookup)
+            err_info = None
+        except Exception as exc:
+            exported = 0
+            err_info = (type(exc).__name__, str(exc), traceback.format_exc())
+    return pdf_path, exported, buf.getvalue(), err_info, False
+
+
 def main() -> int:
     import json
     import traceback
@@ -1380,6 +1422,9 @@ def main() -> int:
     else:
         print("[WARNING] No SAP mapping loaded", flush=True)
 
+    render_crop = bool(args.render_crop or os.environ.get("RENDER_CROP", "0") in ("1", "true", "True"))
+    resolution = args.resolution if args.resolution != DEFAULT_RESOLUTION else (300 if render_crop else DEFAULT_RESOLUTION)
+
     input_root = Path(args.input)
     output_root = Path(args.output)
     log_dir = Path(args.log_dir)
@@ -1391,39 +1436,54 @@ def main() -> int:
     failed_files = []
     skipped_files = []
 
+    mode_label = f"📷 Crop Render Halaman (Resolusi: {resolution} DPI)" if render_crop else "📦 Ekstraksi Gambar Asli (Raw Objects)"
+    print(f"[MODE] {mode_label}", flush=True)
     print(f"\n[START] Memulai ekstraksi foto dari {len(pdf_paths)} file PDF...\n", flush=True)
 
-    for idx, pdf_path in enumerate(pdf_paths, 1):
-        if not pdf_path.exists():
-            print(f"[{idx}/{len(pdf_paths)}] ⏩ [SKIP] File tidak ditemukan: {pdf_path.name}", flush=True)
-            skipped_files.append(pdf_path.name)
-            continue
+    # Pre-build WESEL target lookup once to avoid repetitive disk scans
+    wesel_target_lookup = _build_wesel_target_lookup("02_pdf_target")
 
-        print(f"[{idx}/{len(pdf_paths)}] 📄 {pdf_path.name}", flush=True)
-        try:
-            exported = export_pdf(pdf_path, output_root, log_dir,
-                                  args.start_page, args.resolution, input_root, sap_mapping)
-            total_exported += exported
-            success_files.append(pdf_path.name)
-            if exported > 0:
-                print(f"  └── [OK] {exported} foto berhasil diekspor\n", flush=True)
+    import concurrent.futures
+
+    max_workers = min(6, os.cpu_count() or 4)
+    tasks = [
+        (p, output_root, log_dir, args.start_page, resolution, input_root, sap_mapping, render_crop, wesel_target_lookup)
+        for p in pdf_paths
+    ]
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        for idx, (pdf_path, exported, captured_logs, err_info, is_missing) in enumerate(executor.map(_export_worker_job, tasks), 1):
+            if is_missing:
+                print(f"[{idx}/{len(pdf_paths)}] ⏩ [SKIP] File tidak ditemukan: {pdf_path.name}", flush=True)
+                skipped_files.append(pdf_path.name)
+                continue
+
+            print(f"[{idx}/{len(pdf_paths)}] 📄 {pdf_path.name}", flush=True)
+            if captured_logs:
+                for line in captured_logs.splitlines():
+                    if line.strip():
+                        print(line, flush=True)
+
+            if err_info:
+                err_type, err_msg, tb = err_info
+                failed_files.append({
+                    "file": pdf_path.name,
+                    "error_type": err_type,
+                    "error_msg": err_msg,
+                    "traceback": tb
+                })
+                print(f"  ├── Jenis Kesalahan : {err_type}", flush=True)
+                print(f"  ├── Keterangan      : {err_msg}", flush=True)
+                tb_lines = [line.strip() for line in tb.strip().split("\n") if line.strip()]
+                loc = tb_lines[-2] if len(tb_lines) >= 2 else err_msg
+                print(f"  └── ❌ [ERROR] Gagal pada baris: {loc}\n", flush=True)
             else:
-                print(f"  └── [SKIP] Foto sudah ada / dilewati (0 foto baru)\n", flush=True)
-        except Exception as exc:
-            tb = traceback.format_exc()
-            err_type = type(exc).__name__
-            err_msg = str(exc)
-            failed_files.append({
-                "file": pdf_path.name,
-                "error_type": err_type,
-                "error_msg": err_msg,
-                "traceback": tb
-            })
-            print(f"  ├── Jenis Kesalahan : {err_type}", flush=True)
-            print(f"  ├── Keterangan      : {err_msg}", flush=True)
-            tb_lines = [line.strip() for line in tb.strip().split("\n") if line.strip()]
-            loc = tb_lines[-2] if len(tb_lines) >= 2 else str(exc)
-            print(f"  └── ❌ [ERROR] Gagal pada baris: {loc}\n", flush=True)
+                total_exported += exported
+                success_files.append(pdf_path.name)
+                if exported > 0:
+                    print(f"  └── [OK] {exported} foto berhasil diekspor\n", flush=True)
+                else:
+                    print(f"  └── [SKIP] Foto sudah ada / dilewati (0 foto baru)\n", flush=True)
 
     # ── Print Comprehensive Summary ──
     print("\n" + "=" * 65, flush=True)

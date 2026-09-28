@@ -1,0 +1,610 @@
+{
+  "month": "JANUARI_2025",
+  "generated_at": "2026-09-24T07:25:08.000323",
+  "summary": {
+    "gagal_merge": 66,
+    "gagal_edit": 0,
+    "fallback_edit": 0,
+    "skipped_merge": 0,
+    "total_issues": 66
+  },
+  "gagal_merge": [
+    {
+      "file": "PERAWATAN PDSE BTT 09-01-2025.pdf",
+      "category": "PDSE",
+      "identifier": "BTT",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:24:18"
+    },
+    {
+      "file": "PERAWATAN PDSE BTT 23-01-2025.pdf",
+      "category": "PDSE",
+      "identifier": "BTT",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:24:18"
+    },
+    {
+      "file": "PERAWATAN POINT LOCK W81 BOO 16-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W81 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:24:21"
+    },
+    {
+      "file": "PERAWATAN POINT LOCK W81 BOO 02-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W81 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:24:21"
+    },
+    {
+      "file": "PERAWATAN WESEL W11 CLT 03-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23 CLT",
+      "btp": "BTP JAK",
+      "tim": "Tim_2",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:01"
+    },
+    {
+      "file": "PERAWATAN WESEL W11 CLT 17-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23 CLT",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:01"
+    },
+    {
+      "file": "PERAWATAN WESEL W11 MSG 05-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W13 MSG",
+      "btp": "BTP BD",
+      "tim": "Tim_2",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:01"
+    },
+    {
+      "file": "PERAWATAN WESEL W11 MSG 19-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W13 MSG",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:01"
+    },
+    {
+      "file": "PERAWATAN WESEL W13 BOO 02-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W43 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W13 BOO 16-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23B BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W13 CLT 03-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23 CLT",
+      "btp": "BTP JAK",
+      "tim": "Tim_2",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W13 CLT 17-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23 CLT",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W13 MSG 05-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W13 MSG",
+      "btp": "BTP BD",
+      "tim": "Tim_2",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W13 MSG 19-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W13 MSG",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W21 CLT 03-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23 CLT",
+      "btp": "BTP JAK",
+      "tim": "Tim_2",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W21 CLT 17-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23 CLT",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W21 MSG 05-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W13 MSG",
+      "btp": "BTP BD",
+      "tim": "Tim_2",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W21 MSG 19-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W13 MSG",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:02"
+    },
+    {
+      "file": "PERAWATAN WESEL W21A BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:03"
+    },
+    {
+      "file": "PERAWATAN WESEL W21A BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:03"
+    },
+    {
+      "file": "PERAWATAN WESEL W21B1 BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:03"
+    },
+    {
+      "file": "PERAWATAN WESEL W21B1 BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:03"
+    },
+    {
+      "file": "PERAWATAN WESEL W21B2 BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:03"
+    },
+    {
+      "file": "PERAWATAN WESEL W21B2 BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:03"
+    },
+    {
+      "file": "PERAWATAN WESEL W23 CLT 03-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23 CLT",
+      "btp": "BTP JAK",
+      "tim": "Tim_2",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:03"
+    },
+    {
+      "file": "PERAWATAN WESEL W23 CLT 17-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23 CLT",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:03"
+    },
+    {
+      "file": "PERAWATAN WESEL W23 MSG 05-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W13 MSG",
+      "btp": "BTP BD",
+      "tim": "Tim_2",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W23 MSG 19-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W13 MSG",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W23A BOO 02-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W43 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W23A BOO 16-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23B BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W23B BOO 02-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W43 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W23B BOO 16-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23B BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W25 BOP 04-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W25 BOP 18-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W27A BOP 04-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W27B BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W27A BOP 18-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W27B BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W27B BOP 04-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W27B BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:04"
+    },
+    {
+      "file": "PERAWATAN WESEL W27B BOP 18-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W27B BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W31A BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W31A BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W31B BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W31B BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W21B2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W31D BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W51A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W31D BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W51A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W31E BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W51A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W31E BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W51A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:05"
+    },
+    {
+      "file": "PERAWATAN WESEL W41 BOO 02-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W43 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:06"
+    },
+    {
+      "file": "PERAWATAN WESEL W41 BOO 16-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23B BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:06"
+    },
+    {
+      "file": "PERAWATAN WESEL W43 BOO 02-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W43 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:06"
+    },
+    {
+      "file": "PERAWATAN WESEL W43 BOO 16-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W23B BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:06"
+    },
+    {
+      "file": "PERAWATAN WESEL W47A BOP 04-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:06"
+    },
+    {
+      "file": "PERAWATAN WESEL W47A BOP 18-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:06"
+    },
+    {
+      "file": "PERAWATAN WESEL W47C BOP 04-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:06"
+    },
+    {
+      "file": "PERAWATAN WESEL W47C BOP 18-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:06"
+    },
+    {
+      "file": "PERAWATAN WESEL W47D BOP 04-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W47D BOP 18-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W51A1 BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W51A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W51A1 BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W51A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W61A1 BOO 02-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W61A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W51A2 BOO 01-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W51A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W61A1 BOO 16-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W61A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W51A2 BOO 15-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W51A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W61A2 BOO 02-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W61A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W61A2 BOO 16-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W61A2 BOO",
+      "btp": "BTP JAK",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W67 BOP 04-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    },
+    {
+      "file": "PERAWATAN WESEL W67 BOP 18-01-2025.pdf",
+      "category": "WESEL",
+      "identifier": "W47D BOP",
+      "btp": "BTP BD",
+      "tim": "Tim_1",
+      "alasan": "failed: no matching edited photos found in 04_photos_edited; output Tim cannot be determined",
+      "timestamp": "2026-09-24 07:25:07"
+    }
+  ],
+  "gagal_edit": [],
+  "fallback_edit": [],
+  "skipped_merge": []
+}

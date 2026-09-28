@@ -4,7 +4,10 @@
   "description": "OCR Foto Timemark Portable Application",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "web:dev": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
+    "web:start": "npm --prefix web run start"
   },
   "dependencies": {
     "cors": "^2.8.5",

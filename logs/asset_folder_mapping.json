@@ -1,0 +1,15 @@
+{
+  "BTP JAK/PDSE/BOO": {
+    "btp": "BTP JAK",
+    "category": "PDSE",
+    "base_identifier": "BOO",
+    "dates": [
+      "09-01",
+      "25-01"
+    ],
+    "folders": {
+      "09-01": "BOO_09-01",
+      "25-01": "BOO_25-01"
+    }
+  }
+}

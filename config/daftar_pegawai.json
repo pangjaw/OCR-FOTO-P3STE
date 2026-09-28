@@ -1,14 +1,19 @@
 {
+  "resor": {
+    "nama": "S. SLAMET RIYADI",
+    "nipp": "-",
+    "no_sc": "PRP.070474.126088"
+  },
   "kaur": [
     {
-      "nama": "SUTISNA",
-      "nipp": "45677",
-      "no_sc": "PRP.080175.126093"
+      "nama": "AGUS PRIYONO",
+      "nipp": "-",
+      "no_sc": "PRP.030886.126116"
     },
     {
-      "nama": "YATIYO",
-      "nipp": "49957",
-      "no_sc": "PRP.260287.39992"
+      "nama": "DEDI SURYADI",
+      "nipp": "-",
+      "no_sc": "PRP.181271.126074"
     }
   ],
   "pnc": [
@@ -23,14 +28,19 @@
       "no_sc": "PRP.03071990.36476"
     },
     {
-      "nama": "JUJUN JUNAEDI",
-      "nipp": "69699",
-      "no_sc": "PRP.02021990.36540"
+      "nama": "MUHAMAD SOFYAN",
+      "nipp": "-",
+      "no_sc": "PRP.06011993.36452"
     },
     {
-      "nama": "DIKA ARMANSYAH",
-      "nipp": "72347",
-      "no_sc": "PRP.020899.122293"
+      "nama": "DONI FREDIANSYAH",
+      "nipp": "-",
+      "no_sc": "PRP.291288.00136"
+    },
+    {
+      "nama": "SADDAM YUSUF FATHIR",
+      "nipp": "-",
+      "no_sc": "PRP.181002.72321"
     }
   ]
 }

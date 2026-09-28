@@ -18,7 +18,7 @@ import pdfplumber
 APP_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(APP_DIR / 'scripts'))
 
-from export_pdf_foto import original_images_by_name
+from export_pdf_foto import original_images_by_name, _render_page_and_crop
 
 
 CATEGORY_ALIASES = {
@@ -201,7 +201,7 @@ def _select_source_pdf(rel: str, source_dir: str) -> Path | None:
     return candidates[0] if len(candidates) == 1 else None
 
 
-def _extract_one_frame(pdf_path: Path, frame: str) -> bytes | None:
+def _extract_one_frame(pdf_path: Path, frame: str, render_crop: bool = False) -> bytes | None:
     """Extract one standard frame using the PDF layout's left-to-right order."""
     index = {'0': 0, '50': 1, '100': 2}.get(Path(frame).stem)
     if index is None:
@@ -214,6 +214,8 @@ def _extract_one_frame(pdf_path: Path, frame: str) -> bytes | None:
             if len(placements) < 3:
                 continue
             placement = placements[index]
+            if render_crop:
+                return _render_page_and_crop(page, placement, resolution=300)
             wanted = Path(str(placement.get('name', ''))).stem
             raw = original_images_by_name(reader, page_index)
             match = raw.get(wanted)
@@ -221,7 +223,7 @@ def _extract_one_frame(pdf_path: Path, frame: str) -> bytes | None:
     return None
 
 
-def reexport_asset(rel: str, source_dir: str = "01_pdf_source", photos_dir: str = "03_photos_export", logs_dir: str = "logs"):
+def reexport_asset(rel: str, source_dir: str = "01_pdf_source", photos_dir: str = "03_photos_export", logs_dir: str = "logs", render_crop: bool = False):
     """Re-export only the requested original frame; never run the full PDF exporter."""
     rel_path = Path(rel)
     if len(rel_path.parts) < 3 or rel_path.suffix.lower() not in ('.jpg', '.jpeg', '.png'):
@@ -231,8 +233,8 @@ def reexport_asset(rel: str, source_dir: str = "01_pdf_source", photos_dir: str 
     if not pdf_path:
         print(f"[ERROR] No unique source PDF found for {rel}", file=sys.stderr)
         return False
-    print(f"[INFO] Targeted source: {pdf_path.name}")
-    data = _extract_one_frame(pdf_path, rel_path.name)
+    print(f"[INFO] Targeted source: {pdf_path.name} (render_crop={render_crop})")
+    data = _extract_one_frame(pdf_path, rel_path.name, render_crop=render_crop)
     if not data:
         print(f"[ERROR] Photo frame {rel_path.name} not found in {pdf_path.name}", file=sys.stderr)
         return False
@@ -269,7 +271,8 @@ if __name__ == '__main__':
     parser.add_argument("--source-dir", default="01_pdf_source", help="Path to 01_pdf_source")
     parser.add_argument("--photos-dir", default="03_photos_export", help="Path to 03_photos_export")
     parser.add_argument("--logs-dir", default="logs", help="Path to logs")
+    parser.add_argument("--render-crop", action="store_true", help="Ekstrak menggunakan crop render 300 DPI")
     args = parser.parse_args()
 
-    ok = reexport_asset(args.rel, args.source_dir, args.photos_dir, args.logs_dir)
+    ok = reexport_asset(args.rel, args.source_dir, args.photos_dir, args.logs_dir, render_crop=args.render_crop)
     sys.exit(0 if ok else 1)

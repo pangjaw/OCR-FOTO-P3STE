@@ -1,0 +1,4093 @@
+{
+  "generated_at": "2026-09-24T06:57:10.593273",
+  "total_assets": 369,
+  "mapping": {
+    "BTP JAK/WESEL/W21A BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W21A BOO",
+      "target_files": [
+        "PERAWATAN WESEL W21A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W31A BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W31A BOO",
+      "target_files": [
+        "PERAWATAN WESEL W21A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W31B BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W31B BOO",
+      "target_files": [
+        "PERAWATAN WESEL W21A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W21B1 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W21B1 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W21A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W21B2 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W21B2 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W21A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W21A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W21B2 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31A BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31B BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W31D BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W31D BOO",
+      "target_files": [
+        "PERAWATAN WESEL W31D BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31E BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W51A1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W51A2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31D BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31E BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W51A1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W51A2 BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W31E BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W31E BOO",
+      "target_files": [
+        "PERAWATAN WESEL W31D BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31E BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W51A1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W51A2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31D BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31E BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W51A1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W51A2 BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W51A1 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W51A1 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W31D BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31E BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W51A1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W51A2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31D BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31E BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W51A1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W51A2 BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W51A2 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W51A2 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W31D BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31E BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W51A1 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W51A2 BOO 01-01-2025.pdf",
+        "PERAWATAN WESEL W31D BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W31E BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W51A1 BOO 15-01-2025.pdf",
+        "PERAWATAN WESEL W51A2 BOO 15-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W81 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W81 BOO",
+      "target_files": [
+        "PERAWATAN POINT LOCK W81 BOO 02-01-2025.pdf",
+        "PERAWATAN POINT LOCK W81 BOO 16-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W23B BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W23B BOO",
+      "target_files": [
+        "PERAWATAN WESEL W13 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W13 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 16-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W23A BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W23A BOO",
+      "target_files": [
+        "PERAWATAN WESEL W13 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W13 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 16-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W41 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W41 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W13 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W13 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 16-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W13 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W13 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W13 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W13 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 16-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W43 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W43 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W13 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W13 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23A BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W23B BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W41 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W43 BOO 16-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W61A1 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W61A1 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W61A1 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W61A2 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W61A1 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W61A2 BOO 16-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W61A2 BOO": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W61A2 BOO",
+      "target_files": [
+        "PERAWATAN WESEL W61A1 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W61A2 BOO 02-01-2025.pdf",
+        "PERAWATAN WESEL W61A1 BOO 16-01-2025.pdf",
+        "PERAWATAN WESEL W61A2 BOO 16-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/CATUDAYA/CLT": {
+      "category": "CATUDAYA",
+      "btp": "BTP JAK",
+      "identifier": "CLT",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER SINYAL CLT 03-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/CTS/CLT": {
+      "category": "CTS",
+      "btp": "BTP JAK",
+      "identifier": "CLT",
+      "target_files": [
+        "PERAWATAN CTC-CTS CLT 03-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PDSE/CLT": {
+      "category": "PDSE",
+      "btp": "BTP JAK",
+      "identifier": "CLT",
+      "target_files": [
+        "PERAWATAN PDSE CLT 03-01-2025 (2).pdf",
+        "PERAWATAN PDSE CLT 03-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PTDS/CLT": {
+      "category": "PTDS",
+      "btp": "BTP JAK",
+      "identifier": "CLT",
+      "target_files": [
+        "PERAWATAN PTDS CLT 03-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SERAT OPTIK/ER SINYAL CLT": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP JAK",
+      "identifier": "ER SINYAL CLT",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL CLT 03-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W21 CLT": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W21 CLT",
+      "target_files": [
+        "PERAWATAN WESEL W11 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W13 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W21 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W23 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W11 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W13 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W21 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W23 CLT 17-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W11 CLT": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W11 CLT",
+      "target_files": [
+        "PERAWATAN WESEL W11 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W13 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W21 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W23 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W11 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W13 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W21 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W23 CLT 17-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W13 CLT": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W13 CLT",
+      "target_files": [
+        "PERAWATAN WESEL W11 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W13 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W21 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W23 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W11 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W13 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W21 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W23 CLT 17-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/WESEL/W23 CLT": {
+      "category": "WESEL",
+      "btp": "BTP JAK",
+      "identifier": "W23 CLT",
+      "target_files": [
+        "PERAWATAN WESEL W11 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W13 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W21 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W23 CLT 03-01-2025.pdf",
+        "PERAWATAN WESEL W11 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W13 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W21 CLT 17-01-2025.pdf",
+        "PERAWATAN WESEL W23 CLT 17-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W25 BOP": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W25 BOP",
+      "target_files": [
+        "PERAWATAN WESEL W25 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W25 BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 18-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W67 BOP": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W67 BOP",
+      "target_files": [
+        "PERAWATAN WESEL W25 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W25 BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 18-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W47A BOP": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W47A BOP",
+      "target_files": [
+        "PERAWATAN WESEL W25 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W25 BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 18-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W47C BOP": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W47C BOP",
+      "target_files": [
+        "PERAWATAN WESEL W25 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W25 BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 18-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W47D BOP": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W47D BOP",
+      "target_files": [
+        "PERAWATAN WESEL W25 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W25 BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47A BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47C BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W47D BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W67 BOP 18-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W27A BOP": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W27A BOP",
+      "target_files": [
+        "PERAWATAN WESEL W27A BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W27B BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W27A BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W27B BOP 18-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W27B BOP": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W27B BOP",
+      "target_files": [
+        "PERAWATAN WESEL W27A BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W27B BOP 04-01-2025.pdf",
+        "PERAWATAN WESEL W27A BOP 18-01-2025.pdf",
+        "PERAWATAN WESEL W27B BOP 18-01-2025.pdf"
+      ]
+    },
+    "BTP BD/CATUDAYA/MSG": {
+      "category": "CATUDAYA",
+      "btp": "BTP BD",
+      "identifier": "MSG",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER SINYAL MSG 05-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PDSE/MSG": {
+      "category": "PDSE",
+      "btp": "BTP BD",
+      "identifier": "MSG",
+      "target_files": [
+        "PERAWATAN PDSE MSG 05-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTDS/MSG": {
+      "category": "PTDS",
+      "btp": "BTP BD",
+      "identifier": "MSG",
+      "target_files": [
+        "PERAWATAN PTDS MSG 05-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTLS/MSG": {
+      "category": "PTLS",
+      "btp": "BTP BD",
+      "identifier": "MSG",
+      "target_files": [
+        "PERAWATAN PTLS MSG 05-01-2025 (2).pdf",
+        "PERAWATAN PTLS MSG 05-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/ER SINYAL MSG": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "ER SINYAL MSG",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL MSG 05-01-2025 (2).pdf",
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL MSG 05-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W11 MSG": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W11 MSG",
+      "target_files": [
+        "PERAWATAN WESEL W11 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W13 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W21 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W23 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W11 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W13 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W21 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W23 MSG 19-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W21 MSG": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W21 MSG",
+      "target_files": [
+        "PERAWATAN WESEL W11 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W13 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W21 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W23 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W11 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W13 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W21 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W23 MSG 19-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W23 MSG": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W23 MSG",
+      "target_files": [
+        "PERAWATAN WESEL W11 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W13 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W21 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W23 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W11 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W13 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W21 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W23 MSG 19-01-2025.pdf"
+      ]
+    },
+    "BTP BD/WESEL/W13 MSG": {
+      "category": "WESEL",
+      "btp": "BTP BD",
+      "identifier": "W13 MSG",
+      "target_files": [
+        "PERAWATAN WESEL W11 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W13 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W21 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W23 MSG 05-01-2025.pdf",
+        "PERAWATAN WESEL W11 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W13 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W21 MSG 19-01-2025.pdf",
+        "PERAWATAN WESEL W23 MSG 19-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 24A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 24A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 13 BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 13 BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 12B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 12B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 22B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 22B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 32B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 32B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 42B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 42B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 23A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 23B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 62B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 62B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 23A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 23B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 23A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 23A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 23A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 23B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 23B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 23B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 23A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 23B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 24B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 24B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 23A BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 23B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42B BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62B BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 60 BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 60 BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 41 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42C BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 60 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 61 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62A BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 61 BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 61 BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 41 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42C BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 60 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 61 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62A BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 62A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 62A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 41 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42C BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 60 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 61 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62A BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 42C BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 42C BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 41 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42C BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 60 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 61 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62A BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 41B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 41B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 41 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42C BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 60 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 61 BOO 06-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 62A BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL42C BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL42C BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL22B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL32B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL42C BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL22B BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL22B BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL22B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL32B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL42C BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL12B BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL12B BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL22B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL32B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL42C BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL32B BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL32B BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL22B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL32B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL42C BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/L60 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "L60 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL42B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL62B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L60 BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L62A BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L80 BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/L80 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "L80 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL42B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL62B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L60 BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L62A BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L80 BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/L62A BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "L62A BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL42B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL62B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L60 BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L62A BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L80 BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL62B BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL62B BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL42B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL62B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L60 BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L62A BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L80 BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL42B BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL42B BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL42B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL JL62B BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L60 BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L62A BOO 06-01-2025.pdf",
+        "PERAWATAN SINYAL L80 BOO 06-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 31B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 31B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 21C BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 21C BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 31A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 31A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 10B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 10B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 10A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 10A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 42A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 42A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31E BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42A BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 12A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 12A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31E BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42A BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 22A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 22A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31E BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42A BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 32A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 32A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31E BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42A BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 31E BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 31E BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 12A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31E BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 32A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 42A BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 20A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 20A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 20A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 20B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 20B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 20A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 20C BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 20C BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 20A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 21A BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 21A BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 20A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 21B BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 21B BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 20A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21A BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 21B BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 52 BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 52 BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 31C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31D BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 52 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 72 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 72 BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 72 BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 31C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31D BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 52 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 72 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 92 BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 92 BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 31C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31D BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 52 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 72 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 31D BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 31D BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 31C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31D BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 52 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 72 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 31C BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 31C BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 31C BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 31D BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 52 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 72 BOO 07-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B214 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B214 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B214 BOO-CLT 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL22A BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL22A BOO",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL22A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL42A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL42A BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL42A BOO",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL22A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL42A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J10 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J10 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL22A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL42A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J20 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J20 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL22A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL42A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/MJ20 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "MJ20 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL22A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL42A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL92 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL92 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL32A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL52 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL72 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL72 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL72 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL32A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL52 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL72 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL52 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL52 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL32A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL52 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL72 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL32A BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL32A BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL32A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL52 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL72 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/JL12A BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "JL12A BOO",
+      "target_files": [
+        "PERAWATAN SINYAL JL12A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL32A BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL52 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL72 BOO 07-01-2025.pdf",
+        "PERAWATAN SINYAL JL92 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/L20 BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "L20 BOO",
+      "target_files": [
+        "PERAWATAN SINYAL L20 BOO 07-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 103 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 103 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 102 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 103 CLT-BOO 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 102 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 102 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 102 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 103 CLT-BOO 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 101 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 101 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 102 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 103 CLT-BOO 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 212 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 212 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 210 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 212 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 211 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 211 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 210 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 212 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 210 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 210 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 210 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 212 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 213 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 213 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 213 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB102 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB102 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B101 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL B102 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB102 CLT-BOO 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B102 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B102 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B101 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL B102 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB102 CLT-BOO 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B101 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B101 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B101 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL B102 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB102 CLT-BOO 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB210 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB210 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL B210 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB209 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB210 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B210 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B210 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL B210 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB209 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB210 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB209 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB209 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL B210 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB209 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB210 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B103 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B103 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL B210 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB209 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB210 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB103 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB103 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL B210 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB103 CLT-BOO 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB209 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB210 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B213 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B213 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B212 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B213 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB212 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB212 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB212 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B212 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B213 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB212 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B212 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B212 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B212 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B213 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB212 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB211 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB211 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B212 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B213 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB212 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B211 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B211 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B212 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL B213 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB211 BOO-CLT 08-01-2025.pdf",
+        "PERAWATAN SINYAL UB212 BOO-CLT 08-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/CATUDAYA/BOO": {
+      "category": "CATUDAYA",
+      "btp": "BTP JAK",
+      "identifier": "BOO",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER SINYAL BOO 09-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/CTS/BOO": {
+      "category": "CTS",
+      "btp": "BTP JAK",
+      "identifier": "BOO",
+      "target_files": [
+        "PERAWATAN CTC-CTS BOO 09-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PDSE/BOO_09-01": {
+      "category": "PDSE",
+      "btp": "BTP JAK",
+      "identifier": "BOO_09-01",
+      "target_files": [
+        "PERAWATAN PDSE BOO 09-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PDSE/BTT": {
+      "category": "PDSE",
+      "btp": "BTP BD",
+      "identifier": "BTT",
+      "target_files": [
+        "PERAWATAN PDSE BTT 09-01-2025.pdf",
+        "PERAWATAN PDSE BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PTDS/BOO": {
+      "category": "PTDS",
+      "btp": "BTP JAK",
+      "identifier": "BOO",
+      "target_files": [
+        "PERAWATAN PTDS BOO 09-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SERAT OPTIK/ER SINYAL BOO": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP JAK",
+      "identifier": "ER SINYAL BOO",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL BOO 09-01-2025 (2).pdf",
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL BOO 09-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 106 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 106 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 105 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 106 CLT-BOO 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 105 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 105 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 105 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 106 CLT-BOO 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 104 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 104 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 105 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 106 CLT-BOO 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 209 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 209 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 207 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 208 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 209 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 208 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 208 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 207 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 208 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 209 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 207 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 207 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 207 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 208 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 209 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B104 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B104 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B105 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB105 CLT-BOO 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB104 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB104 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B105 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB105 CLT-BOO 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B105 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B105 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B105 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB105 CLT-BOO 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB105 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB105 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B105 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB105 CLT-BOO 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B106 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B106 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B105 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL B106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB104 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB105 CLT-BOO 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB207 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB207 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B206 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB207 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B206 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B206 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B206 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB207 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB106 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB106 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B207 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B208 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B209 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB208 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B209 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B209 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B207 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B208 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B209 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB208 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB208 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB208 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B207 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B208 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B209 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB208 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B208 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B208 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B207 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B208 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B209 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB208 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B207 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B207 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B207 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B208 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL B209 BOO-CLT 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB106 CLT-BOO 10-01-2025.pdf",
+        "PERAWATAN SINYAL UB208 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB206 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB206 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL UB206 BOO-CLT 10-01-2025.pdf"
+      ]
+    },
+    "BTP BD/CATUDAYA/BOP": {
+      "category": "CATUDAYA",
+      "btp": "BTP BD",
+      "identifier": "BOP",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER SINYAL BOP 11-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PDSE/BOP": {
+      "category": "PDSE",
+      "btp": "BTP BD",
+      "identifier": "BOP",
+      "target_files": [
+        "PERAWATAN PDSE BOP 11-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTDS/BOP": {
+      "category": "PTDS",
+      "btp": "BTP BD",
+      "identifier": "BOP",
+      "target_files": [
+        "PERAWATAN PTDS BOP 11-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/ER SINYAL BOP": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "ER SINYAL BOP",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL BOP 11-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 108 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 108 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 107 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 108 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 107 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 107 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 107 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 108 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 201 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 201 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 109 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 112 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 112 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 109 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 111 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 111 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 109 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 110 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 110 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 109 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 109 CLT-BOO": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 109 CLT-BOO",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 109 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 206 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 206 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 205 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 205 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 204 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 204 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 203 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 203 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 202 BOO-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 202 BOO-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B109 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B109 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B107 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B108 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B109 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B108 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B108 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B107 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B108 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B109 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B107 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B107 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B107 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B108 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B109 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B201 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B201 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B201 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB110 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B112 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B112 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B201 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB110 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B111 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B111 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B201 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB110 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB110 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB110 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B201 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB110 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B110 CLT-BOO": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B110 CLT-BOO",
+      "target_files": [
+        "PERAWATAN SINYAL B110 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B111 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B112 CLT-BOO 12-01-2025.pdf",
+        "PERAWATAN SINYAL B201 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB110 CLT-BOO 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B205 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B205 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB202 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B204 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B204 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB202 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B203 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B203 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB202 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB202 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB202 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB202 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B202 BOO-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B202 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B202 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B203 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B204 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL B205 BOO-CLT 12-01-2025.pdf",
+        "PERAWATAN SINYAL UB202 BOO-CLT 12-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 20B CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 20B CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 20A CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 20A CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 10A CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 10A CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 10B CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 10B CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 11 CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 11 CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 12A CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 12A CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 12B CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 12B CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 13 CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 13 CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 14A CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 14A CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 13 CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 14B CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 14B CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 24B CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 24B CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 24A CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 24A CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 22B CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 22B CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 22A CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 22A CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A CLT 13-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J20 CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J20 CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J20 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/MJ20 CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "MJ20 CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J20 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J14 CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J14 CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J20 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/MJ14 CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "MJ14 CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J20 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J10 CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J10 CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J20 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J12A CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J12A CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J12A CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J12B CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J22 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J24 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J12B CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J12B CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J12A CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J12B CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J22 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J24 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J24 CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J24 CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J12A CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J12B CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J22 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J24 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/J22 CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "J22 CLT",
+      "target_files": [
+        "PERAWATAN SINYAL J12A CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J12B CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J22 CLT 13-01-2025.pdf",
+        "PERAWATAN SINYAL J24 CLT 13-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 207 CLT-BJD": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 207 CLT-BJD",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 207 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 206 CLT-BJD": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 206 CLT-BJD",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 207 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 205 CLT-BJD": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 205 CLT-BJD",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 207 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 102 BJD-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 102 BJD-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 207 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/AXC/ZP 101 BJD-CLT": {
+      "category": "AXC",
+      "btp": "BTP JAK",
+      "identifier": "ZP 101 BJD-CLT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 207 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B101 BJD-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B101 BJD-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL B102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB102 BJD-CLT 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB101 BJD-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB101 BJD-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL B102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB102 BJD-CLT 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B102 BJD-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B102 BJD-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL B102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB102 BJD-CLT 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB102 BJD-CLT": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB102 BJD-CLT",
+      "target_files": [
+        "PERAWATAN SINYAL B101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL B102 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB101 BJD-CLT 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB102 BJD-CLT 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B205 CLT-BJD": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B205 CLT-BJD",
+      "target_files": [
+        "PERAWATAN SINYAL B205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B207 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB206 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B206 CLT-BJD": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B206 CLT-BJD",
+      "target_files": [
+        "PERAWATAN SINYAL B205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B207 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB206 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/B207 CLT-BJD": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "B207 CLT-BJD",
+      "target_files": [
+        "PERAWATAN SINYAL B205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B207 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB206 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB205 CLT-BJD": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB205 CLT-BJD",
+      "target_files": [
+        "PERAWATAN SINYAL B205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B207 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB206 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SINYAL/UB206 CLT-BJD": {
+      "category": "SINYAL",
+      "btp": "BTP JAK",
+      "identifier": "UB206 CLT-BJD",
+      "target_files": [
+        "PERAWATAN SINYAL B205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B206 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL B207 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB205 CLT-BJD 14-01-2025.pdf",
+        "PERAWATAN SINYAL UB206 CLT-BJD 14-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/JPL/JPL 26N CLT": {
+      "category": "JPL",
+      "btp": "BTP JAK",
+      "identifier": "JPL 26N CLT",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 26N CLT 17-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PTPP/JPL 26N BJD-CLT": {
+      "category": "PTPP",
+      "btp": "BTP JAK",
+      "identifier": "JPL 26N BJD-CLT",
+      "target_files": [
+        "PERAWATAN PTPP JPL 26N CLT 17-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SERAT OPTIK/JPL 26N CLT-BJD": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP JAK",
+      "identifier": "JPL 26N CLT-BJD",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 26N CLT 17-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 25 BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 25 BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 25 BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66A BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 26A BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 26A BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 25 BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66A BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 46A BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 46A BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 25 BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66A BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 66A BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 66A BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 25 BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66A BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 26B BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 26B BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 25 BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 26B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66A BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 28A BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 28A BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 26C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 28B BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 28B BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 26C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 48A BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 48A BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 26C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 48B BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 48B BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 26C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 26C BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 26C BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 26C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 28B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 46B BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 46B BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 27A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 66B BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 66B BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 27A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 27A BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 27A BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 27A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 27B BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 27B BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 27A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 27C BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 27C BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 27A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 27C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 46B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 48C BTT-BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 48C BTT-BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 28C BTT-BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48C BTT-BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 28C BTT-BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 28C BTT-BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 28C BTT-BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 48C BTT-BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 47A BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 47A BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 47A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47D BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 68 BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 47B BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 47B BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 47A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47D BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 68 BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 47C BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 47C BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 47A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47D BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 68 BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 47D BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 47D BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 47A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47D BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 68 BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 68 BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 68 BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 47A BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47B BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47C BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 47D BOP 20-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 68 BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J48 BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J48 BOP",
+      "target_files": [
+        "PERAWATAN SINYAL J28 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL J48 BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J28 BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J28 BOP",
+      "target_files": [
+        "PERAWATAN SINYAL J28 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL J48 BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/JL26A BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "JL26A BOP",
+      "target_files": [
+        "PERAWATAN SINYAL JL26A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL26B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/JL46A BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "JL46A BOP",
+      "target_files": [
+        "PERAWATAN SINYAL JL26A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL26B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/JL26B BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "JL26B BOP",
+      "target_files": [
+        "PERAWATAN SINYAL JL26A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL26B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/JL46B BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "JL46B BOP",
+      "target_files": [
+        "PERAWATAN SINYAL JL26A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL26B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/JL66B BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "JL66B BOP",
+      "target_files": [
+        "PERAWATAN SINYAL JL26A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL26B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL46B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL JL66B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/L47A BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "L47A BOP",
+      "target_files": [
+        "PERAWATAN SINYAL L28 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L68 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL UJ26B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/L47B BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "L47B BOP",
+      "target_files": [
+        "PERAWATAN SINYAL L28 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L68 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL UJ26B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/L68 BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "L68 BOP",
+      "target_files": [
+        "PERAWATAN SINYAL L28 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L68 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL UJ26B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/L28 BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "L28 BOP",
+      "target_files": [
+        "PERAWATAN SINYAL L28 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L68 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL UJ26B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/UJ26B BOP": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "UJ26B BOP",
+      "target_files": [
+        "PERAWATAN SINYAL L28 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47A BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L47B BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL L68 BOP 20-01-2025.pdf",
+        "PERAWATAN SINYAL UJ26B BOP 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ48 BOP-BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ48 BOP-BTT",
+      "target_files": [
+        "PERAWATAN SINYAL MJ28 BOP-BTT 20-01-2025.pdf",
+        "PERAWATAN SINYAL MJ48 BOP-BTT 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ28 BOP-BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ28 BOP-BTT",
+      "target_files": [
+        "PERAWATAN SINYAL MJ28 BOP-BTT 20-01-2025.pdf",
+        "PERAWATAN SINYAL MJ48 BOP-BTT 20-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 101A MSG-CCR": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 101A MSG-CCR",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101A MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 101B MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201A CCR-MSG 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201B CCR-MSG 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 101B MSG-CCR": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 101B MSG-CCR",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101A MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 101B MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201A CCR-MSG 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201B CCR-MSG 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 201A CCR-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 201A CCR-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101A MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 101B MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201A CCR-MSG 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201B CCR-MSG 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 201B CCR-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 201B CCR-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101A MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 101B MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201A CCR-MSG 21-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201B CCR-MSG 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/CATUDAYA/CGB": {
+      "category": "CATUDAYA",
+      "btp": "BTP BD",
+      "identifier": "CGB",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER SINYAL CGB 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PDSE/CGB": {
+      "category": "PDSE",
+      "btp": "BTP BD",
+      "identifier": "CGB",
+      "target_files": [
+        "PERAWATAN PDSE CGB 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTDS/CGB": {
+      "category": "PTDS",
+      "btp": "BTP BD",
+      "identifier": "CGB",
+      "target_files": [
+        "PERAWATAN PTDS CGB 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTLS/CGB": {
+      "category": "PTLS",
+      "btp": "BTP BD",
+      "identifier": "CGB",
+      "target_files": [
+        "PERAWATAN PTLS CGB 21-01-2025 (2).pdf"
+      ]
+    },
+    "BTP BD/PTLS/RADIO_CGB": {
+      "category": "PTLS",
+      "btp": "BTP BD",
+      "identifier": "RADIO_CGB",
+      "target_files": [
+        "PERAWATAN PTLS CGB 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/ER SINYAL IB CGB": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "ER SINYAL IB CGB",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL IB CGB 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/ER TELKOM CGB": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "ER TELKOM CGB",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER TELKOM CGB 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/B101 MSG-CCR": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "B101 MSG-CCR",
+      "target_files": [
+        "PERAWATAN SINYAL B101 MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN SINYAL B201 CCR-MSG 21-01-2025.pdf",
+        "PERAWATAN SINYAL MB101 MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN SINYAL MB201 CCR-MSG 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/B201 CCR-MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "B201 CCR-MSG",
+      "target_files": [
+        "PERAWATAN SINYAL B101 MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN SINYAL B201 CCR-MSG 21-01-2025.pdf",
+        "PERAWATAN SINYAL MB101 MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN SINYAL MB201 CCR-MSG 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MB101 MSG-CCR": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MB101 MSG-CCR",
+      "target_files": [
+        "PERAWATAN SINYAL B101 MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN SINYAL B201 CCR-MSG 21-01-2025.pdf",
+        "PERAWATAN SINYAL MB101 MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN SINYAL MB201 CCR-MSG 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MB201 CCR-MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MB201 CCR-MSG",
+      "target_files": [
+        "PERAWATAN SINYAL B101 MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN SINYAL B201 CCR-MSG 21-01-2025.pdf",
+        "PERAWATAN SINYAL MB101 MSG-CCR 21-01-2025.pdf",
+        "PERAWATAN SINYAL MB201 CCR-MSG 21-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 10A BTT-BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 10A BTT-BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BTT-BOP 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A BTT-BOP 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 20A BTT-BOP": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 20A BTT-BOP",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BTT-BOP 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A BTT-BOP 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 10B BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 10B BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 20B BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 20B BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 12A BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 12A BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 22A BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 22A BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 12B BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 12B BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 22B BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 22B BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14A BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 14A BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 14A BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14A BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 24A BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 24A BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14A BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B BTT 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 14B BTT-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 14B BTT-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14B BTT-MSG 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B MSG-BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 24B MSG-BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 24B MSG-BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14B BTT-MSG 22-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B MSG-BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J10 BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J10 BTT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J12A BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J14 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J24 BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J20 BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J20 BTT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J12A BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J14 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J24 BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J14 BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J14 BTT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J12A BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J14 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J24 BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J24 BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J24 BTT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J12A BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J14 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J24 BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J12A BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J12A BTT",
+      "target_files": [
+        "PERAWATAN SINYAL J10 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J12A BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J14 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J20 BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J24 BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J22A BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J22A BTT",
+      "target_files": [
+        "PERAWATAN SINYAL J12B BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J22A BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J22B BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J12B BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J12B BTT",
+      "target_files": [
+        "PERAWATAN SINYAL J12B BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J22A BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J22B BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J22B BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J22B BTT",
+      "target_files": [
+        "PERAWATAN SINYAL J12B BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J22A BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL J22B BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ10 BOP-BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ10 BOP-BTT",
+      "target_files": [
+        "PERAWATAN SINYAL MJ10 BOP-BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BOP-BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ20 BOP-BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ20 BOP-BTT",
+      "target_files": [
+        "PERAWATAN SINYAL MJ10 BOP-BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BOP-BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ14 MSG-BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ14 MSG-BTT",
+      "target_files": [
+        "PERAWATAN SINYAL MJ14 MSG-BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL MJ24 MSG-BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ24 MSG-BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ24 MSG-BTT",
+      "target_files": [
+        "PERAWATAN SINYAL MJ14 MSG-BTT 22-01-2025.pdf",
+        "PERAWATAN SINYAL MJ24 MSG-BTT 22-01-2025.pdf"
+      ]
+    },
+    "BTP BD/CATUDAYA/BTT": {
+      "category": "CATUDAYA",
+      "btp": "BTP BD",
+      "identifier": "BTT",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER SINYAL BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP BD/JPL/JPL 11 BTT": {
+      "category": "JPL",
+      "btp": "BTP BD",
+      "identifier": "JPL 11 BTT",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 11 BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTDS/BTT": {
+      "category": "PTDS",
+      "btp": "BTP BD",
+      "identifier": "BTT",
+      "target_files": [
+        "PERAWATAN PTDS BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTLS/BTT": {
+      "category": "PTLS",
+      "btp": "BTP BD",
+      "identifier": "BTT",
+      "target_files": [
+        "PERAWATAN PTLS BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTPP/JPL 11 BTT": {
+      "category": "PTPP",
+      "btp": "BTP BD",
+      "identifier": "JPL 11 BTT",
+      "target_files": [
+        "PERAWATAN PTPP JPL 11 BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/JPL 11 BTT": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "JPL 11 BTT",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 11 BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/ER SINYAL BTT": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "ER SINYAL BTT",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/ER TELKOM BTT": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "ER TELKOM BTT",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER TELKOM BTT 23-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/JPL/JPL 27 BOO-CLT": {
+      "category": "JPL",
+      "btp": "BTP JAK",
+      "identifier": "JPL 27 BOO-CLT",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 27 CLT-BOO 24-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/JPL/JPL 28 BOO-CLT": {
+      "category": "JPL",
+      "btp": "BTP JAK",
+      "identifier": "JPL 28 BOO-CLT",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 28 CLT-BOO 24-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PTPP/JPL 27 BOO-CLT": {
+      "category": "PTPP",
+      "btp": "BTP JAK",
+      "identifier": "JPL 27 BOO-CLT",
+      "target_files": [
+        "PERAWATAN PTPP JPL 27 CLT-BOO 24-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PTPP/JPL 28 BOO-CLT": {
+      "category": "PTPP",
+      "btp": "BTP JAK",
+      "identifier": "JPL 28 BOO-CLT",
+      "target_files": [
+        "PERAWATAN PTPP JPL 28 CLT-BOO 24-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SERAT OPTIK/JPL 27 BOO-CLT": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP JAK",
+      "identifier": "JPL 27 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 27 CLT-BOO 24-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SERAT OPTIK/JPL 28 BOO-CLT": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP JAK",
+      "identifier": "JPL 28 BOO-CLT",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 28 CLT-BOO 24-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/CATUDAYA/RADIO_BOO": {
+      "category": "CATUDAYA",
+      "btp": "BTP JAK",
+      "identifier": "RADIO_BOO",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER RADIO BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PDSE/RADIO_BOO": {
+      "category": "PDSE",
+      "btp": "BTP JAK",
+      "identifier": "RADIO_BOO",
+      "target_files": [
+        "PERAWATAN PDSE BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/JPL/JPL 2 BOO": {
+      "category": "JPL",
+      "btp": "BTP JAK",
+      "identifier": "JPL 2 BOO",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 02 BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PTLS/BOO": {
+      "category": "PTLS",
+      "btp": "BTP JAK",
+      "identifier": "BOO",
+      "target_files": [
+        "PERAWATAN PTLS BOO 25-01-2025 (2).pdf",
+        "PERAWATAN PTLS BOO 25-01-2025 (3).pdf",
+        "PERAWATAN PTLS BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PTLS/RADIO_BOO": {
+      "category": "PTLS",
+      "btp": "BTP JAK",
+      "identifier": "RADIO_BOO",
+      "target_files": [
+        "PERAWATAN PTLS BOO 25-01-2025 (4).pdf"
+      ]
+    },
+    "BTP JAK/PTPP/JPL 01 BOO": {
+      "category": "PTPP",
+      "btp": "BTP JAK",
+      "identifier": "JPL 01 BOO",
+      "target_files": [
+        "PERAWATAN PTPP JPL 01 BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/PTPP/JPL 02 BOO": {
+      "category": "PTPP",
+      "btp": "BTP JAK",
+      "identifier": "JPL 02 BOO",
+      "target_files": [
+        "PERAWATAN PTPP JPL 02 BOO 25-01-2025 (2).pdf",
+        "PERAWATAN PTPP JPL 02 BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SERAT OPTIK/RUANG RADIO BOO": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP JAK",
+      "identifier": "RUANG RADIO BOO",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SERAT OPTIK/JPL 01 BOO": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP JAK",
+      "identifier": "JPL 01 BOO",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 01 BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP JAK/SERAT OPTIK/JPL 02 BOO": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP JAK",
+      "identifier": "JPL 02 BOO",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 02 BOO 25-01-2025.pdf"
+      ]
+    },
+    "BTP BD/JPL/JPL 04 BOP": {
+      "category": "JPL",
+      "btp": "BTP BD",
+      "identifier": "JPL 04 BOP",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 04 BOP 26-01-2025.pdf"
+      ]
+    },
+    "BTP BD/JPL/JPL 07 BOP-BTT": {
+      "category": "JPL",
+      "btp": "BTP BD",
+      "identifier": "JPL 07 BOP-BTT",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 07 BOP-BTT 26-01-2025.pdf"
+      ]
+    },
+    "BTP BD/JPL/JPL BNR BOP-BTT": {
+      "category": "JPL",
+      "btp": "BTP BD",
+      "identifier": "JPL BNR BOP-BTT",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL BNR BOP-BTT 26-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTPP/JPL 04 BOP": {
+      "category": "PTPP",
+      "btp": "BTP BD",
+      "identifier": "JPL 04 BOP",
+      "target_files": [
+        "PERAWATAN PTPP JPL 04 BOP 26-01-2025 (2).pdf",
+        "PERAWATAN PTPP JPL 04 BOP 26-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTPP/JPL 07 BOP-BTT": {
+      "category": "PTPP",
+      "btp": "BTP BD",
+      "identifier": "JPL 07 BOP-BTT",
+      "target_files": [
+        "PERAWATAN PTPP JPL 07 BOP-BTT 26-01-2025 (2).pdf",
+        "PERAWATAN PTPP JPL 07 BOP-BTT 26-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTPP/JPL BNR BOP-BTT": {
+      "category": "PTPP",
+      "btp": "BTP BD",
+      "identifier": "JPL BNR BOP-BTT",
+      "target_files": [
+        "PERAWATAN PTPP JPL BNR BOP-BTT 26-01-2025 (2).pdf",
+        "PERAWATAN PTPP JPL BNR BOP-BTT 26-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/JPL 04 BOO-BOP": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "JPL 04 BOO-BOP",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 04 BOP 26-01-2025.pdf",
+        "PERAWATAN SERAT OPTIK JPL 07 BOP-BTT 26-01-2025.pdf",
+        "PERAWATAN SERAT OPTIK JPL BNR BOP-BTT 26-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 201A MSG-BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 201A MSG-BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101A BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 101B BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201A MSG-BTT 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201B MSG-BTT 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 201B MSG-BTT": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 201B MSG-BTT",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101A BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 101B BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201A MSG-BTT 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201B MSG-BTT 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 101A BTT-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 101A BTT-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101A BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 101B BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201A MSG-BTT 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201B MSG-BTT 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 101B BTT-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 101B BTT-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 101A BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 101B BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201A MSG-BTT 27-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 201B MSG-BTT 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/CATUDAYA/RADIO_COS": {
+      "category": "CATUDAYA",
+      "btp": "BTP BD",
+      "identifier": "RADIO_COS",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER RADIO COS 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/CATUDAYA/COS": {
+      "category": "CATUDAYA",
+      "btp": "BTP BD",
+      "identifier": "COS",
+      "target_files": [
+        "PERAWATAN CATU DAYA ER SINYAL COS 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PDSE/COS": {
+      "category": "PDSE",
+      "btp": "BTP BD",
+      "identifier": "COS",
+      "target_files": [
+        "PERAWATAN PDSE COS 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTDS/COS": {
+      "category": "PTDS",
+      "btp": "BTP BD",
+      "identifier": "COS",
+      "target_files": [
+        "PERAWATAN PTDS COS 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTLS/COS": {
+      "category": "PTLS",
+      "btp": "BTP BD",
+      "identifier": "COS",
+      "target_files": [
+        "PERAWATAN PTLS COS 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/ER SINYAL IB COS": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "ER SINYAL IB COS",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK OTB ER SINYAL IB COS 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/B101 BTT-MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "B101 BTT-MSG",
+      "target_files": [
+        "PERAWATAN SINYAL B101 BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN SINYAL B201 MSG-BTT 27-01-2025.pdf",
+        "PERAWATAN SINYAL MB101 BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN SINYAL MB201 MSG-BTT 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/B201 MSG-BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "B201 MSG-BTT",
+      "target_files": [
+        "PERAWATAN SINYAL B101 BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN SINYAL B201 MSG-BTT 27-01-2025.pdf",
+        "PERAWATAN SINYAL MB101 BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN SINYAL MB201 MSG-BTT 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MB101 BTT-MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MB101 BTT-MSG",
+      "target_files": [
+        "PERAWATAN SINYAL B101 BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN SINYAL B201 MSG-BTT 27-01-2025.pdf",
+        "PERAWATAN SINYAL MB101 BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN SINYAL MB201 MSG-BTT 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MB201 MSG-BTT": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MB201 MSG-BTT",
+      "target_files": [
+        "PERAWATAN SINYAL B101 BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN SINYAL B201 MSG-BTT 27-01-2025.pdf",
+        "PERAWATAN SINYAL MB101 BTT-MSG 27-01-2025.pdf",
+        "PERAWATAN SINYAL MB201 MSG-BTT 27-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 10A BTT-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 10A BTT-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 20A BTT-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 20A BTT-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 10B MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 10B MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 20B MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 20B MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 10C MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 10C MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 10A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 10C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20A BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 20C MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 20C MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 11 MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 11 MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 12A MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 12A MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 22A MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 22A MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 12B MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 12B MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 11 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 12B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 20C MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 22B MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 22B MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 13 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 13 MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 13 MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 13 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 14A MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 14A MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 13 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 14B MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 14B MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 13 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 24A MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 24A MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 13 MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14A MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 14B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 22B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24A MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 24B MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 24B MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14C CCR-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24C CCR-MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 14C CCR-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 14C CCR-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14C CCR-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24C CCR-MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/AXC/ZP 24C CCR-MSG": {
+      "category": "AXC",
+      "btp": "BTP BD",
+      "identifier": "ZP 24C CCR-MSG",
+      "target_files": [
+        "PERAWATAN AXLE COUNTER ZP 14C CCR-MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24B MSG 29-01-2025.pdf",
+        "PERAWATAN AXLE COUNTER ZP 24C CCR-MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J10 MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J10 MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J10 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J12B MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J20 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22A MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J20 MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J20 MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J10 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J12B MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J20 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22A MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J22A MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J22A MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J10 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J12B MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J20 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22A MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J22B MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J22B MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J10 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J12B MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J20 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22A MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J12B MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J12B MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J10 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J12B MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J20 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22A MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/UJ22B MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "UJ22B MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J14 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J24 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CCR-MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ12 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/UJ12 MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "UJ12 MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J14 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J24 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CCR-MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ12 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J14 MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J14 MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J14 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J24 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CCR-MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ12 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/J24 MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "J24 MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J14 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J24 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CCR-MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ12 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ14 CCR-MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ14 CCR-MSG",
+      "target_files": [
+        "PERAWATAN SINYAL J14 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL J24 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL MJ14 CCR-MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ12 MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL UJ22B MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ10 BTT-MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ10 BTT-MSG",
+      "target_files": [
+        "PERAWATAN SINYAL MJ10 BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BTT-MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ20 BTT-MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ20 BTT-MSG",
+      "target_files": [
+        "PERAWATAN SINYAL MJ10 BTT-MSG 29-01-2025.pdf",
+        "PERAWATAN SINYAL MJ20 BTT-MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SINYAL/MJ24 CCR-MSG": {
+      "category": "SINYAL",
+      "btp": "BTP BD",
+      "identifier": "MJ24 CCR-MSG",
+      "target_files": [
+        "PERAWATAN SINYAL MJ24 CCR-MSG 29-01-2025.pdf"
+      ]
+    },
+    "BTP BD/JPL/JPL 15 CCR-MSG": {
+      "category": "JPL",
+      "btp": "BTP BD",
+      "identifier": "JPL 15 CCR-MSG",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 15 CGB 30-01-2025.pdf"
+      ]
+    },
+    "BTP BD/JPL/JPL 16 CCR-MSG": {
+      "category": "JPL",
+      "btp": "BTP BD",
+      "identifier": "JPL 16 CCR-MSG",
+      "target_files": [
+        "PERAWATAN PINTU PERLINTASAN JPL 16 CGB 30-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTPP/JPL 15 CCR-MSG": {
+      "category": "PTPP",
+      "btp": "BTP BD",
+      "identifier": "JPL 15 CCR-MSG",
+      "target_files": [
+        "PERAWATAN PTPP JPL 15 CGB 30-01-2025.pdf"
+      ]
+    },
+    "BTP BD/PTPP/JPL 16 CCR-MSG": {
+      "category": "PTPP",
+      "btp": "BTP BD",
+      "identifier": "JPL 16 CCR-MSG",
+      "target_files": [
+        "PERAWATAN PTPP JPL 16 CGB 30-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/JPL 15 CGB": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "JPL 15 CGB",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 15 CGB 30-01-2025.pdf"
+      ]
+    },
+    "BTP BD/SERAT OPTIK/JPL 16 CGB": {
+      "category": "SERAT OPTIK",
+      "btp": "BTP BD",
+      "identifier": "JPL 16 CGB",
+      "target_files": [
+        "PERAWATAN SERAT OPTIK JPL 16 CGB 30-01-2025.pdf"
+      ]
+    }
+  }
+}

@@ -66,3 +66,29 @@ Alternative/04_photos_edited/*
 !Alternative/04_photos_edited/.gitkeep
 Alternative/05_pdf_merged/*
 !Alternative/05_pdf_merged/.gitkeep
+
+# Coordinate & Additional Working Folders
+/04_Time/*
+!/04_Time/.gitkeep
+/04_koordinat/*
+!/04_koordinat/.gitkeep
+/05_koordinat/*
+!/05_koordinat/.gitkeep
+
+# Binary executables and builds
+*.exe
+bin/
+build/
+dist/
+
+# API keys and credentials
+*api_key*.txt
+*.pem
+*.key
+
+# Backups
+backups/
+
+# Caches
+logs/*cache*.json
+

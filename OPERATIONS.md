@@ -1,5 +1,32 @@
 # Operations Guide
 
+## Menjalankan Aplikasi Desktop Standalone (.exe)
+
+Cukup klik dua kali pada berkas `OCR_Foto_Timemark.exe` atau jalankan via terminal:
+
+```powershell
+.\OCR_Foto_Timemark.exe
+```
+
+Jendela desktop Microsoft Edge WebView2 akan langsung terbuka dan menghubungkan antarmuka grafis ke server Next.js portabel di latar belakang.
+
+## Menjalankan Standalone Python Engine Langsung
+
+Biner `python_engine.exe` dapat dipanggil langsung dari terminal PowerShell pada komputer tanpa Python untuk mengeksekusi modul manapun:
+
+```powershell
+.\bin\python_engine\python_engine.exe <nama_modul> [argumen...]
+
+# Contoh: Ekspor Tablo Excel
+.\bin\python_engine\python_engine.exe export_tablo_excel --mode pipeline
+
+# Contoh: Scheduler Tim & Waktu
+.\bin\python_engine\python_engine.exe scheduler --pdf-dir 02_pdf_target --photos-dir 03_photos_export
+
+# Contoh: Audit Tanggal Dokumen
+.\bin\python_engine\python_engine.exe correct_pdf_dates --input 02_pdf_target
+```
+
 ## Quick checks
 
 ```powershell

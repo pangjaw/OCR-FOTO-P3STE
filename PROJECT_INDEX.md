@@ -13,9 +13,13 @@
 
 ## Source map
 
-- [`scripts/`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/scripts) — Script ekstraksi, OCR, detector, dan editing timemark; termasuk varian [`edit_timemark_YOLO.py`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/scripts/edit_timemark_YOLO.py)
+- [`OCR_Foto_Timemark.exe`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/OCR_Foto_Timemark.exe) — Launcher aplikasi desktop mandiri Windows (WebView2 Edge Chromium, zero-prerequisite)
+- [`launcher.py`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/launcher.py) — Host peluncur desktop window dan life-cycle manager proses latar belakang Node.js
+- [`bin/`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/bin) — Runtime biner portabel: `bin/node.exe` (Node.js v24.16.0) dan `bin/python_engine/` (PyInstaller Python Engine)
+- [`web/`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/web) — Aplikasi web modern Next.js 14 App Router (port 3000, 5 modul lengkap)
+- [`scripts/`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/scripts) — Script ekstraksi, OCR, detector, editing timemark, ekspor Tablo, serta dispatcher terpadu ([`python_engine.py`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/scripts/python_engine.py))
 - [`config/`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/config) — Konfigurasi aplikasi
-- [`server.js`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/server.js) — Server/UI tooling
+- [`server.js`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/server.js) — Server Express lama (port 5000)
 - [`schedule.json`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/schedule.json) — Data jadwal dan metadata asset
 
 ## Data flow folders
@@ -25,14 +29,16 @@
 - `03_photos_export/` — Foto hasil ekstraksi
 - `04_photos_canny_pipeline/` — Output pipeline detector/edit
 - `04_photos_edited/` — Output edited foto
+- `04_koordinat/` — Output foto dengan stempel koordinat GPS
 - `05_pdf_merged/` — PDF final/merged
-- `logs/` — Log, audit, report, dan preview investigasi
+- `05_koordinat/` — PDF final dengan foto koordinat
+- `logs/` — Log, audit, report, preview investigasi, dan Tablo Excel (`logs/TABLO [BULAN] [TAHUN].xlsx`)
 
 ## Knowledge vault
 
 - [[Notes/Architecture Index]] — Peta catatan arsitektur
-- [[Notes/Decisions Index]] — Peta keputusan teknis
-- [[Notes/Decisions/Bug Fix History]] — Riwayat bug, penyebab, dan tindak lanjut
+- [[Notes/Decisions Index]] — Peta keputusan teknis (termasuk [[Notes/Decisions/ADR-010-export-tablo-excel]], [[Notes/Decisions/ADR-011-nextjs-web-app-architecture]], [[Notes/Decisions/ADR-012-standalone-desktop-executable]], [[Notes/Decisions/ADR-013-penanganan-aset-target-multi-tanggal]], [[Notes/Decisions/ADR-014-google-vision-detector-and-dynamic-textbox]], [[Notes/Decisions/ADR-015-ocr-fallback-personnel-audit-image-only]], [[Notes/Decisions/ADR-016 - Isolasi Edit Teks Foto Tunggal, Inline Timemark Editing, dan Interaksi Galeri]])
+- [[Notes/Decisions/Bug Fix History]] — Riwayat bug, penyebab, dan tindak lanjut (20 entri aktif)
 - [[Notes/Decisions/Active Pipeline Rules]] — Aturan pipeline yang sedang berlaku
 - [[Notes/Experiments Index]] — Peta eksperimen
 - [[Notes/Daily Index]] — Daily logs

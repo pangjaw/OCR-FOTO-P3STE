@@ -25,6 +25,7 @@ from export_pdf_foto import (
     sanitize_segment, ensure_dir, load_sap_mapping, SAP_MAPPING_PATH,
     detect_category_from_filename, extract_station_from_filename, STATION_TO_BTP,
     extract_identifier, extract_funcloc_from_text, extract_all_funclocs,
+    determine_btp,
 )
 from extract_pdf_dates import extract_date_from_pdf, format_date_target
 
@@ -165,41 +166,146 @@ def extract_core_count(doc) -> int | None:
     return None
 
 
-def _determine_btp(identifier: str, pdf_path: Path) -> str:
-    """Determine BTP from identifier or pdf path."""
-    upper_identifier = identifier.upper()
-    if identifier.startswith("JPL "):
-        # BOO-BOP is a cross-station JPL route; it belongs to BTP BD,
-        # not the generic BOO route (BTP JAK).
-        if re.search(r'\bBOO\s*-\s*BOP\b', upper_identifier):
-            return "BTP BD"
-        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', upper_identifier)
-        if codes:
-            station = codes[0].upper()
-            if station == "CS": station = "COS"
-            return STATION_TO_BTP.get(station, "BTP JAK")
-    elif identifier.startswith("ER ") or identifier.startswith("RUANG "):
-        parts = identifier.split()
-        code = None
-        for kw in ["BOO", "BTT", "CLT", "BOP", "CGB", "COS", "MSG"]:
-            if kw in parts:
-                code = kw
-                break
-        if not code: code = "BOO"
-        return STATION_TO_BTP.get(code, "BTP JAK")
-    else:
-        codes = re.findall(r'\b(BOO|CLT|BJD|BOP|BTT|CGB|CS|COS|MSG|CCR)\b', identifier.upper())
-        if codes:
-            station = codes[-1].upper()
-            if station == "CS": station = "COS"
-            return STATION_TO_BTP.get(station, "BTP JAK")
-        clean = identifier.replace("RADIO_", "")
-        return STATION_TO_BTP.get(clean, "BTP JAK")
-    return "BTP JAK"
+def _determine_btp(identifier: str, pdf_path: Path = None) -> str:
+    """Determine BTP from identifier or pdf path.
+    Delegates to canonical determine_btp in export_pdf_foto.py."""
+    fallback = pdf_path.name if pdf_path else None
+    btp = determine_btp(identifier, fallback)
+    return btp if btp != "UNKNOWN" else "BTP JAK"
+
 
 
 # Categories where each funcloc = separate folder with own 3 photos
 MULTI_ROW_CATEGORIES = {"SINYAL", "WESEL", "AXC"}
+
+
+def _process_pdf_pass1(pdf_path: Path, mapping: dict, acuan: dict, k_map: dict, p_map: dict, photos_dir: Path | None = None):
+    from extract_pdf_dates import parse_target_filename, parse_date_from_filename, parse_date_indonesian
+    import fitz
+
+    # 1. Parse date and basic info
+    target_info = parse_target_filename(pdf_path.name)
+    category = None
+    identifier = None
+    pdf_date: date | None = None
+    date_str = None
+
+    if target_info:
+        category, identifier, dt_raw = target_info
+        pdf_date = parse_date_from_filename(dt_raw)
+        if pdf_date:
+            date_str = format_date_target(pdf_date)
+
+    # Read page 1 text using fitz
+    page1_text = ""
+    personnel_names = []
+    try:
+        with fitz.open(str(pdf_path)) as doc:
+            if len(doc) > 0:
+                page1_text = doc[0].get_text() or ""
+                if k_map or p_map:
+                    try:
+                        from audit_and_correct_personnel import extract_personnel_from_pdf
+                        _, _, personnel_names = extract_personnel_from_pdf(doc, k_map, p_map)
+                    except Exception:
+                        pass
+    except Exception:
+        pass
+
+    if not category:
+        category = detect_category_from_filename(pdf_path.name)
+
+    if not pdf_date and page1_text:
+        pdf_date = parse_date_indonesian(page1_text)
+        if pdf_date:
+            date_str = format_date_target(pdf_date)
+
+    if not pdf_date:
+        print(f"  [SKIP] cannot resolve date for {pdf_path.name}")
+        return None
+
+    date_suffix = pdf_date.strftime("_%d-%m") if pdf_date else ""
+
+    # Extract funclocs on page 1 (in order from top to bottom)
+    all_funclocs = extract_all_funclocs(page1_text) if page1_text else []
+    is_multi = category in MULTI_ROW_CATEGORIES
+    asset_items = []
+
+    if is_multi and all_funclocs:
+        seen = set()
+        for funcloc_line in all_funclocs:
+            ident = extract_identifier(funcloc_line, category)
+            if ident and ident not in seen:
+                seen.add(ident)
+                w = get_waktu(category, mapping, acuan)
+                btp = _determine_btp(ident, pdf_path)
+                
+                target_ident = ident
+                if photos_dir and date_suffix:
+                    suffixed_candidate = f"{ident}{date_suffix}"
+                    if (photos_dir / btp / category / suffixed_candidate).is_dir():
+                        target_ident = suffixed_candidate
+
+                asset_items.append({
+                    "identifier": target_ident,
+                    "base_identifier": ident,
+                    "btp": btp,
+                    "waktu_menit": w,
+                    "funcloc": funcloc_line.strip()
+                })
+
+    if not asset_items:
+        # Single-row or fallback
+        fl_ident = extract_identifier(all_funclocs[0], category) if all_funclocs else None
+        if fl_ident:
+            if not identifier or fl_ident.startswith("RADIO_"):
+                identifier = fl_ident
+            elif photos_dir:
+                btp_id = _determine_btp(identifier, pdf_path)
+                btp_fl = _determine_btp(fl_ident, pdf_path)
+                if not (photos_dir / btp_id / category / identifier).is_dir() and (photos_dir / btp_fl / category / fl_ident).is_dir():
+                    identifier = fl_ident
+        if not identifier:
+            station = extract_station_from_filename(pdf_path.name)
+            identifier = station if station else sanitize_segment(pdf_path.stem)
+
+        # Core count check for SERAT OPTIK
+        w = get_waktu(category, mapping, acuan)
+        if is_serat_optik_pdf(pdf_path):
+            m = re.search(r'Jumlah Core[^\d]*(\d+)', page1_text, re.IGNORECASE)
+            if m:
+                w = int(m.group(1)) * 6
+
+        btp = _determine_btp(identifier, pdf_path)
+        target_ident = identifier
+        if photos_dir and date_suffix:
+            suffixed_candidate = f"{identifier}{date_suffix}"
+            if (photos_dir / btp / category / suffixed_candidate).is_dir():
+                target_ident = suffixed_candidate
+
+        asset_items.append({
+            "identifier": target_ident,
+            "base_identifier": identifier,
+            "btp": btp,
+            "waktu_menit": w,
+            "funcloc": all_funclocs[0].strip() if all_funclocs else ""
+        })
+
+    total_pdf_waktu = sum(a["waktu_menit"] for a in asset_items)
+
+    return {
+        "file": pdf_path.name,
+        "pdf_path": str(pdf_path.resolve()),
+        "category": category,
+        "pdf_stem": pdf_path.stem,
+        "date_str": date_str or format_date_target(pdf_date),
+        "pdf_date": pdf_date,
+        "is_multi": is_multi,
+        "asset_items": asset_items,
+        "total_pdf_waktu": total_pdf_waktu,
+        "personnel": personnel_names,
+        "personnel_override": ", ".join(personnel_names) if personnel_names else "",
+    }
 
 
 def build_schedule(pdf_dir: Path, photos_dir: Path,
@@ -212,109 +318,35 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
 
     print(f"[*] Pass 1: Extracting asset items from {len(files)} PDF files...")
 
-    from extract_pdf_dates import parse_target_filename, parse_date_from_filename, parse_date_indonesian
-    import fitz
+    # Preload employee configuration once to avoid repetitive disk loads
+    k_map, p_map = {}, {}
+    try:
+        from audit_and_correct_personnel import get_roster_sets
+        from employee_manager import load_pegawai_config
+        cfg = load_pegawai_config()
+        k_map, p_map, _ = get_roster_sets(cfg)
+    except Exception:
+        pass
 
-    # ── PASS 1: Extract all items and group by target date ──
+    import concurrent.futures
+
+    # ── PASS 1: Extract all items in parallel and group by target date ──
     files_by_date: dict[date, list[dict]] = {}
+    max_w = min(8, os.cpu_count() or 4)
 
-    for idx, pdf_path in enumerate(files, 1):
-        # 1. Parse date and basic info
-        target_info = parse_target_filename(pdf_path.name)
-        category = None
-        identifier = None
-        pdf_date: date | None = None
-        date_str = None
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_w) as executor:
+        results = list(executor.map(lambda p: _process_pdf_pass1(p, mapping, acuan, k_map, p_map, photos_dir), files))
 
-        if target_info:
-            category, identifier, dt_raw = target_info
-            pdf_date = parse_date_from_filename(dt_raw)
-            if pdf_date:
-                date_str = format_date_target(pdf_date)
-
-        # Read page 1 text using fitz
-        page1_text = ""
-        try:
-            with fitz.open(str(pdf_path)) as doc:
-                if len(doc) > 0:
-                    page1_text = doc[0].get_text() or ""
-        except Exception:
-            pass
-
-        if not category:
-            category = detect_category_from_filename(pdf_path.name)
-
-        if not pdf_date and page1_text:
-            pdf_date = parse_date_indonesian(page1_text)
-            if pdf_date:
-                date_str = format_date_target(pdf_date)
-
-        if not pdf_date:
-            print(f"  [SKIP] cannot resolve date for {pdf_path.name}")
+    for idx, pdf_entry in enumerate(results, 1):
+        if not pdf_entry:
             continue
-
-        # Extract funclocs on page 1 (in order from top to bottom)
-        all_funclocs = extract_all_funclocs(page1_text) if page1_text else []
-        is_multi = category in MULTI_ROW_CATEGORIES
-        asset_items = []
-
-        if is_multi and all_funclocs:
-            seen = set()
-            for funcloc_line in all_funclocs:
-                ident = extract_identifier(funcloc_line, category)
-                if ident and ident not in seen:
-                    seen.add(ident)
-                    w = get_waktu(category, mapping, acuan)
-                    btp = _determine_btp(ident, pdf_path)
-                    asset_items.append({
-                        "identifier": ident,
-                        "btp": btp,
-                        "waktu_menit": w,
-                        "funcloc": funcloc_line.strip()
-                    })
-
-        if not asset_items:
-            # Single-row or fallback
-            if not identifier and all_funclocs:
-                identifier = extract_identifier(all_funclocs[0], category)
-            if not identifier:
-                station = extract_station_from_filename(pdf_path.name)
-                identifier = station if station else sanitize_segment(pdf_path.stem)
-
-            # Core count check for SERAT OPTIK
-            w = get_waktu(category, mapping, acuan)
-            if is_serat_optik_pdf(pdf_path):
-                m = re.search(r'Jumlah Core[^\d]*(\d+)', page1_text, re.IGNORECASE)
-                if m:
-                    w = int(m.group(1)) * 6
-
-            btp = _determine_btp(identifier, pdf_path)
-            asset_items.append({
-                "identifier": identifier,
-                "btp": btp,
-                "waktu_menit": w,
-                "funcloc": ""
-            })
-
-        total_pdf_waktu = sum(a["waktu_menit"] for a in asset_items)
-
-        pdf_entry = {
-            "file": pdf_path.name,
-            "category": category,
-            "pdf_stem": pdf_path.stem,
-            "date_str": date_str or format_date_target(pdf_date),
-            "pdf_date": pdf_date,
-            "is_multi": is_multi,
-            "asset_items": asset_items,
-            "total_pdf_waktu": total_pdf_waktu,
-        }
-
+        pdf_date = pdf_entry["pdf_date"]
         if pdf_date not in files_by_date:
             files_by_date[pdf_date] = []
         files_by_date[pdf_date].append(pdf_entry)
 
-        if idx % 50 == 0 or idx == 1:
-            print(f"  [{idx:3d}/{len(files)}] {pdf_path.name[:50]}...")
+        if idx % 50 == 0 or idx == 1 or idx == len(files):
+            print(f"  [{idx:3d}/{len(files)}] {pdf_entry['file'][:50]}...")
 
     total_extracted_assets = sum(sum(len(p["asset_items"]) for p in pdf_list) for pdf_list in files_by_date.values())
     print(f"[*] Pass 1 complete: {len(files)} PDFs ({total_extracted_assets} total asset entries) grouped into {len(files_by_date)} unique dates.")
@@ -339,15 +371,19 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
                     slot = scheduled_assets_on_date[asset_key]
                     entry = {
                         "file": pdf_info["file"],
+                        "pdf_path": pdf_info["pdf_path"],
                         "btp": a["btp"],
                         "category": pdf_info["category"],
                         "pdf_stem": pdf_info["pdf_stem"],
                         "identifier": a["identifier"],
+                        "funcloc": a["funcloc"],
                         "date": pdf_info["date_str"],
                         "iso_date": cur_date.isoformat(),
                         "tim": slot["tim"],
                         "waktu_menit": slot["waktu_menit"],
                         "photos": slot["photos"],
+                        "personnel": pdf_info.get("personnel", []),
+                        "personnel_override": pdf_info.get("personnel_override", ""),
                     }
                     schedules.append(entry)
                 else:
@@ -379,15 +415,19 @@ def build_schedule(pdf_dir: Path, photos_dir: Path,
 
                     entry = {
                         "file": pdf_info["file"],
+                        "pdf_path": pdf_info["pdf_path"],
                         "btp": a["btp"],
                         "category": pdf_info["category"],
                         "pdf_stem": pdf_info["pdf_stem"],
                         "identifier": a["identifier"],
+                        "funcloc": a["funcloc"],
                         "date": pdf_info["date_str"],
                         "iso_date": cur_date.isoformat(),
                         "tim": tim,
                         "waktu_menit": w,
                         "photos": photos,
+                        "personnel": pdf_info.get("personnel", []),
+                        "personnel_override": pdf_info.get("personnel_override", ""),
                     }
                     schedules.append(entry)
                     clock = t100
@@ -444,8 +484,37 @@ def main() -> int:
     with open(out, "w", encoding="utf-8") as f:
         json.dump(sched, f, indent=2, ensure_ascii=False)
 
+    # ── Generate photo_target_mapping.json ──
+    from collections import defaultdict
+    photo_target_map = defaultdict(lambda: {"category": "", "btp": "", "identifier": "", "target_files": []})
+    for s in sched.get("schedules", []):
+        btp = s.get("btp", "UNKNOWN")
+        cat = s.get("category", "UNKNOWN")
+        ident = s.get("identifier", "UNKNOWN")
+        fn = s.get("file", "")
+        if not fn or not ident:
+            continue
+        rel_key = f"{btp}/{cat}/{ident}"
+        entry = photo_target_map[rel_key]
+        entry["category"] = cat
+        entry["btp"] = btp
+        entry["identifier"] = ident
+        if fn not in entry["target_files"]:
+            entry["target_files"].append(fn)
+
+    mapping_payload = {
+        "generated_at": datetime.now().isoformat(),
+        "total_assets": len(photo_target_map),
+        "mapping": dict(photo_target_map)
+    }
+
+    mapping_out = out.parent / "photo_target_mapping.json"
+    with open(mapping_out, "w", encoding="utf-8") as f:
+        json.dump(mapping_payload, f, indent=2, ensure_ascii=False)
+
     print(f"\n✅ Penjadwalan Berhasil! Disimpan ke -> {out}", flush=True)
-    print(f"  • Total Jadwal Aset: {len(sched['schedules'])} entri\n", flush=True)
+    print(f"  • Total Jadwal Aset: {len(sched['schedules'])} entri", flush=True)
+    print(f"  • Mapping Foto -> Target PDF: {len(photo_target_map)} aset dipetakan ke -> {mapping_out}\n", flush=True)
 
     from collections import OrderedDict
     tree = OrderedDict()
