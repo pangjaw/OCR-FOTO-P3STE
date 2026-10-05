@@ -43,7 +43,12 @@ Script references, detection logic, debugging → lihat [[AGENTS.md]].
   - Kamus bilingual nama hari & bulan (Indonesia & Inggris) plus regex typo OCR tolerance (`Manggu` -> `Minggu`, `Sulcan` -> `Sabtu`, dll.).
   - *Spatial horizontal line sweep* menangkap kata hari di sebelah kiri baris Y yang sama, menyelesaikan bug koordinat tanggal melompat ke kanan (`X ≈ 51..88`) pada foto AXC (`ZP 13 BOO`, `ZP 22A CLT`, `ZP 23A BOO`, `ZP 31B BOO`).
   - Penggunaan titik atas guide (`gy1`) sebagai jangkar vertikal jika teks tanggal terbaca sepotong, serta deteksi mandiri tanpa guide pada layout *Timemark Camera* (`MJ20 BTT-MSG`).
+- [x] **Pembersihan Berkas Sisa Eksperimen & Folder Uji Coba (~430 MB) (2026-10-05)**:
+  - Mengaudit seluruh repositori dan menghapus model bobot AI YOLO (`yolov8n.pt`, dataset, labels), riset visi AI mandiri (Florence-2, Qwen-2.5-VL), folder output sementara (`04_Output_Temp/`, `04_photos_sementara/`, `scratch/`), skrip sisa riset OpenCV/Canny di `scripts/`, dan duplikat skrip di root.
+  - Membebaskan lebih dari 430 MB ruang penyimpanan dan merapikan pohon berkas proyek.
+  - Berkas kunci Excel aktif (`~$data_acuan_tenaga_gabungan.xlsx`) serta modul pustaka inti (`employee_manager.py`, `crop_collage_photos.py`) terverifikasi tetap aman terjaga.
 - [x] **Fitur Lencana & Filter "⚠️ Perlu Koreksi" (2026-09-20)**:
+
   - Foto yang memakai konsensus folder atau deteksi fallback otomatis ditandai `needCorrection: true` pada `meta.json`.
   - Lencana filter `0 ⚠️ Perlu Koreksi` di header galeri web (`templates/index.html`) untuk menyaring foto-foto yang perlu dicek dalam 1 klik.
   - Kartu foto menampilkan lencana `⚠️ Perlu Koreksi` hingga pengguna memverifikasi atau mengeditnya.
@@ -321,7 +326,11 @@ python merge_pdf_foto.py --schedule schedule.json       # Step 5
 
 | Tanggal | Ringkasan Update | File Terkait |
 |---------|------------------|--------------|
+| [[Notes/Daily/2026-10-05\|**05 Okt**]] | **Pembersihan Berkas Sisa Eksperimen & Folder Uji Coba (~430 MB)**: Penghapusan model bobot AI YOLO (`yolov8n.pt`, dataset, labels), riset visi AI (Florence-2, Qwen-2.5-VL), folder output sementara (`04_Output_Temp`, `04_photos_sementara`, `scratch`), duplikat skrip di root, dan sisa berkas debug. Mempertahankan berkas kunci Excel aktif dan modul inti pipeline. | `scripts/`, `root`, `templates/`, `Notes/Daily/2026-10-05.md` |
+| [[Notes/Daily/2026-09-21\|**21 Sep**]] | **100% Sukses Gabung (237/237 Dokumen)**: Penanganan variasi spasi nama berkas & folder, deteksi OCR dokumen scan, format pendamping log JSON (`logs/{month}_GAGAL_FALLBACK.json`), serta perbaikan tombol modal ekspor dinasan di Schedule Sheet. | `scripts/merge_pdf_foto.py`, `server.js`, `templates/index.html` |
+| [[Notes/Daily/2026-09-20\|**20 Sep**]] | **Inline Timemark Editing & Swap Foto**: Kotak biru draggable langsung di galeri kartu, modal edit teks terisolasi per file (tanpa mengubah foto saudara), Zoom Lightbox interaktif, drag-and-drop tukar foto antar kartu, dan penuntasan split card `J10 BOO`. | `server.js`, `templates/index.html`, `scripts/replace_export_photo.py` |
 | [[Notes/Daily/2026-09-19\|**19 Sep**]] | **Google Vision OCR, Fit Textbox Dinamis, & Fix Tuntas Merge PDF**: Dual Detector CLI `--detector`, filter galeri Web UI, lebar box pas ke teks; Restrukturisasi tombol `⚡ Merge PDF` per baris aset di header kartu, Pemetaan 1 foto ke multi-target PDF (`photo_target_mapping.json`), Sinkronisasi Multi-Tim Folder saat edit foto, Fix prioritas mutlak kandidat aset persis (`BOO` vs `RADIO_BOO`), Eliminasi thread-race `redirect_stdout` & streaming instan (`as_completed`), serta pencegahan tombol macet via safety timeout. | `scripts/merge_pdf_foto.py`, `scripts/scheduler.py`, `server.js`, `templates/index.html`, `scripts/edit_timemark_ide1.py`, `extract_pdf_dates.py`, `web/` |
+
 | [[Notes/Daily/2026-09-18\|**18 Sep**]] | Fitur Geser Langsung Kotak Biru Tanggal (Interactive Drag & Nudge) di Modal Edit Timemark Manual & Optimasi Kecepatan Eksekusi Pipeline (Step 1-3 & Step 5). | `templates/index.html`, `scripts/export_pdf_foto.py`, `scripts/extract_pdf_dates.py`, `scripts/scheduler.py`, `scripts/merge_pdf_foto.py` |
 | [[Notes/Daily/2026-09-17\|**17 Sep**]] | Perbaikan Koreksi Nomor SC: Pencegahan Duplikasi Label NO. SC. & Verifikasi Batch Otomatis Folder Maret & Juni (100% Bersih). | `scripts/employee_manager.py` |
 | [[Notes/Daily/2026-09-16\|**16 Sep**]] | Integrasi Koreksi Personil 1 KAUR 2 PNC ke Pipeline Step 3.5 & Penyelarasan Koordinat Foto Sinyal Muka MJ20 CLT & Catu Daya Cilebut. | `scripts/employee_manager.py`, `scripts/edit_photo_coordinate_only.py`, `server.js` |

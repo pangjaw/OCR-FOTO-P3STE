@@ -2,6 +2,8 @@
 
 Catatan kronologis pekerjaan proyek.
 
+- [[Notes/Daily/2026-10-05]] — Pembersihan Berkas Sisa Eksperimen (YOLO, Florence-2, Canny), Folder Uji Coba Sementara, dan Duplikat Root (~430 MB)
+- [[Notes/Daily/2026-09-21]] — Penanganan Variasi Spasi Nama Berkas & Dokumen Scan (100% Berhasil Gabung 237/237 PDF), Format Ekspor Log JSON Pendamping
 - [[Notes/Daily/2026-09-20]] — Isolasi Mutlak Edit Teks Foto Tunggal, Modal Dialog Timemark Unclipped, Inline Draggable Editing, Zoom Lightbox, dan Swap Foto Galeri
 - [[Notes/Daily/2026-09-19]] — OCR Fallback Audit Personil Image-Only (0 Critical), Integrasi Google Cloud Vision Step 4, Fitur Filter Berkas Target & Drag-and-Drop Ganti/Revert Foto
 - [[Notes/Daily/2026-09-18]] — Fitur Geser Langsung Kotak Biru Tanggal, Optimasi Pipeline Step 1-5, dan Penanganan Otomatis Aset Target Multi-Tanggal (Tanggal Ganda)
