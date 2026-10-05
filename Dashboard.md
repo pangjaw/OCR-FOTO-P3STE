@@ -11,6 +11,11 @@ Script references, detection logic, debugging → lihat [[AGENTS.md]].
 ## 📌 Status Tracker
 
 ### Active Scripts
+- [x] **Integrasi Menu 3 OCR Foto & Cloudflare Auto-Updater ke `ganti-nama-app` (2026-10-06)**:
+  - Mengintegrasikan pipeline OCR Foto Timemark & Merge P3-STE sebagai menu ke-3 mandiri di aplikasi desktop `SintelisUtility` (`ganti-nama-app`).
+  - Pemilihan folder dinamis & fleksibel untuk PDF Sumber (2026), PDF Target (2025), Folder Ekspor Foto, dan Folder Hasil Merge PDF langsung dari dialog native Windows.
+  - Implementasi Auto-Updater terintegrasi berbasis Cloudflare Tunnel publik (`https://update.sintelboo.my.id`) dengan PC Server kantor sebagai storage biner pembaruan (`D:\Sintelis_Update_Server`).
+  - Kompilasi PyInstaller binary `SintelisUtility.exe` (~177.86 MB) langsung di PC Server dan sinkronisasi Git dua arah (`origin/main`).
 - [x] `OCR_Foto_Timemark.exe` — Standalone native desktop executable (Windows WebView2 Edge Chromium, zero-prerequisite untuk PC non-Python/non-Node).
 - [x] `launcher.py` — Host peluncur desktop window dan pengelola life-cycle proses latar belakang Node.js.
 - [x] `bin/python_engine/python_engine.exe` — Standalone Python engine terkompilasi PyInstaller (C-extensions: fitz, pdfplumber, numpy, PIL, openpyxl) mencakup 14 skrip pipeline & ekspor.
