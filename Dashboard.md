@@ -11,6 +11,15 @@ Script references, detection logic, debugging → lihat [[AGENTS.md]].
 ## 📌 Status Tracker
 
 ### Active Scripts
+- [x] **Rilis v1.5.0: Menu 3 Edit Foto Ceklis P3-STE & Desain Anti-Slop UI (2026-10-06)**:
+  - Mengubah judul Menu 3 menjadi **"Edit Foto Ceklis P3-STE"** secara konsisten.
+  - Menambahkan **Mode 1 Folder Sumber**: ekstraksi foto, tanggal, penjadwalan, dan merge dari 1 folder dengan pengaman pencadangan otomatis (*auto-backup* ke `backups/backup_YYYYMMDD_HHMMSS/`).
+  - Menambahkan **Tab Mandiri Profil Pegawai**: manajemen roster KUPT Resor, KAUR, teknisi PNC, nomor sertifikasi kompetensi (SC), dan multi-preset tersimpan di `employee_presets.json` & `daftar_pegawai.json`.
+  - Menambahkan **Tab Galeri & Edit Foto**: kartu aset (0%, 50%, 100%), modal edit teks jam/tanggal instan, modal geser koordinat Y timemark, dan modal ganti foto dari komputer.
+  - Menambahkan **Tab Koreksi Dokumen**: koreksi core Serat Optik/OTB dan audit/koreksi personil (1 KAUR, 2 PNC) dengan verifikasi nomor SC.
+  - Menambahkan **Tab Ekspor Dokumen Excel**: ekspor resmi Formulir Tablo STE-RECORD-13.4.01 dan Daftar Dinasan Pegawai format standar KAI (dengan tombol buka berkas langsung).
+  - Menerapkan prinsip desain **Anti-Slop UI** (`anti-slop`): antarmuka bersih, kontras tegas, tanpa gradien ungu/biru generik AI, tanpa efek kartu melayang, dan tipografi jelas.
+  - Kompilasi PyInstaller binary `SintelisUtility.exe` (371.7 MB) langsung di PC Server dan rilis publik ke `https://update.sintelboo.my.id/version.json` (v1.5.0).
 - [x] **Integrasi Menu 3 OCR Foto & Cloudflare Auto-Updater ke `ganti-nama-app` (2026-10-06)**:
   - Mengintegrasikan pipeline OCR Foto Timemark & Merge P3-STE sebagai menu ke-3 mandiri di aplikasi desktop `SintelisUtility` (`ganti-nama-app`).
   - Pemilihan folder dinamis & fleksibel untuk PDF Sumber (2026), PDF Target (2025), Folder Ekspor Foto, dan Folder Hasil Merge PDF langsung dari dialog native Windows.
