@@ -269,3 +269,126 @@ Saat menemukan bug lama, baca catatan ini sebelum membuat perubahan baru. Setela
   - `GET /api/photos/gallery` terverifikasi mengelompokkan ketiga foto `J10 BOO` ke dalam satu `folderKey` tunggal (`Tim_2/BTP JAK/SINYAL/J10 BOO`).
   - Audit terhadap seluruh 409 aset di galeri membuktikan 0 aset terbelah (*0 split assets*).
   - Kartu foto `J10 BOO` tampil lengkap dengan 3 foto dan lencana "3 Foto".
+
+## 22. Integrasi Menu 3 Standalone Desktop & Cloudflare Auto-Updater (v1.5.0 & v1.5.1) — 2026-10-06
+
+- **Konteks:** Menyatukan seluruh kemampuan pipeline OCR Foto Timemark, koreksi dokumen, profil pegawai, dan ekspor Excel ke dalam aplikasi desktop terpadu `SintelisUtility` (`ganti-nama-app`).
+- **Fitur & Perbaikan yang Diterapkan:**
+  1. *Menu 3 Mandiri*: "Edit Foto Ceklis P3-STE" terintegrasi penuh ke dalam antarmuka desktop Windows WebView2.
+  2. *Mode 1 Folder Sumber (In-Place & Auto Backup)*: Ekstraksi, edit timemark, dan penggabungan PDF dari satu folder sumber dengan pencadangan otomatis ke `backups/backup_YYYYMMDD_HHMMSS/`.
+  3. *Manajemen Profil Pegawai*: Multi-preset untuk roster KUPT Resor, KAUR, teknisi PNC, nomor SC, dan tombol "Simpan ke Preset Ini" langsung menimpa preset aktif tanpa perlu membuat preset baru.
+  4. *Tab Galeri & Koreksi*: Editor modal teks jam/tanggal instan, modal geser koordinat Y, ganti foto dari komputer, koreksi core Serat Optik, dan audit personil 1 KAUR 2 PNC berverifikasi SC.
+  5. *Ekspor Excel*: Pembuatan formulir Tablo Form STE-RECORD-13.4.01 dan Daftar Dinasan Pegawai format standar KAI.
+  6. *Auto-Updater Terintegrasi*: Pemeriksaan versi dan unduhan biner otomatis melalui domain Cloudflare publik `https://update.sintelboo.my.id/version.json`.
+- **Hasil Validasi:** Biner terkompilasi PyInstaller dirilis ke server pembaruan (v1.5.0 & v1.5.1).
+
+## 23. Bug Instans Jendela Ganda pada Ekspor Excel & Anti-Slop Single Panel (v1.5.2) — 2026-10-07
+
+- **Masalah:** Mengklik tombol "Buat Tablo Excel" atau "Buat Jadwal Dinasan Excel" menyebabkan aplikasi desktop membuka jendela GUI baru yang berkedip dan membingungkan pengguna.
+- **Akar Penyebab (Root Cause):**
+  - Aplikasi desktop dibundel sebagai satu file executable `SintelisUtility.exe`.
+  - Endpoint pembuat dokumen memanggil subproses `subprocess.run([sys.executable, ...])` tanpa argumen khusus CLI.
+  - Saat `SintelisUtility.exe` dipanggil tanpa argumen script, fungsi `main()` secara default langsung memicu `webview.create_window()`, sehingga jendela aplikasi kedua terbuka.
+- **Perbaikan yang Diterapkan:**
+  1. *CLI Script Dispatcher*: Menambahkan dispatcher argumen di awal `main()` pada `run_desktop_webview.py`. Jika argumen pertama berupa skrip `.py` atau memiliki flag `--run-script`, eksekusi dialihkan langsung ke `runpy.run_path()` dan langsung keluar (`sys.exit(0)`) tanpa membuka jendela webview.
+  2. *Bendera Tanpa Jendela*: Menambahkan `creationflags=0x08000000` (`CREATE_NO_WINDOW`) pada seluruh pemanggilan subproses agar konsol tidak berkedip.
+  3. *Penyederhanaan UI Anti-Slop*: Menggabungkan dua panel ekspor terpisah menjadi 1 panel tunggal yang terintegrasi di `ExcelExportPanel.jsx`. Mengganti pilihan tahun/bulan ganda menjadi satu kontrol periode yang seragam, serta menambahkan kartu opsi: Keduanya (Tablo + Jadwal), Tablo Saja, dan Jadwal Dinasan Saja.
+- **Hasil Validasi:** Ekspor Excel tidak lagi memicu jendela baru. Dokumen Excel terbuat di latar belakang dan tombol "Buka Berkas" langsung membuka file di Windows Explorer.
+
+## 24. Bug Ukuran Biner Membengkak (Recursive Bundling 1.11 GB) & Module Cryptography (v1.5.3) — 2026-10-07
+
+- **Masalah:**
+  1. Ukuran file biner `SintelisUtility.exe` membengkak tidak terkendali dari ~180 MB menjadi **1.11 GB (1116 MB)**.
+  2. Ekspor Excel dengan folder kustom gagal dengan error: `ModuleNotFoundError: No module named 'cryptography'`.
+- **Akar Penyebab (Root Cause):**
+  1. *Recursive Bundling*: Konfigurasi `datas` pada `build_exe.spec` memaketkan seluruh isi folder `dist/`. Karena PyInstaller juga menaruh output binary `SintelisUtility.exe` di folder `dist/`, kompilasi berulang menyebabkan file `.exe` lama ikut dibungkus ke dalam file `.exe` yang baru.
+  2. *Excluded Cryptography*: Modul `cryptography` sebelumnya dieksklusikan pada `excludes` di `build_exe.spec`, padahal pustaka `pypdf` membutuhkannya untuk membaca struktur dokumen PDF berenkripsi/terkompresi.
+- **Perbaikan yang Diterapkan:**
+  1. Memperbarui skrip build server untuk secara wajib menghapus file `.exe` lama di `dist/` sebelum kompilasi (`del /f /q ...\dist\SintelisUtility.exe`).
+  2. Menyaring `datas` pada `build_exe.spec` hanya untuk berkas frontend web statis (`.html`, `.js`, `.css`, `.svg`, `.json`).
+  3. Menghapus `cryptography` dari daftar `excludes` dan menambahkannya ke `hiddenimports` bersama `pypdf._crypt_providers._cryptography`.
+- **Hasil Validasi:** Ukuran biner berhasil dipangkas kembali menjadi **182.82 MB** (ramping dan normal), dan pembacaan PDF via `pypdf` berjalan mulus tanpa error modul.
+
+## 25. Redesign UI NeuroNest & Bug Subfolder Bertingkat pada Ekspor Excel (v1.5.4) — 2026-10-07
+
+- **Masalah:**
+  1. Pengguna memilih folder sumber `siap di OCR` yang memiliki 414 file PDF di dalam subfolder bertingkat (`siap di OCR\BTP BD\AXLE COUNTER\...`), namun aplikasi melaporkan jadwal tidak ditemukan atau gagal diekspor.
+  2. Duplikasi data jadwal aset membengkak menjadi 1.504 entri.
+- **Akar Penyebab (Root Cause):**
+  1. *Pencarian Dangkal Non-Rekursif*: Skrip `export_tablo_excel.py` dan `export_dinasan_excel.py` sebelumnya menggunakan `.glob("*.pdf")` yang hanya mencari di folder root. Karena folder root `siap di OCR` memiliki 0 file di tingkat atas, tidak ada file yang terbaca.
+  2. *Duplikasi Template Funcloc*: Pembacaan multi-funcloc menduplikasi seluruh aset template pada berkas yang sebenarnya sudah dipecah per-aset individual.
+- **Perbaikan yang Diterapkan:**
+  1. Mengubah seluruh pemindaian berkas PDF menjadi rekursif `.rglob("*.pdf")`.
+  2. Menerapkan deduplikasi aset cerdas sehingga hanya aset target aktual yang dijadwalkan (dari 1.504 entri menjadi tepat 418 entri pada 414 berkas PDF).
+  3. Mengalihkan eksekusi penjadwalan `scheduler.build_schedule` menjadi langsung di memori (*in-memory*) di dalam thread server tanpa subprocess PyInstaller eksternal.
+  4. Redesign UI NeuroNest Modern: Collapsible Sidebar (72px / 250px), Bento Stats Bar 4-metrik, Floating Pill Navigation dengan Orange Glow Capsule.
+- **Hasil Validasi:** Folder dengan subfolder bertingkat terbaca 100% dan menghasilkan dokumen Tablo & Dinasan resmi dalam waktu 2-3 detik.
+
+## 26. Kegagalan Auto-Updater di Windows & Eksekusi In-Memory Penuh (v1.5.5) — 2026-10-07
+
+- **Masalah:** Pembaruan otomatis (Auto-Updater) gagal menggantikan file executable saat tombol "Perbarui Sekarang" diklik. Pengguna masih tertahan di versi lama v1.5.3 (ukuran 557 MB di folder Downloads).
+- **Akar Penyebab (Root Cause):**
+  1. *Error Input Redirection Batch*: Skrip lama `sintelis_updater.bat` menggunakan perintah `timeout /t 1 /nobreak >nul`. Di lingkungan background process Windows tanpa console interaktif, perintah ini memicu galat `ERROR: Input redirection is not supported` dan skrip langsung berhenti sebelum menimpa file.
+  2. *File Lock OS*: Windows membutuhkan waktu hingga 1-2 detik untuk sepenuhnya melepaskan kunci proses executable yang ditutup.
+- **Perbaikan yang Diterapkan:**
+  1. Mengganti skrip batch dengan skrip native PowerShell (`sintelis_updater.ps1`). Skrip ini menggunakan `Start-Sleep -Seconds 1` dan perulangan `Copy-Item` dengan penanganan galat bertahap hingga berkas lama berhasil ditimpa 100%.
+  2. Mengalihkan eksekusi `_handle_timemark_export_tablo` dan `_handle_timemark_export_dinasan` di `run_desktop_webview.py` menjadi pemanggilan modul langsung secara *in-memory* tanpa subproses ganda, disertai error logging penuh ke `sintelis_utility.log`.
+- **Hasil Validasi:** Pembaruan otomatis berjalan mulus tanpa terkunci oleh Windows, dan biner v1.5.5 (183.55 MB) terverifikasi terdistribusi.
+
+## 27. Pemilih Folder Output Excel Kustom, Sinkronisasi Profil Pegawai Aktif & Minimalist Bento Header (v1.5.6) — 2026-10-07
+
+- **Masalah:**
+  1. Berkas output Excel Tablo dan Dinasan selalu tersimpan otomatis ke folder default `logs/` tanpa opsi memilih folder penyimpanan tujuan.
+  2. Tablo dan Jadwal Dinasan tidak memakai profil pegawai yang sedang dipilih/aktif pada tab Profil Pegawai.
+  3. Bar atas (Bento Header) memuat kartu-kartu yang tidak dibutuhkan pengguna (*Status Engine*, *Wilayah Operasi*, *Berkas Dimuat*).
+- **Akar Penyebab (Root Cause):**
+  1. Parameter `output_path` pada `run_desktop_webview.py` di-hardcode ke `os.path.join(BASE_DIR, "logs")`.
+  2. `export_tablo_excel.py` dan `export_dinasan_excel.py` memanggil `load_pegawai_config()` tanpa parameter sehingga hanya membaca `config/daftar_pegawai.json` lama atau dictionary fallback standar, tanpa mengetahui preset mana yang dipilih di `employee_presets.json`.
+- **Perbaikan yang Diterapkan:**
+  1. *Pemilih Folder Simpan Kustom*: Menambahkan tombol `📂 Pilih Folder Simpan...` berbasis `/api/select-folder` di `ExcelExportPanel.jsx`. Backend menerima parameter `outputDir` dan menyimpan berkas Excel langsung ke folder tujuan yang dipilih pengguna (default ke `logs/` jika dikosongkan).
+  2. *Sinkronisasi Profil Pegawai Aktif*:
+     - Menambahkan endpoint `/api/timemark/set-active-preset` di `run_desktop_webview.py` untuk menyimpan pilihan active preset secara persisten ke `employee_presets.json` dan `daftar_pegawai.json`.
+     - Fungsi `get_active_pegawai_config(preset_id)` mengekstrak preset yang dipilih atau fallback ke preset aktif.
+     - `export_tablo_excel.py` dan `export_dinasan_excel.py` menerima parameter `config` / `config_path` aktif, mengalirkan nama KUPT dan roster dinasan tim lapangan secara in-memory.
+     - Menambahkan pemilih preset pegawai langsung pada form `ExcelExportPanel.jsx`.
+  3. *Redesign Bento Header Minimalis*:
+     - Menyederhanakan `BentoHeader.jsx` menjadi hanya 2 kartu:
+       - **Kartu Versi Aplikasi**: Menampilkan versi aktif (`v1.5.6`). Jika pembaruan baru tersedia di server, kartu otomatis menyala dengan outline dan glow oranye neon (`#FF7300`), badge "● UPDATE TERSEDIA", dan interaksi klik untuk membuka jendela pembaruan.
+       - **Kartu Profil Preset Aktif**: Menampilkan nama preset profil pegawai yang sedang digunakan secara real-time.
+     - Menghapus kartu *Status Engine*, *Wilayah Operasi*, dan *Berkas Dimuat*.
+  4. *SOP Release & Deployment Server*:
+     - Mengikuti 6 aturan emas SOP `update_app.md`.
+     - Sinkronisasi versi v1.5.6 di 4 titik lokasi.
+     - Kompilasi PyInstaller clean build di PC Server Bogor (ukuran: **183.91 MB**, batas normal 180MB - 195MB).
+     - Rilis publik ke `https://update.sintelboo.my.id/version.json` dan sinkronisasi berkas biner langsung ke `C:\Users\dikarm\Downloads\SintelisUtility.exe`.
+- **Hasil Validasi:**
+  - Endpoint live `https://update.sintelboo.my.id/version.json` terverifikasi mengembalikan HTTP 200 dengan versi `1.5.6` dan ukuran 192.845.741 bytes.
+  - Biner di `C:\Users\dikarm\Downloads\SintelisUtility.exe` terverifikasi sinkron sempurna.
+
+## 28. Penyimpanan Permanen Profil Preset Pegawai di AppData & Fitur Cadangkan/Pulihkan JSON (v1.5.7) — 2026-10-07
+
+- **Masalah:** Setiap kali aplikasi diperbarui atau biner baru dijalankan, profil preset pegawai kustom (seperti preset `2025` dengan KUPT `S. SLAMET RIYADI`) selalu hilang atau ter-reset kembali ke preset default awal.
+- **Akar Penyebab (Root Cause):**
+  1. *Penyimpanan di Direktori Volatil Temp PyInstaller*: Pada versi sebelum v1.5.6, penulisan dan pembacaan `employee_presets.json` dan `daftar_pegawai.json` dilakukan langsung di folder `ENGINE_DIR` yang berada di dalam `sys._MEIPASS` (`C:\Users\<user>\AppData\Local\Temp\_MEIxxxxxx`). Folder ini otomatis dihapus oleh Windows saat proses selesai atau saat versi baru diekstrak, sehingga seluruh preset yang diubah pengguna hilang.
+  2. *Ketiadaan Inisialisasi Otomatis (Seeding)*: Direktori persisten `%LOCALAPPDATA%\SintelisUtility` tidak diinisialisasi otomatis saat peluncuran awal aplikasi.
+  3. *Ketiadaan Fitur Pencadangan Mandiri*: Pengguna tidak memiliki opsi untuk mengekspor data preset ke file `.json` cadangan di luar aplikasi.
+- **Perbaikan yang Diterapkan:**
+  1. *Penyimpanan Permanen di `%LOCALAPPDATA%\SintelisUtility`*:
+     - Seluruh operasi baca dan simpan preset pegawai kini 100% dipusatkan ke `os.environ["LOCALAPPDATA"]\SintelisUtility\employee_presets.json` dan `daftar_pegawai.json`. Direktori ini bertahan permanen dari restart komputer, update aplikasi, maupun penutupan aplikasi.
+  2. *Inisialisasi Otomatis (`_init_persistent_storage()`)*:
+     - Saat aplikasi pertama kali dijalankan, sistem secara cerdas memeriksa keberadaan berkas di AppData. Jika belum ada, sistem menyalin konfigurasi awal pabrik (termasuk preset `2025` dan `2025 BARU`) ke AppData. Jika berkas sudah ada, sistem **TIDAK PERNAH MENIMPA** berkas tersebut sehingga hasil editan pengguna tetap utuh.
+  3. *Penulisan Berkas Atomik (`_atomic_write_json`)*:
+     - Penyimpanan berkas JSON menggunakan mekanisme penulisan ke berkas sementara (`.tmp`) lalu di-replace seketika untuk mencegah kerusakan berkas jika aplikasi ditutup tiba-tiba.
+  4. *Fitur Cadangkan (Backup) & Pulihkan (Restore) JSON*:
+     - Menambahkan endpoint backend `/api/timemark/export-presets` dan `/api/timemark/import-presets`.
+     - Menambahkan tombol native `📤 Cadangkan (JSON)` dan `📥 Pulihkan (JSON)` pada header `EmployeeManagerPanel.jsx`. Pengguna dapat menyimpan cadangan ke harddisk atau flashdisk dan memulihkannya kapan pun dengan satu klik.
+  5. *Sinkronisasi Engine Ekspor Excel*:
+     - Memperbarui `employee_manager.py` dan `export_dinasan_excel.py` untuk secara otomatis mencari konfigurasi aktif di `%LOCALAPPDATA%\SintelisUtility\daftar_pegawai.json` terlebih dahulu.
+  6. *SOP Release & Deployment Server*:
+     - Mengikuti 6 aturan emas SOP `update_app.md`.
+     - Naikkan versi SemVer ke `v1.5.7` di 4 titik lokasi.
+     - Kompilasi PyInstaller clean di Server Bogor, validasi ukuran biner guardrail (180–195 MB), dan perbarui server pembaruan langsung.
+- **Hasil Validasi:**
+  - Profil preset `2025` dan seluruh kustomisasi pegawai bertahan permanen setelah pembaruan aplikasi.
+  - Fitur ekspor dan impor JSON berfungsi mulus via dialog Windows native.
+

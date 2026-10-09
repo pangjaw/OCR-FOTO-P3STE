@@ -7,6 +7,7 @@
 |------|-------------|
 | [[README.md]] | Tujuan project, batasan |
 | [[setup.md]] | Instalasi, cara menjalankan |
+| [[update_app.md]] | **SOP & Aturan Wajib Update & Rilis Aplikasi Desktop** |
 | [[Dashboard.md]] | Status tracker, daily logs |
 | [[Notes/Decisions/\|Notes/Decisions/]] | ADR |
 | [[Notes/Test Results\|Test Results]] | Riwayat pengujian |
@@ -180,6 +181,7 @@ export_pdf_foto.py     extract_pdf_dates.py
 4. **Debug & Fix Rule (CRITICAL):** Jika user minta "debug ocr dan stage nya" — **HANYA** tampilkan hasil pembacaan + jelaskan stage terpilih. JANGAN fix kode sebelum konfirmasi user.
 5. **Auto-Update Obsidian:** Setiap update kode/script/config, update Dashboard.md + daily log.
 6. **Git:** Hanya push kalau diperintah user (`git add . && git commit -m "<type>: <subject>"`).
+7. **Update App SOP:** Setiap rilis/update aplikasi desktop wajib mengikuti aturan dan 10 langkah SOP di [[update_app.md]] (wajib naikkan versi di 4 titik, cegah recursive bundling, validasi ukuran biner 180-195 MB, verifikasi live endpoint, dan **DILARANG** mengunduh file biner ke komputer klien pengguna karena pengguna akan mengupdate mandiri langsung dari aplikasi).
 
 ## ⚠️ Known Issues (2026-07-15)
 - **13/291 folders missing date.txt**: Orphaned folders — identifier "CLT" collision across CATUDAYA/CTS/PDSE/PTDS/PTLS, plus 8 SERAT OPTIK/SINYAL/WESEL edge cases. No matching PDF in `02_pdf_target` → structural gap (2026 vs 2025 docs). `edit_timemark_ide1.py` fallback → watermark pakai tanggal hari ini. Tidak kritis.

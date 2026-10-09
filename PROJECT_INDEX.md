@@ -10,10 +10,12 @@
 - [[OPERATIONS]] — Command operasi, batch, log, dan troubleshooting
 - [[CONTRIBUTING]] — Aturan perubahan kode dan validasi
 - [[setup]] — Setup environment lokal
+- [[update_app.md]] — SOP & Aturan Wajib Update & Rilis Aplikasi Desktop
 
 ## Source map
 
-- [`OCR_Foto_Timemark.exe`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/OCR_Foto_Timemark.exe) — Launcher aplikasi desktop mandiri Windows (WebView2 Edge Chromium, zero-prerequisite)
+- [`SintelisUtility.exe`](file:///C:/Users/dikarm/Downloads/SintelisUtility.exe) — Aplikasi desktop terpadu Sintelis Utility 2.0 (v1.6.7) berbasis WebView2 (OCR Ceklis PDF, Downloader P3-STE, dan Timemark Editor)
+- [`OCR_Foto_Timemark.exe`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/OCR_Foto_Timemark.exe) — Launcher aplikasi desktop mandiri Windows lama (WebView2 Edge Chromium)
 - [`launcher.py`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/launcher.py) — Host peluncur desktop window dan life-cycle manager proses latar belakang Node.js
 - [`bin/`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/bin) — Runtime biner portabel: `bin/node.exe` (Node.js v24.16.0) dan `bin/python_engine/` (PyInstaller Python Engine)
 - [`web/`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/web) — Aplikasi web modern Next.js 14 App Router (port 3000, 5 modul lengkap)
@@ -37,8 +39,8 @@
 ## Knowledge vault
 
 - [[Notes/Architecture Index]] — Peta catatan arsitektur
-- [[Notes/Decisions Index]] — Peta keputusan teknis (termasuk [[Notes/Decisions/ADR-010-export-tablo-excel]], [[Notes/Decisions/ADR-011-nextjs-web-app-architecture]], [[Notes/Decisions/ADR-012-standalone-desktop-executable]], [[Notes/Decisions/ADR-013-penanganan-aset-target-multi-tanggal]], [[Notes/Decisions/ADR-014-google-vision-detector-and-dynamic-textbox]], [[Notes/Decisions/ADR-015-ocr-fallback-personnel-audit-image-only]], [[Notes/Decisions/ADR-016 - Isolasi Edit Teks Foto Tunggal, Inline Timemark Editing, dan Interaksi Galeri]])
-- [[Notes/Decisions/Bug Fix History]] — Riwayat bug, penyebab, dan tindak lanjut (20 entri aktif)
+- [[Notes/Decisions Index]] — Peta keputusan teknis (termasuk [[Notes/Decisions/ADR-010-export-tablo-excel]], [[Notes/Decisions/ADR-011-nextjs-web-app-architecture]], [[Notes/Decisions/ADR-012-standalone-desktop-executable]], [[Notes/Decisions/ADR-013-penanganan-aset-target-multi-tanggal]], [[Notes/Decisions/ADR-014-google-vision-detector-and-dynamic-textbox]], [[Notes/Decisions/ADR-015-ocr-fallback-personnel-audit-image-only]], [[Notes/Decisions/ADR-016 - Isolasi Edit Teks Foto Tunggal, Inline Timemark Editing, dan Interaksi Galeri]], [[Notes/Decisions/ADR-017 - Arsitektur Desktop Utility 2.0, PowerShell Atomic Updater, In-Memory Excel Dispatcher, dan NeuroNest UI]])
+- [[Notes/Decisions/Bug Fix History]] — Riwayat bug, penyebab, dan tindak lanjut (27 entri aktif)
 - [[Notes/Decisions/Active Pipeline Rules]] — Aturan pipeline yang sedang berlaku
 - [[Notes/Experiments Index]] — Peta eksperimen
 - [[Notes/Daily Index]] — Daily logs

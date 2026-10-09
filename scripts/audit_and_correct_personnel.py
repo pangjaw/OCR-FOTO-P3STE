@@ -3,9 +3,15 @@ import os
 import re
 import json
 import random
+from collections import Counter, defaultdict
 from pathlib import Path
 from datetime import datetime
 import argparse
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 import fitz
 
@@ -56,8 +62,16 @@ def extract_page_ocr_text(page: fitz.Page) -> str:
         from PIL import Image
         import io
 
-        tesseract_bin = Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")
-        if tesseract_bin.is_file():
+        candidates = [
+            os.environ.get("TESSERACT_CMD"),
+            r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+            r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+        ]
+        tesseract_bin = next((c for c in candidates if c and os.path.isfile(c)), None)
+        if not tesseract_bin:
+            import shutil
+            tesseract_bin = shutil.which("tesseract")
+        if tesseract_bin:
             pytesseract.pytesseract.tesseract_cmd = str(tesseract_bin)
 
         pix = page.get_pixmap(dpi=150)
@@ -367,14 +381,23 @@ def audit_folder(folder_path: Path, pegawai_cfg: dict = None):
         else: # WARNING
             warning_count += 1
 
+        m_date = re.search(r'(\d{2})-(\d{2})-(\d{4})', fname)
+        file_date_str = m_date.group(0) if m_date else ''
+
+        is_compliant = (severity == 'OK')
+        needs_corr = (severity == 'CRITICAL')
+        needs_sc = bool(missing_no_sc)
+
         files_result.append({
             'file': fname,
             'path': str(pdf_p).replace('\\', '/'),
-            'status': status_code,
+            'date': file_date_str,
+            'status': 'compliant' if (is_compliant and not needs_sc) else status_code,
+            'status_code': status_code,
             'status_label': status_label,
             'severity': severity,
-            'needs_correction': (severity == 'CRITICAL'),
-            'needs_sc_correction': bool(missing_no_sc),
+            'needs_correction': needs_corr,
+            'needs_sc_correction': needs_sc,
             'missing_no_sc': missing_no_sc,
             'no_sc_missing_count': len(missing_no_sc),
             'unauthorized': unauth,
@@ -387,6 +410,15 @@ def audit_folder(folder_path: Path, pegawai_cfg: dict = None):
             'num_pnc': len(found_p)
         })
 
+    total_sc_missing = sum(1 for f in files_result if f.get('needs_sc_correction'))
+    summary = {
+        'total_files': len(files_result),
+        'compliant': ok_count,
+        'needs_correction': critical_count,
+        'needs_sc_correction': total_sc_missing,
+        'warning_count': warning_count,
+    }
+
     return {
         'total_files': len(files_result),
         'ok_count': ok_count,
@@ -394,6 +426,7 @@ def audit_folder(folder_path: Path, pegawai_cfg: dict = None):
         'warning_count': warning_count,
         'mismatch_count': critical_count + warning_count,
         'counts_by_key': counts_by_key,
+        'summary': summary,
         'files': files_result
     }
 
@@ -416,6 +449,66 @@ def correct_single_file(pdf_path: Path, kaur_obj: dict, pnc1_obj: dict, pnc2_obj
     return ok
 
 
+def load_or_build_file_tim_mapping(folder_path: Path) -> dict[str, int]:
+    """Mengembalikan pemetaan {filename: tim_number (1, 2, 3)} untuk folder target."""
+    candidates = [
+        folder_path / "schedule.json",
+        folder_path / "temp_custom_schedule.json",
+        folder_path / "temp_dinasan_schedule.json",
+        Path("logs/temp_custom_schedule.json"),
+        Path("logs/temp_dinasan_schedule.json"),
+    ]
+    for cand in candidates:
+        if cand.is_file():
+            try:
+                with open(cand, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    mapping = {}
+                    for s in data.get("schedules", []):
+                        f_name = s.get("file")
+                        tim_num = s.get("tim", 1)
+                        if f_name:
+                            mapping[f_name] = tim_num
+                    if mapping:
+                        return mapping
+            except Exception:
+                pass
+
+    try:
+        from scheduler import build_schedule, load_mapping, load_data_acuan
+        engine_dir = Path(__file__).parent
+        base_dir = engine_dir.parent
+        m_candidates = [
+            engine_dir / "asset_waktu_mapping.json",
+            base_dir / "config" / "asset_waktu_mapping.json",
+        ]
+        m_path = next((p for p in m_candidates if p.is_file()), None)
+        mapping = load_mapping(m_path) if m_path else {}
+
+        a_candidates = [
+            engine_dir / "data_acuan_tenaga_gabungan.json",
+            base_dir / "config" / "data_acuan_tenaga_gabungan.json",
+        ]
+        a_path = next((p for p in a_candidates if p.is_file()), None)
+        acuan = load_data_acuan(a_path) if a_path else {}
+
+        sched = build_schedule(
+            pdf_dir=folder_path,
+            photos_dir=Path("03_photos_export"),
+            mapping=mapping,
+            acuan=acuan,
+            jam_mulai=7 * 60,
+            jam_selesai=18 * 60,
+            tim_max=2
+        )
+        if sched.get("schedules"):
+            return {s.get("file"): s.get("tim", 1) for s in sched["schedules"] if s.get("file")}
+    except Exception:
+        pass
+
+    return {}
+
+
 def auto_correct_files(folder_path: Path, target_file_names: list = None, pegawai_cfg: dict = None):
     kaur_map, pnc_map, cfg = get_roster_sets(pegawai_cfg)
     all_kaur = list(kaur_map.values())
@@ -425,73 +518,208 @@ def auto_correct_files(folder_path: Path, target_file_names: list = None, pegawa
         raise ValueError('Daftar pegawai minimal harus memiliki 1 KAUR dan 2 PNC.')
 
     audit_res = audit_folder(folder_path, cfg)
-    files_to_fix = [f for f in audit_res['files'] if f.get('severity') == 'CRITICAL']
+    all_files = audit_res['files']
 
-    if target_file_names:
-        target_set = set(target_file_names)
-        files_to_fix = [f for f in files_to_fix if f['file'] in target_set]
+    # Dapatkan pemetaan tim untuk setiap file (Tim 1, Tim 2, Tim 3)
+    file_to_tim = load_or_build_file_tim_mapping(folder_path)
 
+    # Kelompokkan berkas berdasarkan tanggal (DD-MM-YYYY)
+    files_by_date = defaultdict(list)
+    for f in all_files:
+        d = f.get('date') or 'UNKNOWN'
+        files_by_date[d].append(f)
+
+    target_set = set(target_file_names) if target_file_names else None
     corrected = []
     failed = []
 
-    for f_info in files_to_fix:
-        f_path = Path(f_info['path'])
-        if not f_path.exists():
-            failed.append({'file': f_info['file'], 'error': 'File not found'})
-            continue
+    for d_str, date_files in sorted(files_by_date.items()):
+        # Parse nomor hari untuk rotasi deterministik
+        m_day = re.match(r'^(\d{2})', d_str)
+        day_num = int(m_day.group(1)) if m_day else 1
 
-        existing_k = [kaur_map[k] for k in f_info['kaur'] if k in kaur_map]
-        existing_p = [pnc_map[p] for p in f_info['pnc'] if p in pnc_map]
+        # Pisahkan file pada tanggal ini berdasarkan tim
+        tim1_files = [f for f in date_files if file_to_tim.get(f['file'], 1) == 1]
+        tim2_files = [f for f in date_files if file_to_tim.get(f['file'], 1) == 2]
+        tim3_files = [f for f in date_files if file_to_tim.get(f['file'], 1) >= 3]
 
-        # 1. Determine exactly 1 KAUR
-        if len(existing_k) >= 1:
-            chosen_kaur = existing_k[0]  # retain primary KAUR
-        else:
-            seed = sum(ord(c) for c in f_info['file'])
-            rng = random.Random(seed)
-            chosen_kaur = rng.choice(all_kaur)
+        # ── 1. TIM 1 ──
+        # Kumpulkan personil yang ada di berkas Tim 1
+        t1_kaur_found = []
+        t1_pnc_found = []
+        t1_pnc_usage = Counter()
 
-        # 2. Determine exactly 2 PNC
-        chosen_pnc = []
-        if len(existing_p) >= 2:
-            chosen_pnc = existing_p[:2]
-        elif len(existing_p) == 1:
-            chosen_pnc.append(existing_p[0])
-            rem_pnc = [p for p in all_pnc if p['nama'] != existing_p[0]['nama']]
-            if rem_pnc:
-                chosen_pnc.append(rem_pnc[0])
-        else:
-            seed = sum(ord(c) for c in f_info['file'])
-            rng = random.Random(seed)
-            sample_p = rng.sample(all_pnc, min(2, len(all_pnc)))
-            chosen_pnc.extend(sample_p)
+        for f in tim1_files:
+            for k in f.get('kaur', []):
+                if k in kaur_map and kaur_map[k] not in t1_kaur_found:
+                    t1_kaur_found.append(kaur_map[k])
+            for p in f.get('pnc', []):
+                if p in pnc_map:
+                    if pnc_map[p] not in t1_pnc_found:
+                        t1_pnc_found.append(pnc_map[p])
+                    t1_pnc_usage[p] += 1
 
-        while len(chosen_pnc) < 2:
-            for p in all_pnc:
-                if p not in chosen_pnc:
-                    chosen_pnc.append(p)
-                    break
+        # Pastikan pool Tim 1 memiliki minimal 1 KAUR dan 2 PNC
+        if not t1_kaur_found:
+            k_idx = (day_num - 1) % len(all_kaur)
+            t1_kaur_found.append(all_kaur[k_idx])
 
-        try:
-            success = correct_single_file(f_path, chosen_kaur, chosen_pnc[0], chosen_pnc[1])
-            if success:
-                corrected.append({
-                    'file': f_info['file'],
-                    'kaur': chosen_kaur['nama'],
-                    'pnc': [p['nama'] for p in chosen_pnc]
-                })
+        while len(t1_pnc_found) < 2:
+            p_shift = ((day_num - 1) * 2 + len(t1_pnc_found)) % len(all_pnc)
+            cand = all_pnc[p_shift]
+            if cand not in t1_pnc_found:
+                t1_pnc_found.append(cand)
             else:
-                failed.append({'file': f_info['file'], 'error': 'Gagal menerapkan redaksi'})
-        except Exception as e:
-            failed.append({'file': f_info['file'], 'error': str(e)})
+                for p in all_pnc:
+                    if p not in t1_pnc_found:
+                        t1_pnc_found.append(p)
+                        break
 
+        # Koreksi berkas Tim 1 yang defisit
+        for f_info in tim1_files:
+            if target_set and f_info['file'] not in target_set:
+                continue
+            if not f_info.get('needs_correction'):
+                continue
+
+            f_path = Path(f_info['path'])
+            if not f_path.exists():
+                failed.append({'file': f_info['file'], 'error': 'File not found'})
+                continue
+
+            existing_k = [kaur_map[k] for k in f_info['kaur'] if k in kaur_map]
+            chosen_kaur = existing_k[0] if existing_k else t1_kaur_found[0]
+
+            existing_p = [pnc_map[p] for p in f_info['pnc'] if p in pnc_map]
+            chosen_pnc = list(existing_p)
+
+            available_pnc = [p for p in t1_pnc_found if p not in chosen_pnc]
+            available_pnc.sort(key=lambda p: (t1_pnc_usage[p['nama']], all_pnc.index(p)))
+
+            while len(chosen_pnc) < 2 and available_pnc:
+                p_pick = available_pnc.pop(0)
+                chosen_pnc.append(p_pick)
+                t1_pnc_usage[p_pick['nama']] += 1
+
+            while len(chosen_pnc) < 2:
+                for p in all_pnc:
+                    if p not in chosen_pnc:
+                        chosen_pnc.append(p)
+                        break
+
+            try:
+                ok = correct_single_file(f_path, chosen_kaur, chosen_pnc[0], chosen_pnc[1])
+                if ok:
+                    corrected.append({'file': f_info['file'], 'kaur': chosen_kaur['nama'], 'pnc': [p['nama'] for p in chosen_pnc]})
+                else:
+                    failed.append({'file': f_info['file'], 'error': 'Gagal menerapkan redaksi'})
+            except Exception as e:
+                failed.append({'file': f_info['file'], 'error': str(e)})
+
+        # ── 2. TIM 2 ──
+        # Sesuai kesepakatan: Personil Tim 2 diambil dari profil yang belum bertugas di Tim 1
+        if tim2_files:
+            t1_kaur_names = {k['nama'] for k in t1_kaur_found}
+            t1_pnc_names = {p['nama'] for p in t1_pnc_found}
+
+            rem_kaur = [k for k in all_kaur if k['nama'] not in t1_kaur_names]
+            chosen_kaur_t2 = rem_kaur[0] if rem_kaur else all_kaur[day_num % len(all_kaur)]
+
+            rem_pnc = [p for p in all_pnc if p['nama'] not in t1_pnc_names]
+            chosen_pnc_t2 = []
+            if len(rem_pnc) >= 2:
+                shift = (day_num - 1) % len(rem_pnc)
+                chosen_pnc_t2 = [rem_pnc[shift], rem_pnc[(shift + 1) % len(rem_pnc)]]
+            elif len(rem_pnc) == 1:
+                chosen_pnc_t2.append(rem_pnc[0])
+                for p in all_pnc:
+                    if p not in chosen_pnc_t2:
+                        chosen_pnc_t2.append(p)
+                        break
+            else:
+                chosen_pnc_t2 = [all_pnc[(day_num - 1) % len(all_pnc)], all_pnc[day_num % len(all_pnc)]]
+
+            for f_info in tim2_files:
+                if target_set and f_info['file'] not in target_set:
+                    continue
+
+                f_path = Path(f_info['path'])
+                if not f_path.exists():
+                    failed.append({'file': f_info['file'], 'error': 'File not found'})
+                    continue
+
+                curr_k = f_info.get('kaur', [])
+                curr_p = f_info.get('pnc', [])
+                already_matched = (
+                    len(curr_k) == 1 and curr_k[0] == chosen_kaur_t2['nama'] and
+                    set(curr_p) == {p['nama'] for p in chosen_pnc_t2}
+                )
+                if already_matched:
+                    continue
+
+                try:
+                    ok = correct_single_file(f_path, chosen_kaur_t2, chosen_pnc_t2[0], chosen_pnc_t2[1])
+                    if ok:
+                        corrected.append({'file': f_info['file'], 'kaur': chosen_kaur_t2['nama'], 'pnc': [p['nama'] for p in chosen_pnc_t2]})
+                    else:
+                        failed.append({'file': f_info['file'], 'error': 'Gagal menerapkan redaksi'})
+                except Exception as e:
+                    failed.append({'file': f_info['file'], 'error': str(e)})
+
+        # ── 3. TIM 3 ──
+        # Sesuai kesepakatan: Tim 3 menggunakan KAUR dan 2 PNC konsisten dari profil untuk seluruh berkas Tim 3 hari itu
+        if tim3_files:
+            seed = sum(ord(c) for c in f"{d_str}_tim3")
+            rng = random.Random(seed)
+            chosen_kaur_t3 = rng.choice(all_kaur)
+            sample_pnc = rng.sample(all_pnc, min(2, len(all_pnc)))
+            chosen_pnc_t3 = list(sample_pnc)
+            while len(chosen_pnc_t3) < 2:
+                for p in all_pnc:
+                    if p not in chosen_pnc_t3:
+                        chosen_pnc_t3.append(p)
+                        break
+
+            for f_info in tim3_files:
+                if target_set and f_info['file'] not in target_set:
+                    continue
+
+                f_path = Path(f_info['path'])
+                if not f_path.exists():
+                    failed.append({'file': f_info['file'], 'error': 'File not found'})
+                    continue
+
+                curr_k = f_info.get('kaur', [])
+                curr_p = f_info.get('pnc', [])
+                already_matched = (
+                    len(curr_k) == 1 and curr_k[0] == chosen_kaur_t3['nama'] and
+                    set(curr_p) == {p['nama'] for p in chosen_pnc_t3}
+                )
+                if already_matched:
+                    continue
+
+                try:
+                    ok = correct_single_file(f_path, chosen_kaur_t3, chosen_pnc_t3[0], chosen_pnc_t3[1])
+                    if ok:
+                        corrected.append({'file': f_info['file'], 'kaur': chosen_kaur_t3['nama'], 'pnc': [p['nama'] for p in chosen_pnc_t3]})
+                    else:
+                        failed.append({'file': f_info['file'], 'error': 'Gagal menerapkan redaksi'})
+                except Exception as e:
+                    failed.append({'file': f_info['file'], 'error': str(e)})
+
+    post_audit = audit_folder(folder_path, cfg)
     return {
-        'total_scanned': len(audit_res['files']),
-        'total_attempted': len(files_to_fix),
+        'total_scanned': len(all_files),
+        'total_attempted': len(corrected) + len(failed),
         'total_corrected': len(corrected),
         'total_failed': len(failed),
         'corrected': corrected,
-        'failed': failed
+        'failed': failed,
+        'summary': post_audit.get('summary'),
+        'total_files': post_audit.get('total_files'),
+        'ok_count': post_audit.get('ok_count'),
+        'critical_count': post_audit.get('critical_count'),
+        'files': post_audit.get('files')
     }
 
 
@@ -535,12 +763,19 @@ def auto_correct_no_sc_files(folder_path: Path, pegawai_cfg: dict = None):
                 failed.append({'file': info['file'], 'error': '; '.join(reasons)})
         except Exception as exc:
             failed.append({'file': info['file'], 'error': str(exc)})
+    post_audit = audit_folder(folder_path, cfg)
     return {
+        'total_scanned': len(audit_res.get('files', [])),
         'total_sc_attempted': len(targets),
         'total_sc_corrected': len(corrected),
         'total_sc_failed': len(failed),
         'corrected': corrected,
-        'failed': failed
+        'failed': failed,
+        'summary': post_audit.get('summary'),
+        'total_files': post_audit.get('total_files'),
+        'ok_count': post_audit.get('ok_count'),
+        'critical_count': post_audit.get('critical_count'),
+        'files': post_audit.get('files')
     }
 
 

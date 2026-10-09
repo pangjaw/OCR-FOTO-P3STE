@@ -127,11 +127,29 @@ Aturan yang harus dipakai saat menjalankan atau menjelaskan pipeline.
 - **Bebas Potongan Antarmuka (*Unclipped Dialog*)**:
   - Komponen input teks tanggal/jam wajib berupa dialog modal mandiri di lapisan `z-index: 99999` pada elemen terluar halaman, dan tidak boleh disematkan di dalam kontainer yang memiliki `overflow: hidden`.
 
-## Gaya komunikasi agent
+## Aturan Ekspor Excel (Tablo & Jadwal Dinasan)
 
+- **Eksekusi Wajib In-Memory**: Pembuatan berkas Tablo Form STE-RECORD-13.4.01 dan Jadwal Dinasan Pegawai dieksekusi langsung di memori proses server (`generate_tablo_workbook` dan `build_dinasan_workbook`) tanpa menggunakan subproses ganda PyInstaller (`--run-script`), agar berjalan instan dalam hitungan detik.
+- **Pencarian Berkas Rekursif**: Seluruh pemindaian berkas PDF untuk penjadwalan dan pembuatan dokumen WAJIB menggunakan `.rglob("*.pdf")` (rekursif) agar folder yang memiliki struktur subfolder bertingkat (seperti `siap di OCR\BTP BD\AXLE COUNTER\...`) terbaca secara menyeluruh.
+- **Dukungan Folder Simpan Kustom**: Generator dokumen menerima parameter direktori output kustom (`output_path`) yang dipilih pengguna melalui dialog native Windows, dengan fallback otomatis ke folder `logs/` jika tidak ditentukan.
+- **Injeksi Profil Pegawai Aktif**: Konfigurasi personil (KUPT Resor, KAUR, dan teknisi PNC) wajib disuplai secara langsung dari konfigurasi preset aktif (`get_active_pegawai_config`), baik via parameter `config` (in-memory dict) maupun `config_path` (file json sinkron).
+
+## Aturan Rilis & Pengemasan Desktop App (update_app.md)
+
+- **Ukuran Biner Normal (Size Guardrail)**: Ukuran biner terkompilasi `SintelisUtility.exe` wajib berada di rentang **180 MB – 195 MB**. Jika ukuran membengkak di atas 250 MB, rilis wajib dibatalkan karena terindikasi penumpukan berkas lama (*recursive bundling*).
+- **Pembersihan Wajib Sebelum Kompilasi**: File `dist/SintelisUtility.exe` lama WAJIB dihapus sebelum PyInstaller dijalankan (`del /f /q ...\dist\SintelisUtility.exe`).
+- **Sinkronisasi Versi 4 Titik**: Nomor versi wajib dinaikkan serentak di:
+  1. `updater_engine.py` (`APP_VERSION = "..."`)
+  2. `run_desktop_webview.py` (`webview.create_window(...)`)
+  3. UI components (`Sidebar.jsx` & `BentoHeader.jsx`)
+  4. Server `version.json`
+- **Auto-Updater Native PowerShell**: Skrip pembaruan otomatis di Windows wajib menggunakan PowerShell (`sintelis_updater.ps1`) dengan perulangan jeda 1 detik (`Start-Sleep -Seconds 1`) untuk menangani pelepasan kunci berkas oleh sistem operasi secara atomik.
+
+## Gaya komunikasi agent
 
 - Gunakan bahasa Indonesia sederhana.
 - Jelaskan seperti kepada pengguna aplikasi yang tidak memahami program.
 - Sampaikan kesimpulan terlebih dahulu.
 - Jelaskan istilah teknis dengan contoh.
 - Bedakan dengan jelas: sudah diperbaiki, belum dilakukan, dan langkah berikutnya.
+

@@ -2,6 +2,10 @@
 
 Catatan kronologis pekerjaan proyek.
 
+- [[Notes/Daily/2026-10-09]] — Rilis v1.6.7: Kartu Foto 3 Kolom per Aset (Full-Width), Toolbar Filter Multi-Kategori (Adopsi Web App), dan Modal Zoom Pratinjau
+- [[Notes/Daily/2026-10-08]] — Rilis v1.5.8 s/d v1.6.6: Fix Koreksi Personil Date-Aware, Menu Mandiri Audit Aset, Optimasi Ekstraksi Foto 100x Lebih Cepat, dan In-Place PowerShell Auto-Updater
+- [[Notes/Daily/2026-10-07]] — Rilis v1.5.2 s/d v1.5.6: Fix Jendela Ganda CLI Dispatcher, Ramping Biner 183 MB, In-Memory Tablo/Dinasan, Pemindaian Subfolder Rekursif, PowerShell Atomic Updater, Pemilih Folder Simpan Kustom, Sinkronisasi Profil Pegawai Aktif & Redesign Header Bento Minimalis
+- [[Notes/Daily/2026-10-06]] — Rilis v1.5.0 & v1.5.1: Integrasi Menu 3 "Edit Foto Ceklis P3-STE", Mode 1 Folder Sumber, Profil Pegawai Multi-Preset, dan Cloudflare Auto-Updater Publik
 - [[Notes/Daily/2026-10-05]] — Pembersihan Berkas Sisa Eksperimen (YOLO, Florence-2, Canny), Folder Uji Coba Sementara, dan Duplikat Root (~430 MB)
 - [[Notes/Daily/2026-09-21]] — Penanganan Variasi Spasi Nama Berkas & Dokumen Scan (100% Berhasil Gabung 237/237 PDF), Format Ekspor Log JSON Pendamping
 - [[Notes/Daily/2026-09-20]] — Isolasi Mutlak Edit Teks Foto Tunggal, Modal Dialog Timemark Unclipped, Inline Draggable Editing, Zoom Lightbox, dan Swap Foto Galeri

@@ -16,6 +16,8 @@ tmp/
 scratch/
 logs/*.csv
 logs/*.log
+logs/*.xlsx
+03_photos_export_test/
 
 # Generated runtime files
 schedule.json
