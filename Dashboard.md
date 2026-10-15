@@ -8,6 +8,16 @@ Pipeline 5-tahap koreksi tanggal watermark GPS Map Camera. Input: PDF 2026 (foto
 Script references, detection logic, debugging → lihat [[AGENTS.md]].
 
 
+- [x] **Rilis v1.6.8: Fitur Ubah Tanggal Dokumen & File (Custom Date Changer) (2026-10-15)**:
+  - **Menu Baru Tersendiri di Navigasi Sidebar**: Menambahkan menu mandiri **"Ubah Tanggal"** (`ubah_tanggal`) dengan antarmuka dinamis responsif 100% full-width, mendukung drag-and-drop berkas PDF, tombol multi-file picker Windows (`/api/select-files`), dan folder picker penuh (`/api/select-folder`).
+  - **Penggantian Tanggal Menyeluruh (3 Titik Kritis)**:
+    - **Nama Berkas PDF**: Mendukung penggantian pola tanggal prefix (`DD-MM-YYYY_*`), suffix (`* DD-MM-YYYY.pdf`), dan format teks Indonesia (`* DD Bulan YYYY.pdf`) secara otomatis.
+    - **Formulir Halaman 1**: Mengganti sel tanggal pemeriksaan pada baris tabel `Tanggal :` ke format ISO (`YYYY-MM-DD`) secara akurat tanpa merusak tata letak tabel.
+    - **Header Halaman Foto Dokumentasi**: Mengganti teks tanggal di bawah judul `FOTO DOKUMENTASI` ke format bahasa Indonesia (`DD [Bulan] YYYY`) dengan posisi rata tengah persis.
+    - **Preservasi Watermark Foto**: Citra dokumentasi dan cap waktu asli kamera GPS Map Camera pada foto 0%, 50%, 100% tetap dipertahankan 100% utuh tanpa modifikasi.
+  - **Pembersihan Fisik Redaction via PyMuPDF**: Menggunakan `add_redact_annot` dan `apply_redactions` untuk memusnahkan karakter teks tanggal lama dari PDF text layer, sehingga tidak ada teks bertumpuk dan hasil pencarian teks selalu konsisten.
+  - **Tabel Pratinjau Interaktif & Kustomisasi Tanggal per Baris**: Pengguna dapat menyetel satu tanggal target bersama (Batch) atau mengedit tanggal individual secara kustom langsung pada tabel sebelum menekan tombol eksekusi, dilengkapi pratinjau live nama file baru dan opsi file cadangan (`.bak`).
+  - **Engine Terpadu (`date_changer_engine.py`)**: Diintegrasikan di `web-app/timemark_engine/` dan tersedia sebagai modul python mandiri di `OCR-FOTO-P3STE/`.
 - [x] **Rilis v1.6.7: Kartu Foto 3 Kolom per Aset, Toolbar Filter Lengkap & Modal Zoom Preview (2026-10-09)**:
   - **Susunan Kartu Foto 3 Kolom per Aset (Full-Width)**: Mengubah desain susunan galeri sehingga 1 kartu aset membentang penuh 1 baris (full-width) dan menampilkan 3 kolom foto besar berdampingan (`Foto 0%` | `Foto 50%` | `Foto 100%`) dengan tinggi proporsional (~290px), menghilangkan pemotongan/gepeng pada foto dan membuat teks watermark GPS terbaca jelas.
   - **Toolbar Filter Galeri Lengkap (Adopsi Web App)**: Mengadopsi arsitektur filter dari `photo-gallery.tsx` yang mencakup: Dropdown Berkas File (Target & Sumber PDF via indeks `schedule.json` dan `pdf_photo_export_log.csv`), Dropdown Stasiun/Wilayah (BTP), Dropdown Kategori Aset, Dropdown Status Kelengkapan Foto (`Lengkap 3 Foto` vs `Belum Lengkap < 3 Foto`), Pencarian Cepat Teks, serta tombol Reset Filter.

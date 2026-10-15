@@ -14,7 +14,7 @@
 
 ## Source map
 
-- [`SintelisUtility.exe`](file:///C:/Users/dikarm/Downloads/SintelisUtility.exe) — Aplikasi desktop terpadu Sintelis Utility 2.0 (v1.6.7) berbasis WebView2 (OCR Ceklis PDF, Downloader P3-STE, dan Timemark Editor)
+- [`SintelisUtility.exe`](file:///C:/Users/dikarm/Downloads/SintelisUtility.exe) — Aplikasi desktop terpadu Sintelis Utility 2.0 (v1.6.8) berbasis WebView2 (OCR Ceklis PDF, Downloader P3-STE, Ubah Tanggal Dokumen & File, dan Timemark Editor)
 - [`OCR_Foto_Timemark.exe`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/OCR_Foto_Timemark.exe) — Launcher aplikasi desktop mandiri Windows lama (WebView2 Edge Chromium)
 - [`launcher.py`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/launcher.py) — Host peluncur desktop window dan life-cycle manager proses latar belakang Node.js
 - [`bin/`](file:///C:/Users/dikarm/Documents/Server/OCR-FOTO-P3STE/bin) — Runtime biner portabel: `bin/node.exe` (Node.js v24.16.0) dan `bin/python_engine/` (PyInstaller Python Engine)

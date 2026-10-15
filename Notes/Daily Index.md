@@ -2,6 +2,7 @@
 
 Catatan kronologis pekerjaan proyek.
 
+- [[Notes/Daily/2026-10-15]] — Rilis v1.6.8: Fitur Ubah Tanggal Dokumen & File (Custom Date Changer), PyMuPDF Physical Redaction, dan Navigasi Dedicated Panel
 - [[Notes/Daily/2026-10-09]] — Rilis v1.6.7: Kartu Foto 3 Kolom per Aset (Full-Width), Toolbar Filter Multi-Kategori (Adopsi Web App), dan Modal Zoom Pratinjau
 - [[Notes/Daily/2026-10-08]] — Rilis v1.5.8 s/d v1.6.6: Fix Koreksi Personil Date-Aware, Menu Mandiri Audit Aset, Optimasi Ekstraksi Foto 100x Lebih Cepat, dan In-Place PowerShell Auto-Updater
 - [[Notes/Daily/2026-10-07]] — Rilis v1.5.2 s/d v1.5.6: Fix Jendela Ganda CLI Dispatcher, Ramping Biner 183 MB, In-Memory Tablo/Dinasan, Pemindaian Subfolder Rekursif, PowerShell Atomic Updater, Pemilih Folder Simpan Kustom, Sinkronisasi Profil Pegawai Aktif & Redesign Header Bento Minimalis
